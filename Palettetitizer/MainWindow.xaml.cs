@@ -1,16 +1,9 @@
-﻿using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace Palettetitizer
 {
@@ -19,14 +12,14 @@ namespace Palettetitizer
     {
 
         public static DependencyProperty ColumnsProperty    = DependencyProperty.Register(nameof(Columns), typeof(int), typeof(MainWindow), new PropertyMetadata(6, OnColumnsChanged));
-        public static DependencyProperty LeftColorProperty  = DependencyProperty.Register(nameof(LeftColor), typeof(Color), typeof(MainWindow), new PropertyMetadata(Colors.White));
-        public static DependencyProperty RightColorProperty = DependencyProperty.Register(nameof(RightColor), typeof(Color), typeof(MainWindow), new PropertyMetadata(Colors.Black));
+        public static DependencyProperty LeftColorProperty  = DependencyProperty.Register(nameof(LeftColor), typeof(Color), typeof(MainWindow), new PropertyMetadata(Colors.White, OnColumnsChanged));
+        public static DependencyProperty RightColorProperty = DependencyProperty.Register(nameof(RightColor), typeof(Color), typeof(MainWindow), new PropertyMetadata(Colors.Black, OnColumnsChanged));
 
         static void OnColumnsChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
         {
             var window = (MainWindow)sender;
             foreach (var row in window.Rows)
-                row.Recalculate(window.Columns);
+                row.Recalculate(window.Columns, window.LeftColor, window.RightColor);
         }
 
         public int Columns
@@ -47,7 +40,7 @@ namespace Palettetitizer
         }
 
         void Add(object sender = null, RoutedEventArgs e = null) =>
-            Rows.Add(new Row(Columns));
+            Rows.Add(new Row(Columns, LeftColor, RightColor));
 
         void Remove(object sender, RoutedEventArgs e)
         {
