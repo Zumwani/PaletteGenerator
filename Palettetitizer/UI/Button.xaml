@@ -4,17 +4,8 @@
     <ControlTemplate x:Key="ButtonTemplate" TargetType="{x:Type ButtonBase}">
 
         <Border x:Name="Toggle" IsHitTestVisible="{TemplateBinding IsEnabled}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}">
-            <!--<Border.Background>
-                <SolidColorBrush Color="Black" Opacity="0"/>
-            </Border.Background>-->
-            
             <Border x:Name="Button" Background="{TemplateBinding Background}">
-                <!--<Border.Background>
-                    <SolidColorBrush Color="Black" Opacity="0"/>
-                </Border.Background>-->
-
                 <ContentPresenter Margin="{TemplateBinding Padding}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
-
             </Border>
 
             <VisualStateManager.VisualStateGroups>
