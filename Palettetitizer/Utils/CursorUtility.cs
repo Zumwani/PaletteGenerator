@@ -15,7 +15,7 @@ using Point = System.Windows.Point;
 using point = System.Drawing.Point;
 using Size = System.Windows.Size;
 
-namespace Palettetitizer
+namespace PaletteGenerator
 {
 
     internal static class CursorUtility
@@ -121,12 +121,10 @@ namespace Palettetitizer
             var encoder = new PngBitmapEncoder();
             encoder.Frames.Add(BitmapFrame.Create(rtb));
 
-            using (var ms = new MemoryStream())
-            {
-                encoder.Save(ms);
-                using (var bmp = new System.Drawing.Bitmap(ms))
-                    return InternalCreateCursor(bmp);
-            }
+            using var ms = new MemoryStream();
+            encoder.Save(ms);
+            using var bmp = new Bitmap(ms);
+            return InternalCreateCursor(bmp);
 
         }
 

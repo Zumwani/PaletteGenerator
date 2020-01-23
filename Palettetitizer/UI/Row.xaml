@@ -1,13 +1,14 @@
-﻿<ResourceDictionary x:Class="Palettetitizer.UI.RowTemplate"
+﻿<ResourceDictionary x:Class="PaletteGenerator.UI.RowTemplate"
                     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:local="clr-namespace:Palettetitizer">
+                    xmlns:ui="clr-namespace:PaletteGenerator.UI"
+                    xmlns:local="clr-namespace:PaletteGenerator">
 
     <DataTemplate DataType="{x:Type local:Row}">
 
         <StackPanel Orientation="Horizontal" Margin="0,6">
 
-            <local:ColorEditor Color="{Binding ElementName=window, Path=LeftColor, Mode=TwoWay}" IsEditable="True"/>
+            <ui:ColorEditor Color="{Binding Source={x:Static local:MainWindow.Current}, Path=LeftColor, Mode=TwoWay}" IsEditable="True"/>
 
             <ItemsControl ItemsSource="{Binding Left}">
 
@@ -19,13 +20,13 @@
 
                 <ItemsControl.ItemTemplate>
                     <DataTemplate DataType="{x:Type Color}">
-                        <local:ColorEditor Color="{Binding}" DataContext="{Binding}"/>
+                        <ui:ColorEditor Color="{Binding}" DataContext="{Binding}"/>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
 
             </ItemsControl>
 
-            <local:ColorEditor Color="{Binding Center, Mode=TwoWay}" IsEditable="True" ColorChanged="CenterColorChanged"/>
+            <ui:ColorEditor Color="{Binding Center, Mode=TwoWay}" IsEditable="True" ColorChanged="CenterColorChanged"/>
 
             <ItemsControl ItemsSource="{Binding Right}">
 
@@ -37,17 +38,17 @@
 
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <local:ColorEditor Color="{Binding}"/>
+                        <ui:ColorEditor Color="{Binding}"/>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
 
             </ItemsControl>
 
-            <local:ColorEditor Color="{Binding Source={x:Static local:MainWindow.Current}, Path=RightColor, Mode=TwoWay}" IsEditable="True"/>
+            <ui:ColorEditor Color="{Binding Source={x:Static local:MainWindow.Current}, Path=RightColor, Mode=TwoWay}" IsEditable="True"/>
 
-            <TextBlock VerticalAlignment="Center" FontSize="18" Margin="12,0">
-                <Hyperlink TextDecorations="None" Foreground="Black" Click="Remove" FontFamily="Segoe UI Semilight">🗑</Hyperlink>
-            </TextBlock>
+            <Canvas>
+                <Button VerticalAlignment="Center" FontSize="12" Margin="4,0" Click="Remove" Foreground="DimGray" Content="✖"/>
+            </Canvas>
 
         </StackPanel>
 

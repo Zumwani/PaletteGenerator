@@ -1,12 +1,12 @@
-﻿<UserControl x:Class="Palettetitizer.ColorEditor"
+﻿<UserControl x:Class="PaletteGenerator.UI.ColorEditor"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:Palettetitizer"
-             xmlns:converters="clr-namespace:Palettetitizer.Converters"
+             xmlns:local="clr-namespace:PaletteGenerator"
+             xmlns:converters="clr-namespace:PaletteGenerator.Converters"
              xmlns:colorPicker="clr-namespace:ColorPickerLib.Controls;assembly=ColorPickerLib"
              xmlns:fa="http://schemas.fontawesome.io/icons/"
              x:Name="editor"
-             Width="42" Height="42" 
+             Width="64" Height="64" 
              BorderThickness="0" BorderBrush="White"
              Loaded="UserControl_Loaded">
 

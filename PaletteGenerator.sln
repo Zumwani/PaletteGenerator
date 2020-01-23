@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29709.97
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Palettetitizer", "Palettetitizer\Palettetitizer.csproj", "{7CD9E5D8-1BD9-4338-AD1D-6A406ACFB751}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PaletteGenerator", "Palettetitizer\PaletteGenerator.csproj", "{7CD9E5D8-1BD9-4338-AD1D-6A406ACFB751}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenShell.Screens", "OpenShell.Screens\OpenShell.Screens.csproj", "{22D4EEE5-8A1D-4626-868E-B8C9D8BCFABB}"
 EndProject

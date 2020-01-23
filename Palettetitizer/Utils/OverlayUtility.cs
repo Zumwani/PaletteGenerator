@@ -4,7 +4,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Media;
 
-namespace Palettetitizer
+namespace PaletteGenerator
 {
 
     /// <summary>A helper class used to display an overlay on each screen.</summary>
@@ -51,13 +51,6 @@ namespace Palettetitizer
 
             }
 
-        }
-
-        static void ForEach<T>(this IList<T> list, Action<T> action)
-        {
-            if (list == null) return;
-            foreach (var item in list)
-                action?.Invoke(item);
         }
 
     }

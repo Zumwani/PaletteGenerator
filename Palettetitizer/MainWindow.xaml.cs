@@ -3,15 +3,21 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 
-namespace Palettetitizer
+namespace PaletteGenerator
 {
+
+    //TODO: Fix slider tooltip
+    //TODO: Fix hue offset slider
+    //TODO: Fix presets
+    //TODO: Look for another color picker or create own
+    //TODO: Fix installer (integrate with github and download from release branch (create dev and release branches), perhaps installer should be reuseable as well)
 
     public partial class MainWindow : Window
     {
 
-        public const double MaxRows = 16;
-        public const double MaxColumns = 16;
-        public const double MinColumns = 2;
+        public static double MaxRows => 16;
+        public static double MaxColumns => 16;
+        public static double MinColumns => 2;
 
         public static DependencyProperty ColumnsProperty    = DependencyProperty.Register(nameof(Columns), typeof(int), typeof(MainWindow), new PropertyMetadata(8));
         public static DependencyProperty LeftColorProperty  = DependencyProperty.Register(nameof(LeftColor), typeof(Color), typeof(MainWindow), new PropertyMetadata(Colors.White, OnColumnsChanged));
@@ -55,11 +61,11 @@ namespace Palettetitizer
             MessageBox.Show("Not implemented yet. Sorry.");
         }
 
-        public static void Recalculate()
-        {
-            foreach (var row in Current.Rows)
-                row.Recalculate(Current.Columns, Current.LeftColor, Current.RightColor);
-        }
+        public static void Recalculate() =>
+            Current.Rows.ForEach(Recalculate);
+
+        public static void Recalculate(Row row) =>
+            row.Recalculate(Current.Columns, Current.LeftColor, Current.RightColor).ConfigureAwait(false);
 
         #region Window
 
@@ -70,7 +76,7 @@ namespace Palettetitizer
             Current = this;
             Unloaded += (s,e) => { if (Current == this) Current = null; };
             Rows = new ObservableCollection<Row>();
-            Add(); Add(); Add();
+            Add(); Add();
         }
 
         void Minimize(object sender, RoutedEventArgs e) =>

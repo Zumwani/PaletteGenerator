@@ -1,6 +1,6 @@
 ﻿using System.Windows.Media;
 
-namespace Palettetitizer
+namespace PaletteGenerator
 {
 
     public static class ColorUtilty

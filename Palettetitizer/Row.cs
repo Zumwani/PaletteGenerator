@@ -1,13 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Drawing.Drawing2D;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Windows;
+using System.Threading.Tasks;
 using System.Windows.Media;
 
-namespace Palettetitizer
+namespace PaletteGenerator
 {
 
     public class Row : INotifyPropertyChanged
@@ -16,12 +14,12 @@ namespace Palettetitizer
         public Row() { }
 
         public Row(int columns, Color left, Color right) =>
-            Recalculate(columns, left, right);
+            Recalculate(columns, left, right).ConfigureAwait(false);
 
         public ObservableCollection<Color> Left { get; } = new ObservableCollection<Color>();
         public ObservableCollection<Color> Right { get; } = new ObservableCollection<Color>();
 
-        public Color Center { get; set; } = Colors.Red;
+        public Color Center { get; set; } = Colors.LightSkyBlue;
 
         #region INotifyPropertyChanged
 
@@ -32,29 +30,26 @@ namespace Palettetitizer
 
         #endregion
 
-        public void Recalculate(int columns, Color left, Color right)
+        public async Task Recalculate(int columns, Color left, Color right)
         {
 
-            var c = columns / 2 + 1;
-            CalculateSide(Left, c, left, Center);
-            CalculateSide(Right, c, Center, right);
+            var c = columns / 2 - 1;
+
+            var leftSide = (await Calculate(c, Center, left)).Reverse().ToArray();
+            var rightSide = await Calculate(c, Center, right);
+
+            Left.Clear();
+            Right.Clear();
+
+            Left.AddRange(leftSide);
+            Right.AddRange(rightSide);
 
             OnAllPropertiesChanged();
 
         }
 
-        void CalculateSide(IList<Color> list, int count, Color left, Color right)
-        {
-
-            list.Clear();
-
-            if (count == 0)
-                return;
-
-            for (int i = 1; i < count - 1; i++)
-                list.Add(left.Blend(right, 1 - ((float)i / count)));
-
-        }
+        Task<Color[]> Calculate(int count, Color center, Color color) =>
+            Task.Run(() => count.Select(i => center.Blend(color, 1 - ((float)i / count))));
 
     }
 

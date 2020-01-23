@@ -1,5 +1,6 @@
-﻿namespace Palettetitizer
+﻿namespace PaletteGenerator
 {
+
     public static class MathUtility
     {
 
