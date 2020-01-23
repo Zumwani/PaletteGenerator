@@ -14,9 +14,9 @@
 
             <DataTemplate DataType="{x:Type local:Row}">
 
-                <StackPanel Orientation="Horizontal" Background="AliceBlue">
+                <StackPanel Orientation="Horizontal" Margin="0,6">
 
-                    <!--<local:ColorEditor Color="{Binding ElementName=window, Path=LeftColor, Mode=TwoWay}" IsEditable="True"/>-->
+                    <local:ColorEditor Color="{Binding ElementName=window, Path=LeftColor, Mode=TwoWay}" IsEditable="True"/>
                     
                     <local:FixedItemsControl ItemsSource="{Binding Left}">
 
@@ -34,9 +34,9 @@
 
                     </local:FixedItemsControl>
 
-                    <!--<local:ColorEditor Color="{Binding ElementName=window, Path=RightColor, Mode=TwoWay}" IsEditable="True"/>-->
+                    <local:ColorEditor Color="{Binding Center, Mode=TwoWay}" IsEditable="True"/>
 
-                    <!--<ItemsControl ItemsSource="{Binding Right}">
+                    <ItemsControl ItemsSource="{Binding Right}">
 
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
@@ -50,9 +50,9 @@
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                         
-                    </ItemsControl>-->
+                    </ItemsControl>
 
-                    <!--<local:ColorEditor Color="{Binding Source={x:Static local:MainWindow.Current}, Path=RightColor, Mode=TwoWay}" IsEditable="True"/>-->
+                    <local:ColorEditor Color="{Binding Source={x:Static local:MainWindow.Current}, Path=RightColor, Mode=TwoWay}" IsEditable="True"/>
                     
                     <TextBlock VerticalAlignment="Center" FontSize="18" Margin="12,0">
                         <Hyperlink TextDecorations="None" Foreground="Black" Click="Remove" FontFamily="Segoe UI Semilight">🗑</Hyperlink>
@@ -78,15 +78,12 @@
                 <Button Content="x" Click="Close" BorderThickness="0" Background="Transparent" FontSize="22" Width="32" DockPanel.Dock="Right"/>
                 <Button Content="-" Click="Minimize" BorderThickness="0" Background="Transparent" FontSize="22" Width="32" DockPanel.Dock="Right"/>
                 <Button Content="+" Click="Add" BorderThickness="0" Background="Transparent" FontSize="22" Width="32" DockPanel.Dock="Right"/>
-                <Slider Value="{Binding Columns, Mode=TwoWay}" ToolTip="{Binding Columns}" Maximum="10" Width="100" TickFrequency="1" TickPlacement="BottomRight" DockPanel.Dock="Right" Margin="0,16,0,0"/>
+                <Slider Value="{Binding Columns, Mode=TwoWay}" ToolTip="{Binding Columns}" Maximum="10" Width="100" TickFrequency="2" TickPlacement="BottomRight" DockPanel.Dock="Right" Margin="0,16,0,0" SmallChange="2" LargeChange="2" AutoToolTipPlacement="TopLeft" IsSnapToTickEnabled="True"/>
                 <TextBox Text="{Binding Columns, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" HorizontalAlignment="Center" DockPanel.Dock="Right" Margin="0,4,8,0" Width="22" Height="22" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
             </DockPanel>
 
             <ScrollViewer MaxHeight="600" Grid.Row="1" VerticalScrollBarVisibility="Auto">
-
-                <ItemsControl Margin="42" HorizontalAlignment="Center">
-                    <local:ColorEditor Color="Blue" Width="100" Height="100"/>
-                </ItemsControl>
+                <ItemsControl ItemsSource="{Binding Rows}" Margin="42" HorizontalAlignment="Center"/>
             </ScrollViewer>
             
         </Grid>

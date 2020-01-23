@@ -3,20 +3,60 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:Palettetitizer"
              xmlns:converters="clr-namespace:Palettetitizer.Converters"
+             xmlns:colorPicker="clr-namespace:ColorPickerLib.Controls;assembly=ColorPickerLib"
+             xmlns:fa="http://schemas.fontawesome.io/icons/"
              x:Name="editor"
              Width="42" Height="42" 
              BorderThickness="0" BorderBrush="White"
              Loaded="UserControl_Loaded">
 
-    <ToggleButton x:Name="toggle" IsHitTestVisible="{Binding ElementName=popup, Path=IsOpen, Converter={converters:InvertBool}}"
-                  BorderThickness="{Binding BorderThickness}" BorderBrush="Black"
-                  IsEnabled="{Binding ElementName=editor, Path=IsEditable}"
-                  Background="Blue">
+    <ToggleButton x:Name="toggle"
+                  BorderThickness="{Binding ElementName=editor, Path=BorderThickness}" BorderBrush="Black"
+                  Background="{Binding ElementName=editor, Path=Color, Converter={converters:ToBrush}}"
+                  IsHitTestVisible="{Binding ElementName=editor, Path=IsEditable}"
+                  IsEnabled="{Binding ElementName=popup, Path=IsOpen, Converter={converters:InvertBool}}">
 
-        <Popup x:Name="popup" StaysOpen="False" IsOpen="{Binding ElementName=toggle, Path=IsChecked}">
-            <Border Width="200" Height="200" Background="Blue">
+        <ToggleButton.Template>
+            <ControlTemplate TargetType="{x:Type ToggleButton}">
                 
+                <Border x:Name="border" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
+                    <ContentPresenter/>
+                </Border>
+
+                <ControlTemplate.Triggers>
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Setter TargetName="border" Property="Margin" Value="4"/>
+                    </Trigger>
+                </ControlTemplate.Triggers>
+                
+            </ControlTemplate>
+        </ToggleButton.Template>
+        
+        <Popup x:Name="popup" StaysOpen="False" IsOpen="{Binding ElementName=toggle, Path=IsChecked, Delay=10}"
+               PlacementTarget="{Binding ElementName=toggle}" Placement="Bottom" PopupAnimation="Fade">
+            
+            <Border Background="White" BorderThickness="1" BorderBrush="Black">
+                    <Grid>
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Foreground="Black" Text="Pick color:" FontFamily="Segoe UI Semilight" FontSize="16" Margin="6"/>
+
+                    <ToggleButton x:Name="eyeDropper" Width="28" Height="28" HorizontalAlignment="Right" VerticalAlignment="Top" Padding="6" Checked="EyeDropper_Checked"                                  Background="Transparent" BorderThickness="0" >
+                        <ToggleButton.Content>
+                            <fa:ImageAwesome Icon="Eyedropper"/>
+                        </ToggleButton.Content>
+                    </ToggleButton>
+
+                    <colorPicker:ColorPicker Grid.Row="1" Background="White" SelectedColor="{Binding ElementName=editor, Path=Color, Mode=TwoWay}"/>
+
+                </Grid>
+               
             </Border>
+            
         </Popup>
         
     </ToggleButton>

@@ -5,6 +5,7 @@ using System.Windows.Media;
 
 namespace Palettetitizer
 {
+
     public class Row : INotifyPropertyChanged
     {
 

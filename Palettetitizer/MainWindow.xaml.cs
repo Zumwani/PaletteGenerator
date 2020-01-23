@@ -18,7 +18,7 @@ namespace Palettetitizer
     public partial class MainWindow : Window
     {
 
-        public static DependencyProperty ColumnsProperty    = DependencyProperty.Register(nameof(Columns), typeof(int), typeof(MainWindow), new PropertyMetadata(5, OnColumnsChanged));
+        public static DependencyProperty ColumnsProperty    = DependencyProperty.Register(nameof(Columns), typeof(int), typeof(MainWindow), new PropertyMetadata(6, OnColumnsChanged));
         public static DependencyProperty LeftColorProperty  = DependencyProperty.Register(nameof(LeftColor), typeof(Color), typeof(MainWindow), new PropertyMetadata(Colors.White));
         public static DependencyProperty RightColorProperty = DependencyProperty.Register(nameof(RightColor), typeof(Color), typeof(MainWindow), new PropertyMetadata(Colors.Black));
 
@@ -46,7 +46,7 @@ namespace Palettetitizer
             set => SetValue(RightColorProperty, value); 
         }
 
-        void Add(object sender, RoutedEventArgs e) =>
+        void Add(object sender = null, RoutedEventArgs e = null) =>
             Rows.Add(new Row(Columns));
 
         void Remove(object sender, RoutedEventArgs e)
@@ -64,6 +64,7 @@ namespace Palettetitizer
             Current = this;
             Unloaded += (s,e) => { if (Current == this) Current = null; };
             Rows = new ObservableCollection<Row>();
+            Add(); Add(); Add();
         }
 
         void Minimize(object sender, RoutedEventArgs e) =>

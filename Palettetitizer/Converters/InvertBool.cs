@@ -8,12 +8,15 @@ namespace Palettetitizer
 
     namespace Converters
     {
+
         public class InvertBool : MarkupExtension, IValueConverter
         {
 
             public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
             {
-                return !Equals(value, true);
+                if (value is bool b)
+                    return !b;
+                return false;
             }
 
             public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
