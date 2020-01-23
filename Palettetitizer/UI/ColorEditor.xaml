@@ -45,7 +45,7 @@
 
                     <TextBlock Foreground="Black" Text="Pick color:" FontFamily="Segoe UI Semilight" FontSize="16" Margin="6"/>
 
-                    <ToggleButton x:Name="eyeDropper" Width="28" Height="28" HorizontalAlignment="Right" VerticalAlignment="Top" Padding="6" Checked="EyeDropper_Checked"                                  Background="Transparent" BorderThickness="0" >
+                    <ToggleButton x:Name="eyeDropper" ToolTip="Pick color from screen point" Width="28" Height="28" HorizontalAlignment="Right" VerticalAlignment="Top" Padding="6" Checked="EyeDropper_Checked">
                         <ToggleButton.Content>
                             <fa:ImageAwesome Icon="Eyedropper"/>
                         </ToggleButton.Content>

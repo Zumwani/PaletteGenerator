@@ -12,55 +12,24 @@
     <Window.Resources>
         <ResourceDictionary>
 
-            <DataTemplate DataType="{x:Type local:Row}">
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="UI/Button.xaml"/>
+                <ResourceDictionary Source="UI/Row.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
 
-                <StackPanel Orientation="Horizontal" Margin="0,6">
+            <Style x:Key="ToolButton" TargetType="{x:Type Button}" BasedOn="{StaticResource ButtonBaseStyle}">
+                <Setter Property="Template" Value="{StaticResource ButtonTemplate}"/>
+                <Setter Property="FontFamily" Value="Segoe MDL2 Assets"/>
+                <Setter Property="FontSize" Value="22"/>
+                <Setter Property="DockPanel.Dock" Value="Right"/>
+                <Setter Property="ToolTipService.InitialShowDelay" Value="1000"/>
+            </Style>
 
-                    <local:ColorEditor Color="{Binding ElementName=window, Path=LeftColor, Mode=TwoWay}" IsEditable="True"/>
-                    
-                    <local:FixedItemsControl ItemsSource="{Binding Left}">
-
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <StackPanel Orientation="Horizontal"/>
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
-
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate DataType="{x:Type Color}">
-                                <local:ColorEditor Color="{Binding}" DataContext="{Binding}"/>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-
-                    </local:FixedItemsControl>
-
-                    <local:ColorEditor Color="{Binding Center, Mode=TwoWay}" IsEditable="True"/>
-
-                    <ItemsControl ItemsSource="{Binding Right}">
-
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <StackPanel Orientation="Horizontal"/>
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
-                        
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <local:ColorEditor Color="{Binding}"/>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                        
-                    </ItemsControl>
-
-                    <local:ColorEditor Color="{Binding Source={x:Static local:MainWindow.Current}, Path=RightColor, Mode=TwoWay}" IsEditable="True"/>
-                    
-                    <TextBlock VerticalAlignment="Center" FontSize="18" Margin="12,0">
-                        <Hyperlink TextDecorations="None" Foreground="Black" Click="Remove" FontFamily="Segoe UI Semilight">🗑</Hyperlink>
-                    </TextBlock>
-
-                </StackPanel>
-
-            </DataTemplate>
+            <Style TargetType="{x:Type Border}" x:Key="Separator">
+                <Setter Property="Width" Value="1"/>
+                <Setter Property="Background" Value="DimGray"/>
+                <Setter Property="DockPanel.Dock" Value="Right"/>
+            </Style>
 
         </ResourceDictionary>
     </Window.Resources>
@@ -74,12 +43,25 @@
             </Grid.RowDefinitions>
 
             <DockPanel LastChildFill="False" PreviewMouseDown="DockPanel_PreviewMouseDown" Background="Transparent">
+                
                 <TextBlock Text="{Binding Title}" FontSize="16" Margin="12"/>
-                <Button Content="x" Click="Close" BorderThickness="0" Background="Transparent" FontSize="22" Width="32" DockPanel.Dock="Right"/>
-                <Button Content="-" Click="Minimize" BorderThickness="0" Background="Transparent" FontSize="22" Width="32" DockPanel.Dock="Right"/>
-                <Button Content="+" Click="Add" BorderThickness="0" Background="Transparent" FontSize="22" Width="32" DockPanel.Dock="Right"/>
+
+                <Button Content="" Click="Close" ToolTip="Close" Style="{StaticResource ToolButton}">
+                    <Button.Background>
+                        <SolidColorBrush Color="Red"/>
+                    </Button.Background>
+                </Button>
+                
+                <Button Click="Minimize" ToolTip="Minimize" Content="" Style="{StaticResource ToolButton}"/>
+                
+                <Border Style="{StaticResource Separator}" Margin="6"/>
+                <Button Click="Update" ToolTip="Check for updates" Content="" Style="{StaticResource ToolButton}"/>
+                <Border Margin="16, 6, 6, 6" Style="{StaticResource Separator}"/>
+
+                <Button Click="Add" ToolTip="Add row" Content="" Style="{StaticResource ToolButton}"/>
                 <Slider Value="{Binding Columns, Mode=TwoWay}" ToolTip="{Binding Columns}" Maximum="10" Width="100" TickFrequency="2" TickPlacement="BottomRight" DockPanel.Dock="Right" Margin="0,16,0,0" SmallChange="2" LargeChange="2" AutoToolTipPlacement="TopLeft" IsSnapToTickEnabled="True"/>
                 <TextBox Text="{Binding Columns, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" HorizontalAlignment="Center" DockPanel.Dock="Right" Margin="0,4,8,0" Width="22" Height="22" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+            
             </DockPanel>
 
             <ScrollViewer MaxHeight="600" Grid.Row="1" VerticalScrollBarVisibility="Auto">

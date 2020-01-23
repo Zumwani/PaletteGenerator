@@ -1,0 +1,67 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <ControlTemplate x:Key="ButtonTemplate" TargetType="{x:Type ButtonBase}">
+
+        <Border x:Name="Toggle" IsHitTestVisible="{TemplateBinding IsEnabled}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}">
+            <!--<Border.Background>
+                <SolidColorBrush Color="Black" Opacity="0"/>
+            </Border.Background>-->
+            
+            <Border x:Name="Button" Background="{TemplateBinding Background}">
+                <!--<Border.Background>
+                    <SolidColorBrush Color="Black" Opacity="0"/>
+                </Border.Background>-->
+
+                <ContentPresenter Margin="{TemplateBinding Padding}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+
+            </Border>
+
+            <VisualStateManager.VisualStateGroups>
+                <VisualStateGroup x:Name="Common">
+                    <VisualState x:Name="Normal">
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetName="Button" Storyboard.TargetProperty="Background.Opacity" To="0" Duration="0:0:0.1"/>
+                        </Storyboard>
+                    </VisualState>
+                    <VisualState x:Name="MouseOver">
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetName="Button" Storyboard.TargetProperty="Background.Opacity" To="0.1" Duration="0:0:0.1"/>
+                        </Storyboard>
+                    </VisualState>
+                    <VisualState x:Name="Pressed">
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetName="Button" Storyboard.TargetProperty="Background.Opacity" To="0.2" Duration="0:0:0.1"/>
+                        </Storyboard>
+                    </VisualState>
+                    <VisualState x:Name="Checked">
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetName="Toggle" Storyboard.TargetProperty="Background.Opacity" To="0.2" Duration="0:0:0.1"/>
+                        </Storyboard>
+                    </VisualState>
+                </VisualStateGroup>
+            </VisualStateManager.VisualStateGroups>
+
+        </Border>
+    </ControlTemplate>
+
+    <Style x:Key="ButtonBaseStyle" TargetType="{x:Type ButtonBase}">
+        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Width" Value="{Binding RelativeSource={RelativeSource Mode=Self}, Path=ActualHeight}"/>
+        <Setter Property="Background">
+            <Setter.Value>
+                <SolidColorBrush Color="Black" Opacity="0"/>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="Button" BasedOn="{StaticResource ButtonBaseStyle}">
+        <Setter Property="Template" Value="{StaticResource ButtonTemplate}"/>
+    </Style>
+    <Style TargetType="ToggleButton" BasedOn="{StaticResource ButtonBaseStyle}">
+        <Setter Property="Template" Value="{StaticResource ButtonTemplate}"/>
+    </Style>
+
+</ResourceDictionary>

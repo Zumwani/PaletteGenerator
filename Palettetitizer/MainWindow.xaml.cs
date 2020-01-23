@@ -42,10 +42,13 @@ namespace Palettetitizer
         void Add(object sender = null, RoutedEventArgs e = null) =>
             Rows.Add(new Row(Columns, LeftColor, RightColor));
 
-        void Remove(object sender, RoutedEventArgs e)
+        public static void Remove(Row row) =>
+            Current.Rows.Remove(row);
+
+        void Update(object sender, RoutedEventArgs e)
         {
-            if (sender is Hyperlink h && h.DataContext is Row row)
-                Rows.Remove(row);
+            //TODO: Open installer
+            MessageBox.Show("Not implemented yet. Sorry.");
         }
 
         #region Window
@@ -73,14 +76,6 @@ namespace Palettetitizer
         }
 
         #endregion
-
-    }
-
-    public class FixedItemsControl : ItemsControl
-    {
-
-        protected override bool IsItemItsOwnContainerOverride(object item) => 
-            false;
 
     }
 
