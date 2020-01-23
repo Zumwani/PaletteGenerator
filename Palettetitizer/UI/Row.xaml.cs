@@ -10,6 +10,9 @@ namespace Palettetitizer.UI
         public void Remove(object sender, RoutedEventArgs e) =>
             MainWindow.Remove((sender as Hyperlink)?.DataContext as Row);
 
+        private void CenterColorChanged(object sender, System.EventArgs e) =>
+            MainWindow.Recalculate();
+
     }
 
 }

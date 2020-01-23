@@ -31,8 +31,35 @@
                 
             </ControlTemplate>
         </ToggleButton.Template>
-        
-        <Popup x:Name="popup" StaysOpen="False" IsOpen="{Binding ElementName=toggle, Path=IsChecked, Delay=10}"
+
+        <colorPicker:ColorPicker Grid.Row="1" Background="White" SelectedColor="{Binding ElementName=editor, Path=Color, Mode=TwoWay}" x:Name="popup" FontSize="18">
+            <colorPicker:ColorPicker.Resources>
+                <ResourceDictionary>
+
+                    <ResourceDictionary.MergedDictionaries>
+                        <ResourceDictionary Source="Button.xaml"/>
+                    </ResourceDictionary.MergedDictionaries>
+
+                    <Style TargetType="{x:Type Border}">
+                        <Setter Property="BorderBrush" Value="Black"/>
+                    </Style>
+                    
+                    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource ButtonBaseStyle}">
+                        <Setter Property="Template" Value="{StaticResource ButtonTemplate}"/>
+                        <Setter Property="Width" Value="Auto"/>
+                        <Setter Property="Padding" Value="12"/>
+                    </Style>
+
+                    <Style TargetType="{x:Type ToggleButton}" BasedOn="{StaticResource ButtonBaseStyle}">
+                        <Setter Property="Template" Value="{x:Null}"/>
+                        <Setter Property="Width" Value="Auto"/>
+                    </Style>
+
+                </ResourceDictionary>
+            </colorPicker:ColorPicker.Resources>
+        </colorPicker:ColorPicker>
+
+        <!--<Popup x:Name="popup" StaysOpen="False" IsOpen="{Binding ElementName=toggle, Path=IsChecked, Delay=10}"
                PlacementTarget="{Binding ElementName=toggle}" Placement="Bottom" PopupAnimation="Fade">
             
             <Border Background="White" BorderThickness="1" BorderBrush="Black">
@@ -51,13 +78,13 @@
                         </ToggleButton.Content>
                     </ToggleButton>
 
-                    <colorPicker:ColorPicker Grid.Row="1" Background="White" SelectedColor="{Binding ElementName=editor, Path=Color, Mode=TwoWay}"/>
+                    <colorPicker:ColorPicker Grid.Row="1" Background="White" SelectedColor="{Binding ElementName=editor, Path=Color, Mode=TwoWay}" IsOpen="True"/>
 
                 </Grid>
                
             </Border>
             
-        </Popup>
+        </Popup>-->
         
     </ToggleButton>
     

@@ -1,13 +1,20 @@
-﻿namespace Palettetitizer
+﻿using System.Windows.Media;
+
+namespace Palettetitizer
 {
+
     public static class ColorUtilty
     {
 
-        public static System.Drawing.Color ToDrawing(this System.Windows.Media.Color color) =>
-            System.Drawing.Color.FromArgb(color.A, color.R, color.G, color.B);
-
-        public static System.Windows.Media.Color ToWPF(this System.Drawing.Color color) =>
-            System.Windows.Media.Color.FromArgb(color.A, color.R, color.G, color.B);
+        public static Color Blend(this Color color, Color backColor, float amount)
+        {
+            //TODO: Does alpha work like it should?
+            byte a = (byte)((color.A * amount) + backColor.A * (1 - amount));
+            byte r = (byte)((color.R * amount) + backColor.R * (1 - amount));
+            byte g = (byte)((color.G * amount) + backColor.G * (1 - amount));
+            byte b = (byte)((color.B * amount) + backColor.B * (1 - amount));
+            return Color.FromArgb(a, r, g, b);
+        }
 
     }
 

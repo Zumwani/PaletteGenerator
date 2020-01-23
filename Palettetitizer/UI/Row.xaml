@@ -25,7 +25,7 @@
 
             </ItemsControl>
 
-            <local:ColorEditor Color="{Binding Center, Mode=TwoWay}" IsEditable="True"/>
+            <local:ColorEditor Color="{Binding Center, Mode=TwoWay}" IsEditable="True" ColorChanged="CenterColorChanged"/>
 
             <ItemsControl ItemsSource="{Binding Right}">
 
