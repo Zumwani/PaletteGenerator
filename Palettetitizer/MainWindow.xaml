@@ -59,7 +59,7 @@
                 <Border Margin="16, 6, 6, 6" Style="{StaticResource Separator}"/>
 
                 <Button Click="Add" ToolTip="Add row" Content="" Style="{StaticResource ToolButton}"/>
-                <Slider Value="{Binding Columns, Mode=TwoWay}" ToolTip="{Binding Columns}" Maximum="10" Width="100" TickFrequency="2" TickPlacement="BottomRight" DockPanel.Dock="Right" Margin="0,16,0,0" SmallChange="2" LargeChange="2" AutoToolTipPlacement="TopLeft" IsSnapToTickEnabled="True"/>
+                <Slider Value="{Binding Columns, Mode=TwoWay}" ToolTip="{Binding Columns}" Maximum="10" Width="100" TickFrequency="2" TickPlacement="BottomRight" DockPanel.Dock="Right" Margin="0,16,6,0" SmallChange="2" LargeChange="2" AutoToolTipPlacement="TopLeft" IsSnapToTickEnabled="True"/>
                 <TextBox Text="{Binding Columns, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" HorizontalAlignment="Center" DockPanel.Dock="Right" Margin="0,4,8,0" Width="22" Height="22" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
             
             </DockPanel>
