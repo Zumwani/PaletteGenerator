@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FontAwesome.WPF;
+using System;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -54,8 +55,7 @@ namespace Palettetitizer
 
             void Initalize(Window w)
             {
-                //TODO: Change cursor to eye dropper
-                //w.Cursor = Cursors.Arrow;
+                w.Cursor = FontAwesomeIcon.Eyedropper.AsCursor();
                 w.MouseLeftButtonDown += OnMouseDown;
                 w.KeyDown += OnKeyDown;
             }
