@@ -11,6 +11,7 @@ namespace PaletteGenerator
     //TODO: Fix presets
     //TODO: Look for another color picker or create own
     //TODO: Fix installer (integrate with github and download from release branch (create dev and release branches), perhaps installer should be reuseable as well)
+    //TODO: Turn OpenShell.Screens (in its actual project, the one in this repo is just a copy paste) into nuget package and remove it from this repo
 
     public partial class MainWindow : Window
     {
