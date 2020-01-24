@@ -39,7 +39,7 @@ namespace PaletteGenerator.UI
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
-            BorderThickness = IsEditable ? new Thickness(1) : new Thickness(0);
+            //BorderThickness = IsEditable ? new Thickness(1) : new Thickness(0);
         }
 
         public event EventHandler ColorChanged;

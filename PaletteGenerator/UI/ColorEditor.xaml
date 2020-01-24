@@ -6,12 +6,10 @@
              xmlns:colorPicker="clr-namespace:ColorPickerLib.Controls;assembly=ColorPickerLib"
              xmlns:fa="http://schemas.fontawesome.io/icons/"
              x:Name="editor"
-             Width="64" Height="64" 
-             BorderThickness="0" BorderBrush="White"
+             Width="64" Height="64"
              Loaded="UserControl_Loaded">
 
-    <ToggleButton x:Name="toggle"
-                  BorderThickness="{Binding ElementName=editor, Path=BorderThickness}" BorderBrush="Black"
+    <ToggleButton x:Name="toggle" BorderThickness="0"
                   Background="{Binding ElementName=editor, Path=Color, Converter={converters:ToBrush}}"
                   IsHitTestVisible="{Binding ElementName=editor, Path=IsEditable}"
                   IsEnabled="{Binding ElementName=popup, Path=IsOpen, Converter={converters:InvertBool}}">
@@ -19,7 +17,7 @@
         <ToggleButton.Template>
             <ControlTemplate TargetType="{x:Type ToggleButton}">
                 
-                <Border x:Name="border" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
+                <Border x:Name="border" Background="{TemplateBinding Background}">
                     <ContentPresenter/>
                 </Border>
 
