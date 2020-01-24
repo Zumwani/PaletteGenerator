@@ -22,7 +22,7 @@ namespace PaletteGenerator
     {
 
         [DllImport("user32.dll")]
-        private static extern bool GetCursorPos(ref System.Drawing.Point lpPoint);
+        private static extern bool GetCursorPos(ref point lpPoint);
 
         [DllImport("gdi32.dll", CharSet = CharSet.Auto, SetLastError = true, ExactSpelling = true)]
         private static extern int BitBlt(IntPtr hDC, int x, int y, int nWidth, int nHeight, IntPtr hSrcDC, int xSrc, int ySrc, int dwRop);
@@ -50,6 +50,16 @@ namespace PaletteGenerator
             var image = new Image();
             Awesome.SetContent(image, icon);
             return CreateCursor(image);
+        }
+
+        public static Point GetScreenPosition()
+        {
+
+            point point = default;
+            GetCursorPos(ref point);
+
+            return new Point(point.X, point.Y);
+
         }
 
         #region Cursor pinvoke

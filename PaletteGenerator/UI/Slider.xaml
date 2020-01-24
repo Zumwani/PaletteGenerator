@@ -22,11 +22,11 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="RepeatButton">
-                        <Border Height="6">
+                        <Border Height="42">
                             <Border.Background>
                                 <SolidColorBrush Color="White" Opacity="0.01"/>
                             </Border.Background>
-                            <Border Height="1" VerticalAlignment="Center" Background="DimGray"/>
+                            <Border Height="1" VerticalAlignment="Top" Margin="0,10,0,0" Background="DimGray"/>
                         </Border>
                     </ControlTemplate>
                 </Setter.Value>
@@ -60,10 +60,8 @@
 
     <Style TargetType="{x:Type Slider}">
         <Setter Property="Template" Value="{StaticResource Slider}"/>
-        <Setter Property="AutoToolTipPlacement" Value="TopLeft"/>
         <Setter Property="IsSnapToTickEnabled" Value="True"/>
         <Setter Property="IsMoveToPointEnabled" Value="True"/>
-        <Setter Property="ToolTip" Value="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Value}"/>
         <Setter Property="local:SliderUtility.MoveToPointOnDrag" Value="True"/>
     </Style>
     

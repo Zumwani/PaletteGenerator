@@ -1,12 +1,14 @@
 ﻿using System.Collections.ObjectModel;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
+using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 
 namespace PaletteGenerator
 {
 
-    //TODO: Fix slider tooltip
     //TODO: Fix hue offset slider
     //TODO: Fix presets
     //TODO: Look for another color picker or create own
@@ -89,9 +91,32 @@ namespace PaletteGenerator
             DragMove();
 
         #endregion
+        #region Sliders
 
         private void Slider_MouseUp(object sender, MouseButtonEventArgs e) =>
             Recalculate();
+
+        readonly ToolTip sliderTooltip = new ToolTip();
+        private void Slider_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e) =>
+            ShowTooltip(sender as Slider);
+
+        void ShowTooltip(Slider slider)
+        {
+
+            if (slider == null)
+                return;
+
+            var pos = CursorUtility.GetScreenPosition();
+            sliderTooltip.Placement = PlacementMode.AbsolutePoint;
+            sliderTooltip.HorizontalOffset = pos.X + 22;
+            sliderTooltip.VerticalOffset = pos.Y + 22;
+
+            sliderTooltip.Content = slider.Value;
+            sliderTooltip.IsOpen = true;
+
+        }
+
+        #endregion
 
     }
 

@@ -63,7 +63,8 @@
             <StackPanel Grid.Row="1" Margin="0,64,0,0">
 
                 <TextBlock Text="Hue" HorizontalAlignment="Center" FontSize="18"/>
-                <Slider HorizontalAlignment="Center" Width="200" TickFrequency="2"/>
+                <Slider HorizontalAlignment="Center" Width="200" TickFrequency="2"
+                        PreviewMouseUp="Slider_MouseUp" PreviewMouseLeftButtonDown="Slider_PreviewMouseLeftButtonDown"/>
 
             </StackPanel>
             
@@ -75,7 +76,7 @@
 
                 <Slider Value="{Binding Columns, Mode=TwoWay}" Minimum="{x:Static local:MainWindow.MinColumns}" Maximum="{x:Static local:MainWindow.MaxColumns}" Width="100" Margin="0,16,6,0" DockPanel.Dock="Left"
                         TickFrequency="2" SmallChange="2" LargeChange="2"
-                        PreviewMouseUp="Slider_MouseUp"/>
+                        PreviewMouseUp="Slider_MouseUp" PreviewMouseLeftButtonDown="Slider_PreviewMouseLeftButtonDown"/>
                 
                 <Button Click="Add" ToolTip="Add row" Content="" Style="{StaticResource ToolButton}" DockPanel.Dock="Left"/>
                 <Button Click="Update" ToolTip="Check for updates" Content="" Style="{StaticResource ToolButton}"/>
