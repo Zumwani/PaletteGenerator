@@ -2,7 +2,6 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
-using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 
@@ -21,19 +20,26 @@ namespace PaletteGenerator
         public static double MaxColumns => 16;
         public static double MinColumns => 2;
 
-        public static DependencyProperty ColumnsProperty    = DependencyProperty.Register(nameof(Columns), typeof(int), typeof(MainWindow), new PropertyMetadata(8));
-        public static DependencyProperty LeftColorProperty  = DependencyProperty.Register(nameof(LeftColor), typeof(Color), typeof(MainWindow), new PropertyMetadata(Colors.White, OnColumnsChanged));
+        public static DependencyProperty ColumnsProperty    = DependencyProperty.Register(nameof(Columns),    typeof(int),   typeof(MainWindow), new PropertyMetadata(8));      //Property change is handled by Slider.MouseUp event, since lag occurs otherwise while dragging slider
+        public static DependencyProperty HueProperty        = DependencyProperty.Register(nameof(Hue),        typeof(float), typeof(MainWindow), new PropertyMetadata(1.0f));   //Property change is handled by Slider.MouseUp event, since lag occurs otherwise while dragging slider
+        public static DependencyProperty LeftColorProperty  = DependencyProperty.Register(nameof(LeftColor),  typeof(Color), typeof(MainWindow), new PropertyMetadata(Colors.White, OnColumnsChanged));
         public static DependencyProperty RightColorProperty = DependencyProperty.Register(nameof(RightColor), typeof(Color), typeof(MainWindow), new PropertyMetadata(Colors.Black, OnColumnsChanged));
 
         static void OnColumnsChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e) =>
             Recalculate();
 
         public ObservableCollection<Row> Rows { get; } = new ObservableCollection<Row>();
-        
+
         public int Columns
-        { 
-            get => (int)GetValue(ColumnsProperty); 
+        {
+            get => (int)GetValue(ColumnsProperty);
             set => SetValue(ColumnsProperty, value);
+        }
+
+        public float Hue
+        {
+            get => (float)GetValue(HueProperty);
+            set => SetValue(HueProperty, value);
         }
 
         public Color LeftColor  
@@ -51,7 +57,7 @@ namespace PaletteGenerator
         void Add(object sender = null, RoutedEventArgs e = null)
         {
             if (Rows.Count < MaxRows)
-                Rows.Add(new Row(Columns, LeftColor, RightColor));
+                Rows.Add(new Row(Columns, LeftColor, RightColor, Hue));
         }
 
         public static void Remove(Row row) =>
@@ -67,7 +73,7 @@ namespace PaletteGenerator
             Current.Rows.ForEach(Recalculate);
 
         public static void Recalculate(Row row) =>
-            row.Recalculate(Current.Columns, Current.LeftColor, Current.RightColor).ConfigureAwait(false);
+            row.Recalculate(Current.Columns, Current.LeftColor, Current.RightColor, Current.Hue).ConfigureAwait(false);
 
         #region Window
 
@@ -94,6 +100,9 @@ namespace PaletteGenerator
         #region Sliders
 
         private void Slider_MouseUp(object sender, MouseButtonEventArgs e) =>
+            Recalculate(); 
+        
+        private void Slider_KeyUp(object sender, KeyEventArgs e) =>
             Recalculate();
 
         readonly ToolTip sliderTooltip = new ToolTip();
@@ -116,8 +125,10 @@ namespace PaletteGenerator
 
         }
 
-        #endregion
+        private void Slider_MouseLeave(object sender, MouseEventArgs e) =>
+            sliderTooltip.IsOpen = false;
 
+        #endregion
     }
 
 }

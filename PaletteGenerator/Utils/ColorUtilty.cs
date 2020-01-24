@@ -16,6 +16,19 @@ namespace PaletteGenerator
             return Color.FromArgb(a, r, g, b);
         }
 
+        public static Color OffsetHue(this Color color, float offset)
+        {
+
+            //TODO: Fix once hsv code has been pushed
+
+            //var hsv = color.AsHSV();
+            //hsv.hue += hueOffset;
+            //color = hsv.AsColor();
+
+            return color;
+
+        }
+
     }
 
 }

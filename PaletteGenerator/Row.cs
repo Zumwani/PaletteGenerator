@@ -13,8 +13,8 @@ namespace PaletteGenerator
 
         public Row() { }
 
-        public Row(int columns, Color left, Color right) =>
-            Recalculate(columns, left, right).ConfigureAwait(false);
+        public Row(int columns, Color left, Color right, float hueOffset) =>
+            Recalculate(columns, left, right, hueOffset).ConfigureAwait(false);
 
         public ObservableCollection<Color> Left { get; } = new ObservableCollection<Color>();
         public ObservableCollection<Color> Right { get; } = new ObservableCollection<Color>();
@@ -30,13 +30,19 @@ namespace PaletteGenerator
 
         #endregion
 
-        public async Task Recalculate(int columns, Color left, Color right)
+        public async Task Recalculate(int columns, Color left, Color right, float hueOffset)
         {
 
             var c = columns / 2 - 1;
 
             var leftSide = (await Calculate(c, Center, left)).Reverse().ToArray();
             var rightSide = await Calculate(c, Center, right);
+
+            for (int i = 0; i < leftSide.Length; i++)
+            {
+                leftSide[i]  = leftSide[i] .OffsetHue(hueOffset);
+                rightSide[i] = rightSide[i].OffsetHue(hueOffset);
+            }
 
             Left.Clear();
             Right.Clear();
