@@ -1,13 +1,18 @@
 ﻿using System.Collections.ObjectModel;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Linq;
+using System.Windows.Media.Animation;
+using System.ComponentModel;
 
 namespace PaletteGenerator
 {
 
+    //TODO: Find theme library with sliders and replace local templates
     //TODO: Fix hue offset slider
     //TODO: Fix presets
     //TODO: Look for another color picker or create own
@@ -20,7 +25,7 @@ namespace PaletteGenerator
         public static double MaxColumns => 16;
         public static double MinColumns => 2;
 
-        public static DependencyProperty ColumnsProperty    = DependencyProperty.Register(nameof(Columns),    typeof(int),   typeof(MainWindow), new PropertyMetadata(8));      //Property change is handled by Slider.MouseUp event, since lag occurs otherwise while dragging slider
+        public static DependencyProperty ColumnsProperty    = DependencyProperty.Register(nameof(Columns),    typeof(int),   typeof(MainWindow), new PropertyMetadata(4));      //Property change is handled by Slider.MouseUp event, since lag occurs otherwise while dragging slider
         public static DependencyProperty HueProperty        = DependencyProperty.Register(nameof(Hue),        typeof(float), typeof(MainWindow), new PropertyMetadata(1.0f));   //Property change is handled by Slider.MouseUp event, since lag occurs otherwise while dragging slider
         public static DependencyProperty LeftColorProperty  = DependencyProperty.Register(nameof(LeftColor),  typeof(Color), typeof(MainWindow), new PropertyMetadata(Colors.White, OnColumnsChanged));
         public static DependencyProperty RightColorProperty = DependencyProperty.Register(nameof(RightColor), typeof(Color), typeof(MainWindow), new PropertyMetadata(Colors.Black, OnColumnsChanged));
@@ -28,7 +33,7 @@ namespace PaletteGenerator
         static void OnColumnsChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e) =>
             Recalculate();
 
-        public ObservableCollection<Row> Rows { get; } = new ObservableCollection<Row>();
+        public BindingList<Row> Rows { get; } = new BindingList<Row>();
 
         public int Columns
         {
@@ -63,17 +68,33 @@ namespace PaletteGenerator
         public static void Remove(Row row) =>
             Current.Rows.Remove(row);
 
-        void Update(object sender, RoutedEventArgs e)
-        {
+        void Update(object sender, RoutedEventArgs e) =>
             //TODO: Open installer
             MessageBox.Show("Not implemented yet. Sorry.");
-        }
 
         public static void Recalculate() =>
-            Current.Rows.ForEach(Recalculate);
+            Current.ShowLoading(Task.WhenAll(Current.Rows.Select(row => Recalculate(row, false)))).ConfigureAwait(false);
 
-        public static void Recalculate(Row row) =>
-            row.Recalculate(Current.Columns, Current.LeftColor, Current.RightColor, Current.Hue).ConfigureAwait(false);
+        public static async Task Recalculate(Row row, bool showLoading = true)
+        {
+
+            var task = row.Recalculate(Current.Columns, Current.LeftColor, Current.RightColor, Current.Hue);
+
+            if (showLoading)
+                await Current.ShowLoading(task);
+            else
+                await task;
+
+        }
+
+        async Task ShowLoading(Task task)
+        {
+
+            loadingOverlay.BeginStoryboard((Storyboard)FindResource("ShowLoadingAnimation"));
+            await task;
+            loadingOverlay.BeginStoryboard((Storyboard)FindResource("HideLoadingAnimation"));
+
+        }
 
         #region Window
 
@@ -83,7 +104,6 @@ namespace PaletteGenerator
         {
             Current = this;
             Unloaded += (s,e) => { if (Current == this) Current = null; };
-            Rows = new ObservableCollection<Row>();
             Add(); Add();
         }
 

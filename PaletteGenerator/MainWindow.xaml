@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:local="clr-namespace:PaletteGenerator"
         xmlns:ui="clr-namespace:PaletteGenerator.UI"
+        xmlns:mahApps="http://metro.mahapps.com/winfx/xaml/controls"
         Title="Palette Generator" Height="528" Width="1250"
         WindowStartupLocation="CenterScreen" WindowStyle="None" 
         DataContext="{Binding RelativeSource={RelativeSource Mode=Self}}" FontFamily="Segoe UI Semilight" AllowsTransparency="True">
@@ -34,6 +35,20 @@
                 <Setter Property="DockPanel.Dock" Value="Right"/>
             </Style>
 
+            <Storyboard x:Key="ShowLoadingAnimation">
+                <DoubleAnimation Storyboard.TargetName="loadingOverlay" Storyboard.TargetProperty="Opacity" To="0.5" Duration="0:0:1"/>
+                <BooleanAnimationUsingKeyFrames Storyboard.TargetProperty="IsHitTestVisible" Duration="0:0:1">
+                    <DiscreteBooleanKeyFrame Value="True"/>
+                </BooleanAnimationUsingKeyFrames>
+            </Storyboard>
+
+            <Storyboard x:Key="HideLoadingAnimation">
+                <DoubleAnimation Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:1"/>
+                <BooleanAnimationUsingKeyFrames Storyboard.TargetProperty="IsHitTestVisible" Duration="0:0:1">
+                    <DiscreteBooleanKeyFrame Value="False"/>
+                </BooleanAnimationUsingKeyFrames>
+            </Storyboard>
+            
         </ResourceDictionary>
     </Window.Resources>
 
@@ -46,6 +61,10 @@
                 <RowDefinition/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
+
+            <Border x:Name="loadingOverlay" Grid.Row="1" Grid.RowSpan="3" Background="Black" Opacity="0" IsHitTestVisible="False" Panel.ZIndex="100">
+                <mahApps:ProgressRing Foreground="White"/>
+            </Border>
 
             <DockPanel Background="Transparent">
 
@@ -85,7 +104,7 @@
                 <Button Content="Save preset" Width="Auto" DockPanel.Dock="Right" FontSize="18" Padding="12"/>
 
             </DockPanel>
-            
+
         </Grid>
     </Border>
 

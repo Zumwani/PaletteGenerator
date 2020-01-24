@@ -1,16 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace PaletteGenerator
 {
+
     public static class ListUtility
     {
 
-        public static void ForEach<T>(this IList<T> list, Action<T> action)
+        public static IEnumerable<T> ForEach<T>(this IEnumerable<T> list, Action<T> action)
         {
-            if (list == null) return;
             foreach (var item in list)
                 action?.Invoke(item);
+            return list;
         }
 
         public static void ForEach(this int count, Action<int> action)
@@ -34,6 +36,21 @@ namespace PaletteGenerator
         {
             foreach (var item in items)
                 list.Add(item);
+        }
+
+        public static void AddRange<T>(this IList<T> list, IEnumerable<T> items)
+        {
+            foreach (var item in items)
+                list.Add(item);
+        }
+
+        public static void AddRange<T>(this BindingList<T> list, IEnumerable<T> items)
+        {
+            list.RaiseListChangedEvents = false;
+            foreach (var item in items)
+                list.Add(item);
+            list.RaiseListChangedEvents = true;
+            list.ResetBindings();
         }
 
     }

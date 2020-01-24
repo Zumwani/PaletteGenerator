@@ -1,7 +1,7 @@
-﻿using System;
-using System.Collections.ObjectModel;
+﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows.Media;
 
@@ -16,14 +16,22 @@ namespace PaletteGenerator
         public Row(int columns, Color left, Color right, float hueOffset) =>
             Recalculate(columns, left, right, hueOffset).ConfigureAwait(false);
 
-        public ObservableCollection<Color> Left { get; } = new ObservableCollection<Color>();
-        public ObservableCollection<Color> Right { get; } = new ObservableCollection<Color>();
+        public BindingList<Color> Left { get; } = new BindingList<Color>();
+        public BindingList<Color> Right { get; } = new BindingList<Color>();
 
-        public Color Center { get; set; } = Colors.LightSkyBlue;
+        Color center = Colors.LightSkyBlue;
+        public Color Center 
+        {
+            get => center;
+            set { center = value; OnPropertyChanged(); }
+        }
 
         #region INotifyPropertyChanged
 
         public event PropertyChangedEventHandler PropertyChanged;
+
+        void OnPropertyChanged([CallerMemberName] string name = "") =>
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 
         void OnAllPropertiesChanged() =>
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(string.Empty));
@@ -33,29 +41,19 @@ namespace PaletteGenerator
         public async Task Recalculate(int columns, Color left, Color right, float hueOffset)
         {
 
-            var c = columns / 2 - 1;
-
-            var leftSide = (await Calculate(c, Center, left)).Reverse().ToArray();
-            var rightSide = await Calculate(c, Center, right);
-
-            for (int i = 0; i < leftSide.Length; i++)
-            {
-                leftSide[i]  = leftSide[i] .OffsetHue(hueOffset);
-                rightSide[i] = rightSide[i].OffsetHue(hueOffset);
-            }
-
             Left.Clear();
             Right.Clear();
 
-            Left.AddRange(leftSide);
-            Right.AddRange(rightSide);
-
-            OnAllPropertiesChanged();
+            var c = columns / 2 + 1;
+            Left.AddRange(await Calculate(left, Center, c, hueOffset));
+            Right.AddRange(await Calculate(Center, right, c, hueOffset));
 
         }
 
-        Task<Color[]> Calculate(int count, Color center, Color color) =>
-            Task.Run(() => count.Select(i => center.Blend(color, 1 - ((float)i / count))));
+        public static Task<IEnumerable<Color>> Calculate(Color start, Color end, int steps, float hueOffset) =>
+        Task.Run(() => 
+            start.Blend(end, steps).Skip(1).SkipLast(1).Select(c => c.OffsetHue(hueOffset * 360))
+        );
 
     }
 
