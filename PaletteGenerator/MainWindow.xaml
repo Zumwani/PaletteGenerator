@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:local="clr-namespace:PaletteGenerator"
         xmlns:ui="clr-namespace:PaletteGenerator.UI"
+        xmlns:converters="clr-namespace:PaletteGenerator.Converters"
         xmlns:mahApps="http://metro.mahapps.com/winfx/xaml/controls"
         Title="Palette Generator" Height="528" Width="1250"
         WindowStartupLocation="CenterScreen" WindowStyle="None" 
@@ -16,9 +17,11 @@
         <ResourceDictionary>
 
             <ResourceDictionary.MergedDictionaries>
+
                 <ResourceDictionary Source="UI/Button.xaml"/>
                 <ResourceDictionary Source="UI/Slider.xaml"/>
                 <ResourceDictionary Source="UI/Row.xaml"/>
+
             </ResourceDictionary.MergedDictionaries>
 
             <Style x:Key="ToolButton" TargetType="{x:Type Button}" BasedOn="{StaticResource ButtonBaseStyle}">
@@ -36,15 +39,15 @@
             </Style>
 
             <Storyboard x:Key="ShowLoadingAnimation">
-                <DoubleAnimation Storyboard.TargetName="loadingOverlay" Storyboard.TargetProperty="Opacity" To="0.5" Duration="0:0:1"/>
-                <BooleanAnimationUsingKeyFrames Storyboard.TargetProperty="IsHitTestVisible" Duration="0:0:1">
+                <DoubleAnimation Storyboard.TargetName="loadingOverlay" Storyboard.TargetProperty="Opacity" To="0.5" Duration="0:0:0.1"/>
+                <BooleanAnimationUsingKeyFrames Storyboard.TargetProperty="IsHitTestVisible" Duration="0:0:0.1">
                     <DiscreteBooleanKeyFrame Value="True"/>
                 </BooleanAnimationUsingKeyFrames>
             </Storyboard>
 
             <Storyboard x:Key="HideLoadingAnimation">
-                <DoubleAnimation Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:1"/>
-                <BooleanAnimationUsingKeyFrames Storyboard.TargetProperty="IsHitTestVisible" Duration="0:0:1">
+                <DoubleAnimation Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.1"/>
+                <BooleanAnimationUsingKeyFrames Storyboard.TargetProperty="IsHitTestVisible" Duration="0:0:0.1">
                     <DiscreteBooleanKeyFrame Value="False"/>
                 </BooleanAnimationUsingKeyFrames>
             </Storyboard>
@@ -62,7 +65,7 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
-            <Border x:Name="loadingOverlay" Grid.Row="1" Grid.RowSpan="3" Background="Black" Opacity="0" IsHitTestVisible="False" Panel.ZIndex="100">
+            <Border x:Name="loadingOverlay" Grid.Row="1" Grid.RowSpan="3" Background="Black" Opacity="0.5" IsHitTestVisible="False" Panel.ZIndex="100" Visibility="Collapsed">
                 <mahApps:ProgressRing Foreground="White"/>
             </Border>
 
@@ -83,19 +86,19 @@
 
                 <TextBlock Text="Hue" HorizontalAlignment="Center" FontSize="18"/>
                 <Slider Value="{Binding Hue, Mode=TwoWay}" HorizontalAlignment="Center" Width="200" TickFrequency="0.1"
-                        KeyUp="Slider_KeyUp" PreviewMouseUp="Slider_MouseUp" MouseLeave="Slider_MouseLeave" PreviewMouseLeftButtonDown="Slider_PreviewMouseLeftButtonDown" Maximum="1"/>
+                        KeyUp="Slider_KeyUp" MouseMove="Slider_MouseMove" Maximum="1"/>
 
             </StackPanel>
             
             <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto">
-                <ItemsControl ItemsSource="{Binding Rows}" Margin="42" HorizontalAlignment="Center"/>
+                <ItemsControl x:Name="list" ItemsSource="{Binding Rows}" Margin="42" HorizontalAlignment="Center"/>
             </ScrollViewer>
             
             <DockPanel Background="Transparent" Grid.Row="3" LastChildFill="False" Margin="12">
 
                 <Slider Value="{Binding Columns, Mode=TwoWay}" Minimum="{x:Static local:MainWindow.MinColumns}" Maximum="{x:Static local:MainWindow.MaxColumns}" Width="100" Margin="0,16,6,0" DockPanel.Dock="Left"
                         TickFrequency="2" SmallChange="2" LargeChange="2"
-                        KeyUp="Slider_KeyUp" PreviewMouseUp="Slider_MouseUp" MouseLeave="Slider_MouseLeave" PreviewMouseLeftButtonDown="Slider_PreviewMouseLeftButtonDown"/>
+                        KeyUp="Slider_KeyUp" MouseMove="Slider_MouseMove"/>
                 
                 <Button Click="Add" ToolTip="Add row" Content="" Style="{StaticResource ToolButton}" DockPanel.Dock="Left"/>
                 <Button Click="Update" ToolTip="Check for updates" Content="" Style="{StaticResource ToolButton}"/>

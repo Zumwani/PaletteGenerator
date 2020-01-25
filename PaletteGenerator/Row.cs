@@ -13,9 +13,6 @@ namespace PaletteGenerator
 
         public Row() { }
 
-        public Row(int columns, Color left, Color right, float hueOffset) =>
-            Recalculate(columns, left, right, hueOffset).ConfigureAwait(false);
-
         public BindingList<Color> Left { get; } = new BindingList<Color>();
         public BindingList<Color> Right { get; } = new BindingList<Color>();
 
@@ -38,22 +35,17 @@ namespace PaletteGenerator
 
         #endregion
 
-        public async Task Recalculate(int columns, Color left, Color right, float hueOffset)
+        public Task<(IEnumerable<Color> left, IEnumerable<Color> right)> Calculate(Color left, Color right, int steps, float hueOffset) =>
+            Task.Run(() =>
+            (left.Blend(Center, steps).Skip(1).SkipLast(1).Select(c => c.OffsetHue(hueOffset * 360)),
+             Center.Blend(right, steps).Skip(1).SkipLast(1).Select(c => c.OffsetHue(hueOffset * 360)))
+            );
+
+        public void SetColors((IEnumerable<Color> left, IEnumerable<Color> right) colors)
         {
-
-            Left.Clear();
-            Right.Clear();
-
-            var c = columns / 2 + 1;
-            Left.AddRange(await Calculate(left, Center, c, hueOffset));
-            Right.AddRange(await Calculate(Center, right, c, hueOffset));
-
+            Left.Set(colors.left);
+            Right.Set(colors.right);
         }
-
-        public static Task<IEnumerable<Color>> Calculate(Color start, Color end, int steps, float hueOffset) =>
-        Task.Run(() => 
-            start.Blend(end, steps).Skip(1).SkipLast(1).Select(c => c.OffsetHue(hueOffset * 360))
-        );
 
     }
 

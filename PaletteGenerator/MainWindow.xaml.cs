@@ -7,6 +7,7 @@ using System.Windows.Media;
 using System.Linq;
 using System.Windows.Media.Animation;
 using System.ComponentModel;
+using System;
 
 namespace PaletteGenerator
 {
@@ -61,7 +62,7 @@ namespace PaletteGenerator
         void Add(object sender = null, RoutedEventArgs e = null)
         {
             if (Rows.Count < MaxRows)
-                Rows.Add(new Row(Columns, LeftColor, RightColor, Hue));
+                Recalculate(Rows.Create());
         }
 
         public static void Remove(Row row) =>
@@ -72,26 +73,49 @@ namespace PaletteGenerator
             MessageBox.Show("Not implemented yet. Sorry.");
 
         public static void Recalculate() =>
-            Current.ShowLoading(Task.WhenAll(Current.Rows.Select(row => Recalculate(row, false)))).ConfigureAwait(false);
+            Recalculate(Current.Rows.ToArray());
 
-        public static async Task Recalculate(Row row, bool showLoading = true)
+        public static async void Recalculate(params Row[] rows)
         {
 
-            var task = row.Recalculate(Current.Columns, Current.LeftColor, Current.RightColor, Current.Hue);
+            if (rows.Length == 0)
+                return;
 
-            if (showLoading)
-                await Current.ShowLoading(task);
-            else
-                await task;
+            Current.loadingOverlay.Visibility = Visibility.Visible;
+            Current.loadingOverlay.BeginStoryboard((Storyboard)Current.FindResource("ShowLoadingAnimation"));
+
+            await Task.Delay(100);
+
+            var left = Current.LeftColor;
+            var right = Current.RightColor;
+            var hue = Current.Hue;
+
+            var duration = TimeSpan.FromSeconds(0.05);
+            var steps = Current.Columns / 2 + 1;
+            foreach (var row in rows)
+            {
+
+                var rowTemplate = (FrameworkElement)Current.list.ItemContainerGenerator.ContainerFromItem(row);
+
+                await Fade(rowTemplate, duration, 1, 0);
+                row.SetColors(await row.Calculate(left, right, steps, hue));
+                await Fade(rowTemplate, duration, 0, 1);
+            
+            }
+
+            Current.loadingOverlay.BeginStoryboard((Storyboard)Current.FindResource("HideLoadingAnimation"));
+            await Task.Delay(100);
+            Current.loadingOverlay.Visibility = Visibility.Collapsed;
 
         }
 
-        async Task ShowLoading(Task task)
+        static async Task Fade(FrameworkElement element, TimeSpan duration, double from, double to)
         {
 
-            loadingOverlay.BeginStoryboard((Storyboard)FindResource("ShowLoadingAnimation"));
-            await task;
-            loadingOverlay.BeginStoryboard((Storyboard)FindResource("HideLoadingAnimation"));
+            var animation = new DoubleAnimation(from, to, duration);
+            element.BeginAnimation(OpacityProperty, animation);
+
+            await Task.Delay(duration);
 
         }
 
@@ -102,6 +126,7 @@ namespace PaletteGenerator
         public MainWindow()
         {
             Current = this;
+            InitializeComponent();
             Unloaded += (s,e) => { if (Current == this) Current = null; };
             Add(); Add();
         }
@@ -118,36 +143,52 @@ namespace PaletteGenerator
         #endregion
         #region Sliders
 
-        private void Slider_MouseUp(object sender, MouseButtonEventArgs e) =>
-            Recalculate(); 
-        
         private void Slider_KeyUp(object sender, KeyEventArgs e) =>
             Recalculate();
 
         readonly ToolTip sliderTooltip = new ToolTip();
-        private void Slider_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e) =>
-            ShowTooltip(sender as Slider);
 
-        void ShowTooltip(Slider slider)
+        async void ShowTooltip(Slider slider)
         {
 
             if (slider == null)
                 return;
-
-            var pos = CursorUtility.GetScreenPosition();
+            
             sliderTooltip.Placement = PlacementMode.AbsolutePoint;
-            sliderTooltip.HorizontalOffset = pos.X + 22;
-            sliderTooltip.VerticalOffset = pos.Y + 22;
-
-            sliderTooltip.Content = slider.Value;
             sliderTooltip.IsOpen = true;
+            UpdateTooltip(slider);
+
+            if (Mouse.LeftButton == MouseButtonState.Pressed)
+            {
+
+                while (Mouse.LeftButton == MouseButtonState.Pressed)
+                {
+                    UpdateTooltip(slider);
+                    await Task.Delay(100);
+                }
+
+                sliderTooltip.IsOpen = false;
+                Recalculate();
+
+            }
 
         }
 
-        private void Slider_MouseLeave(object sender, MouseEventArgs e) =>
-            sliderTooltip.IsOpen = false;
+        void UpdateTooltip(Slider slider)
+        {
+            sliderTooltip.Content = slider.Value < 1.1 ? Math.Round(slider.Value * 100) + "%" : slider.Value.ToString();
+            var pos = CursorUtility.GetScreenPosition();
+            sliderTooltip.HorizontalOffset = pos.X + 22;
+            sliderTooltip.VerticalOffset = pos.Y + 22;
+        }
+
+        private void Slider_MouseMove(object sender, MouseEventArgs e)
+        {
+            ShowTooltip(sender as Slider);
+        }
 
         #endregion
+
     }
 
 }

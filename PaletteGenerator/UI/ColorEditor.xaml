@@ -9,6 +9,18 @@
              Width="64" Height="64"
              Loaded="UserControl_Loaded">
 
+    <UserControl.Resources>
+
+        <Storyboard x:Key="ShowAnimation">
+            <DoubleAnimation Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.5"/>
+        </Storyboard>
+        
+        <Storyboard x:Key="HideAnimation">
+            <DoubleAnimation Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.5"/>
+        </Storyboard>
+        
+    </UserControl.Resources>
+    
     <ToggleButton x:Name="toggle" BorderThickness="0"
                   Background="{Binding ElementName=editor, Path=Color, Converter={converters:ToBrush}}"
                   IsHitTestVisible="{Binding ElementName=editor, Path=IsEditable}"

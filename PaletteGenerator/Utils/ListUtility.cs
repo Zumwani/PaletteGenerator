@@ -53,6 +53,23 @@ namespace PaletteGenerator
             list.ResetBindings();
         }
 
+        public static void Set<T>(this BindingList<T> list, IEnumerable<T> items)
+        {
+            list.RaiseListChangedEvents = false;
+            list.Clear();
+            foreach (var item in items)
+                list.Add(item);
+            list.RaiseListChangedEvents = true;
+            list.ResetBindings();
+        }
+
+        public static T Create<T>(this IList<T> list)
+        {
+            var item = Activator.CreateInstance<T>();
+            list.Add(item);
+            return item;
+        }
+
     }
 
 }
