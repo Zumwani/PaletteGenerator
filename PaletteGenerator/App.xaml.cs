@@ -1,16 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
+using System.IO;
 using System.Windows;
-using System.Windows.Threading;
 
 namespace PaletteGenerator
 {
 
     public partial class App : Application
-    { }
+    {
+
+        public static string DataFolder(string subfolder = "", string subfile = "") =>
+            Path.Combine(Directory.CreateDirectory(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Palette Generator", subfolder)).FullName, subfile);
+    
+    }
 
 }

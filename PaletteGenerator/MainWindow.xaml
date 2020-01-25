@@ -4,6 +4,7 @@
         xmlns:local="clr-namespace:PaletteGenerator"
         xmlns:ui="clr-namespace:PaletteGenerator.UI"
         xmlns:converters="clr-namespace:PaletteGenerator.Converters"
+        xmlns:commands="clr-namespace:PaletteGenerator.Commands"
         xmlns:mahApps="http://metro.mahapps.com/winfx/xaml/controls"
         Title="Palette Generator" Height="528" Width="1250"
         WindowStartupLocation="CenterScreen" WindowStyle="None" 
@@ -65,11 +66,20 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
-            <Border x:Name="loadingOverlay" Grid.Row="1" Grid.RowSpan="3" Background="Black" Opacity="0.5" IsHitTestVisible="False" Panel.ZIndex="100" Visibility="Collapsed">
+            <Border x:Name="loadingOverlay" Grid.Row="1" Grid.RowSpan="3" Background="Black" Opacity="0.5" Panel.ZIndex="100" Visibility="Collapsed">
                 <mahApps:ProgressRing Foreground="White"/>
             </Border>
 
-            <DockPanel Background="Transparent">
+            <Border Grid.RowSpan="4" x:Name="PresetsOverlay" MouseDown="PresetsOverlay_MouseDown" Panel.ZIndex="90" Visibility="Collapsed">
+                <Border.Background>
+                    <SolidColorBrush Color="Black" Opacity="0.5"/>
+                </Border.Background>
+                
+                <ui:PresetsManager x:Name="presetsManager" HorizontalAlignment="Right" VerticalAlignment="Stretch" Width="300"/>
+                
+            </Border>
+
+            <DockPanel Background="Transparent" Panel.ZIndex="200">
 
                 <Button Content="" Click="Close" ToolTip="Close" Style="{StaticResource ToolButton}">
                     <Button.Background>
@@ -86,7 +96,7 @@
 
                 <TextBlock Text="Hue" HorizontalAlignment="Center" FontSize="18"/>
                 <Slider Value="{Binding Hue, Mode=TwoWay}" HorizontalAlignment="Center" Width="200" TickFrequency="0.1"
-                        KeyUp="Slider_KeyUp" MouseMove="Slider_MouseMove" Maximum="1"/>
+                        KeyUp="Slider_KeyUp" MouseMove="Slider_MouseMove" MouseLeave="Slider_MouseLeave" Maximum="1"/>
 
             </StackPanel>
             
@@ -98,13 +108,13 @@
 
                 <Slider Value="{Binding Columns, Mode=TwoWay}" Minimum="{x:Static local:MainWindow.MinColumns}" Maximum="{x:Static local:MainWindow.MaxColumns}" Width="100" Margin="0,16,6,0" DockPanel.Dock="Left"
                         TickFrequency="2" SmallChange="2" LargeChange="2"
-                        KeyUp="Slider_KeyUp" MouseMove="Slider_MouseMove"/>
+                        KeyUp="Slider_KeyUp" MouseMove="Slider_MouseMove" MouseLeave="Slider_MouseLeave"/>
                 
                 <Button Click="Add" ToolTip="Add row" Content="" Style="{StaticResource ToolButton}" DockPanel.Dock="Left"/>
                 <Button Click="Update" ToolTip="Check for updates" Content="" Style="{StaticResource ToolButton}"/>
-                
-                <Button Content="Load preset" Width="Auto" DockPanel.Dock="Right" FontSize="18" Margin="12,0" Padding="12"/>
-                <Button Content="Save preset" Width="Auto" DockPanel.Dock="Right" FontSize="18" Padding="12"/>
+
+                <Button Content="Presets" Width="Auto" DockPanel.Dock="Right" FontSize="18" Margin="12,0" Padding="12" Click="PresetsButton_Click"/>
+                <Button Content="Export" Width="Auto" DockPanel.Dock="Right" FontSize="18" Padding="12" Command="{commands:Export}"/>
 
             </DockPanel>
 

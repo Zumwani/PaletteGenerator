@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 
 namespace PaletteGenerator.UI
@@ -14,7 +13,7 @@ namespace PaletteGenerator.UI
         private void CenterColorChanged(object sender, System.EventArgs e)
         {
             if (sender is ColorEditor c && c.DataContext is Row row)
-                MainWindow.Recalculate(row);
+                MainWindow.Recalculate(true, row);
         }
 
     }
