@@ -1,11 +1,12 @@
-﻿using FontAwesome.WPF;
-using System;
-using System.Threading.Tasks;
+﻿using System;
 using System.Windows;
+using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
+using FontAwesome.WPF;
 
 namespace PaletteGenerator.UI
 {
@@ -18,6 +19,18 @@ namespace PaletteGenerator.UI
 
         public static DependencyProperty ColorProperty = DependencyProperty.Register(nameof(Color), typeof(Color), typeof(ColorEditor), new PropertyMetadata(Colors.White, OnColorChanged));
         public static DependencyProperty IsEditableProperty = DependencyProperty.Register(nameof(IsEditable), typeof(bool), typeof(ColorEditor));
+
+        public async Task Show()
+        {
+            BeginStoryboard((Storyboard)FindResource("ShowAnimation"));
+            await Task.Delay(100);
+        }
+
+        public async Task Hide()
+        {
+            BeginStoryboard((Storyboard)FindResource("HideAnimation"));
+            await Task.Delay(100);
+        }
 
         static void OnColorChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
         {
@@ -39,7 +52,6 @@ namespace PaletteGenerator.UI
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
-            BorderThickness = IsEditable ? new Thickness(1) : new Thickness(0);
         }
 
         public event EventHandler ColorChanged;

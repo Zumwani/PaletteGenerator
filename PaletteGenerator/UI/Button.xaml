@@ -17,17 +17,17 @@
                     </VisualState>
                     <VisualState x:Name="MouseOver">
                         <Storyboard>
-                            <DoubleAnimation Storyboard.TargetName="Button" Storyboard.TargetProperty="Background.Opacity" To="0.1" Duration="0:0:0.1"/>
+                            <DoubleAnimation Storyboard.TargetName="Button" Storyboard.TargetProperty="Background.Opacity" To="0.5" Duration="0:0:0.1"/>
                         </Storyboard>
                     </VisualState>
                     <VisualState x:Name="Pressed">
                         <Storyboard>
-                            <DoubleAnimation Storyboard.TargetName="Button" Storyboard.TargetProperty="Background.Opacity" To="0.2" Duration="0:0:0.1"/>
+                            <DoubleAnimation Storyboard.TargetName="Button" Storyboard.TargetProperty="Background.Opacity" To="1" Duration="0:0:0.1"/>
                         </Storyboard>
                     </VisualState>
                     <VisualState x:Name="Checked">
                         <Storyboard>
-                            <DoubleAnimation Storyboard.TargetName="Toggle" Storyboard.TargetProperty="Background.Opacity" To="0.2" Duration="0:0:0.1"/>
+                            <DoubleAnimation Storyboard.TargetName="Toggle" Storyboard.TargetProperty="Background.Opacity" To="0.5" Duration="0:0:0.1"/>
                         </Storyboard>
                     </VisualState>
                 </VisualStateGroup>
@@ -43,7 +43,7 @@
         <Setter Property="Width" Value="{Binding RelativeSource={RelativeSource Mode=Self}, Path=ActualHeight}"/>
         <Setter Property="Background">
             <Setter.Value>
-                <SolidColorBrush Color="Black" Opacity="0"/>
+                <SolidColorBrush Color="#33000000" Opacity="0"/>
             </Setter.Value>
         </Setter>
     </Style>
@@ -55,4 +55,26 @@
         <Setter Property="Template" Value="{StaticResource ButtonTemplate}"/>
     </Style>
 
+    <Style TargetType="MenuItem">
+        
+        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="BorderThickness" Value="0"/>
+
+        <Setter Property="Background">
+            <Setter.Value>
+                <SolidColorBrush Color="#33000000" Opacity="0"/>
+            </Setter.Value>
+        </Setter>
+
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="MenuItem">
+                    <Button Content="{TemplateBinding Header}" Width="{TemplateBinding Width}" FontSize="20" Padding="12" Command="{TemplateBinding Command}" CommandParameter="{TemplateBinding CommandParameter}"/>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        
+    </Style>
+    
 </ResourceDictionary>

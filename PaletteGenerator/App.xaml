@@ -8,7 +8,9 @@
         <ResourceDictionary>
             
             <ResourceDictionary.MergedDictionaries>
+                
                 <ResourceDictionary Source="/ColorPickerLib;component/Themes/LightBrushs.xaml" />
+
             </ResourceDictionary.MergedDictionaries>
             
         </ResourceDictionary>

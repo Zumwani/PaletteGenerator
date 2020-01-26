@@ -9,23 +9,26 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <NoWarn>1701;1702;NU1701</NoWarn>
+    <NoWarn>1701;1702;NU1701;67</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Dirkster.ColorPickerLib" Version="1.6.0" />
     <PackageReference Include="FontAwesome.WPF" Version="4.7.0.9" />
+    <PackageReference Include="MahApps.Metro" Version="1.6.5" />
+    <PackageReference Include="Ookii.Dialogs" Version="1.0.0" />
+    <PackageReference Include="OpenShell.Screens" Version="1.0.0" />
     <PackageReference Include="System.Drawing.Common" Version="4.7.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\OpenShell.Screens\OpenShell.Screens.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <Page Update="UI\Button.xaml">
       <SubType>Designer</SubType>
     </Page>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Xaml\Collections\" />
   </ItemGroup>
 
 </Project>

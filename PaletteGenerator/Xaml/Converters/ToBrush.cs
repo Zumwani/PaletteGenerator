@@ -9,6 +9,7 @@ namespace PaletteGenerator
 
     namespace Converters
     {
+
         public class ToBrush : MarkupExtension, IValueConverter
         {
 

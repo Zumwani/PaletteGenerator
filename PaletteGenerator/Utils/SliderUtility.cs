@@ -19,12 +19,14 @@ namespace PaletteGenerator
                 if ((bool)changeEvent.NewValue)
                     slider.MouseMove += (obj2, mouseEvent) =>
                     {
+                        
                         if (mouseEvent.LeftButton == MouseButtonState.Pressed)
                             slider.RaiseEvent(new MouseButtonEventArgs(mouseEvent.MouseDevice, mouseEvent.Timestamp, MouseButton.Left)
                             {
                                 RoutedEvent = UIElement.PreviewMouseLeftButtonDownEvent,
                                 Source = mouseEvent.Source,
                             });
+
                     };
             }
         });
