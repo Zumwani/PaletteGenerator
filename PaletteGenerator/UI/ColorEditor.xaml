@@ -21,8 +21,7 @@
         
     </UserControl.Resources>
     
-    <ToggleButton x:Name="toggle" BorderThickness="0"
-                  Background="{Binding ElementName=editor, Path=Color, Converter={converters:ToBrush}}"
+    <ToggleButton x:Name="toggle" BorderThickness="0" Background="{Binding ElementName=editor, Path=Color, Converter={converters:ToBrush}}"
                   IsHitTestVisible="{Binding ElementName=editor, Path=IsEditable}"
                   IsEnabled="{Binding ElementName=popup, Path=IsOpen, Converter={converters:InvertBool}}">
 
@@ -42,7 +41,7 @@
             </ControlTemplate>
         </ToggleButton.Template>
 
-        <colorPicker:ColorPicker Grid.Row="1" Background="White" SelectedColor="{Binding ElementName=editor, Path=Color, Mode=TwoWay}" x:Name="popup" FontSize="18">
+        <colorPicker:ColorPicker Grid.Row="1" Background="White" SelectedColor="{Binding ElementName=editor, Path=Color, Mode=TwoWay}" x:Name="popup" FontSize="18" BorderThickness="0">
             <colorPicker:ColorPicker.Resources>
                 <ResourceDictionary>
 

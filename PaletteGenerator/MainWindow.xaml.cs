@@ -16,9 +16,7 @@ namespace PaletteGenerator
     //TODO: Fix hue offset slider
     //TODO: Look for another color picker or create own
     //TODO: Fix installer (integrate with github and download from release branch (create dev and release branches), perhaps installer should be reuseable as well)
-    //TODO: Fix minimize / maximize button, fix (while maximized) drag to normalize
     //TODO: Fix color buttons when hovering at edge
-    //TODO: Fix color of close button
 
     public partial class MainWindow : Window
     {
@@ -130,15 +128,6 @@ namespace PaletteGenerator
             Add(); Add();
         }
 
-        void Minimize(object sender, RoutedEventArgs e) =>
-            WindowState = WindowState.Minimized;
-
-        void Close(object sender, RoutedEventArgs e) =>
-            Close();
-
-        private void TextBlock_MouseLeftButtonDown(object sender, MouseButtonEventArgs e) =>
-            DragMove();
-
         void Update(object sender, RoutedEventArgs e) =>
             Process.Start("explorer.exe", "https://github.com/Zumwani/PaletteGenerator");
 
@@ -147,6 +136,14 @@ namespace PaletteGenerator
 
         public static async Task HideLoadingOverlay() =>
             (await Current.loadingOverlay.Fade(0)).Hide();
+
+        void UpdateMaximizeToggleButton(object sender, RoutedEventArgs e)
+        {
+            if (WindowState == WindowState.Maximized)
+                maximizeButton.Content = ""; 
+            else if (WindowState == WindowState.Normal)
+                maximizeButton.Content = "";
+        }
 
         #endregion
         #region Sliders

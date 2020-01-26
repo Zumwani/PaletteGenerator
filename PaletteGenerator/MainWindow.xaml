@@ -6,12 +6,13 @@
         xmlns:converters="clr-namespace:PaletteGenerator.Converters"
         xmlns:commands="clr-namespace:PaletteGenerator.Commands"
         xmlns:mahApps="http://metro.mahapps.com/winfx/xaml/controls"
+        SizeChanged="UpdateMaximizeToggleButton"
         Title="Palette Generator" Height="528" Width="1250"
         WindowStartupLocation="CenterScreen" WindowStyle="None" 
         DataContext="{Binding RelativeSource={RelativeSource Mode=Self}}" FontFamily="Segoe UI Semilight" AllowsTransparency="True">
 
     <WindowChrome.WindowChrome>
-        <WindowChrome CaptionHeight="0" ResizeBorderThickness="5"/>
+        <WindowChrome CaptionHeight="{Binding ElementName=titlebar, Path=ActualHeight}" ResizeBorderThickness="5"/>
     </WindowChrome.WindowChrome>
 
     <Window.Resources>
@@ -56,16 +57,17 @@
                 <mahApps:ProgressRing Foreground="White"/>
             </Border>
             
-            <DockPanel Background="Transparent" Panel.ZIndex="200">
+            <DockPanel x:Name="titlebar" Background="Transparent" Panel.ZIndex="200">
 
-                <Button Content="" Click="Close" ToolTip="Close" Style="{StaticResource ToolButton}">
+                <Button Content="" ToolTip="Close" Style="{StaticResource ToolButton}" Command="{commands:CloseWindow}" CommandParameter="{Binding}" WindowChrome.IsHitTestVisibleInChrome="True">
                     <Button.Background>
                         <SolidColorBrush Color="Red"/>
                     </Button.Background>
                 </Button>
 
-                <Button Click="Minimize" ToolTip="Minimize" Content="" Style="{StaticResource ToolButton}"/>
-                <TextBlock Text="{Binding Title}" FontSize="16" DockPanel.Dock="Left" Padding="12" MouseLeftButtonDown="TextBlock_MouseLeftButtonDown"/>
+                <Button ToolTip="Maximize" x:Name="maximizeButton" Click="UpdateMaximizeToggleButton" Content="" Style="{StaticResource ToolButton}" Command="{commands:ToggleMaximizeWindow}" CommandParameter="{Binding}" WindowChrome.IsHitTestVisibleInChrome="True"/>
+                <Button ToolTip="Minimize" Content="" Style="{StaticResource ToolButton}" Command="{commands:MinimizeWindow}" CommandParameter="{Binding}" WindowChrome.IsHitTestVisibleInChrome="True"/>
+                <TextBlock Text="{Binding Title}" FontSize="16" DockPanel.Dock="Left" Padding="12"/>
 
             </DockPanel>
 
@@ -96,7 +98,7 @@
 
             </DockPanel>
 
-            <Popup x:Name="presetsMenu" IsOpen="{Binding RelativeSource={RelativeSource Mode=Self}, Path=PlacementTarget.IsChecked}" PlacementTarget="{Binding ElementName=presetsButton}" Placement="Top" StaysOpen="False">
+            <Popup x:Name="presetsMenu" IsOpen="{Binding RelativeSource={RelativeSource Mode=Self}, Path=PlacementTarget.IsChecked}" PlacementTarget="{Binding ElementName=presetsButton}" Placement="Top" StaysOpen="False" PopupAnimation="Fade">
                 <Border Background="White" BorderBrush="Black" BorderThickness="1">
                     <ItemsControl>
                         <MenuItem Header="Load..." Command="{commands:LoadPreset}"/>
