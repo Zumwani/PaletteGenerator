@@ -38,20 +38,6 @@
                 <Setter Property="Background" Value="DimGray"/>
                 <Setter Property="DockPanel.Dock" Value="Right"/>
             </Style>
-
-            <Storyboard x:Key="ShowLoadingAnimation">
-                <DoubleAnimation Storyboard.TargetName="loadingOverlay" Storyboard.TargetProperty="Opacity" To="0.5" Duration="0:0:0.1"/>
-                <BooleanAnimationUsingKeyFrames Storyboard.TargetProperty="IsHitTestVisible" Duration="0:0:0.1">
-                    <DiscreteBooleanKeyFrame Value="True"/>
-                </BooleanAnimationUsingKeyFrames>
-            </Storyboard>
-
-            <Storyboard x:Key="HideLoadingAnimation">
-                <DoubleAnimation Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.1"/>
-                <BooleanAnimationUsingKeyFrames Storyboard.TargetProperty="IsHitTestVisible" Duration="0:0:0.1">
-                    <DiscreteBooleanKeyFrame Value="False"/>
-                </BooleanAnimationUsingKeyFrames>
-            </Storyboard>
             
         </ResourceDictionary>
     </Window.Resources>
@@ -69,16 +55,7 @@
             <Border x:Name="loadingOverlay" Grid.Row="1" Grid.RowSpan="3" Background="Black" Opacity="0.5" Panel.ZIndex="100" Visibility="Collapsed">
                 <mahApps:ProgressRing Foreground="White"/>
             </Border>
-
-            <Border Grid.RowSpan="4" x:Name="PresetsOverlay" MouseDown="PresetsOverlay_MouseDown" Panel.ZIndex="90" Visibility="Collapsed">
-                <Border.Background>
-                    <SolidColorBrush Color="Black" Opacity="0.5"/>
-                </Border.Background>
-                
-                <ui:PresetsManager x:Name="presetsManager" HorizontalAlignment="Right" VerticalAlignment="Stretch" Width="300"/>
-                
-            </Border>
-
+            
             <DockPanel Background="Transparent" Panel.ZIndex="200">
 
                 <Button Content="" Click="Close" ToolTip="Close" Style="{StaticResource ToolButton}">
@@ -106,17 +83,27 @@
             
             <DockPanel Background="Transparent" Grid.Row="3" LastChildFill="False" Margin="12">
 
-                <Slider Value="{Binding Columns, Mode=TwoWay}" Minimum="{x:Static local:MainWindow.MinColumns}" Maximum="{x:Static local:MainWindow.MaxColumns}" Width="100" Margin="0,16,6,0" DockPanel.Dock="Left"
+                <Slider Value="{Binding Columns, Mode=TwoWay}" Minimum="{Binding MinColumns}" Maximum="{Binding MaxColumns}" Width="100" Margin="0,16,6,0" DockPanel.Dock="Left"
                         TickFrequency="2" SmallChange="2" LargeChange="2"
                         KeyUp="Slider_KeyUp" MouseMove="Slider_MouseMove" MouseLeave="Slider_MouseLeave"/>
                 
                 <Button Click="Add" ToolTip="Add row" Content="" Style="{StaticResource ToolButton}" DockPanel.Dock="Left"/>
                 <Button Click="Update" ToolTip="Check for updates" Content="" Style="{StaticResource ToolButton}"/>
 
-                <Button Content="Presets" Width="Auto" DockPanel.Dock="Right" FontSize="18" Margin="12,0" Padding="12" Click="PresetsButton_Click"/>
+                <ToggleButton x:Name="presetsButton" Content="Presets" Width="Auto" DockPanel.Dock="Right" FontSize="18" Margin="12,0" Padding="12" 
+                              IsChecked="{Binding ElementName=presetsMenu, Path=IsOpen, Mode=OneWay}" IsHitTestVisible="{Binding ElementName=presetsMenu, Path=IsOpen, Converter={converters:InvertBool}}"/>
                 <Button Content="Export" Width="Auto" DockPanel.Dock="Right" FontSize="18" Padding="12" Command="{commands:Export}"/>
 
             </DockPanel>
+
+            <Popup x:Name="presetsMenu" IsOpen="{Binding RelativeSource={RelativeSource Mode=Self}, Path=PlacementTarget.IsChecked}" PlacementTarget="{Binding ElementName=presetsButton}" Placement="Top" StaysOpen="False">
+                <Border Background="White" BorderBrush="Black" BorderThickness="1">
+                    <ItemsControl>
+                        <MenuItem Header="Load..." Command="{commands:LoadPreset}"/>
+                        <MenuItem Header="Save..." Command="{commands:SavePreset}"/>
+                    </ItemsControl>
+                </Border>
+            </Popup>
 
         </Grid>
     </Border>

@@ -14,20 +14,20 @@ namespace PaletteGenerator
 {
 
     //TODO: Fix hue offset slider
-    //TODO: Fix presets
     //TODO: Look for another color picker or create own
     //TODO: Fix installer (integrate with github and download from release branch (create dev and release branches), perhaps installer should be reuseable as well)
     //TODO: Fix minimize / maximize button, fix (while maximized) drag to normalize
     //TODO: Fix color buttons when hovering at edge
+    //TODO: Fix color of close button
 
     public partial class MainWindow : Window
     {
 
         #region Properties
 
-        public static double MaxRows => 16;
-        public static double MaxColumns => 16;
-        public static double MinColumns => 2;
+        public double MaxRows => 16;
+        public double MaxColumns => 16;
+        public double MinColumns => 2;
 
         public static DependencyProperty ColumnsProperty    = DependencyProperty.Register(nameof(Columns),    typeof(int),   typeof(MainWindow), new PropertyMetadata(4));      //Property change is handled by Slider.MouseUp event, since lag occurs otherwise while dragging slider
         public static DependencyProperty HueProperty        = DependencyProperty.Register(nameof(Hue),        typeof(float), typeof(MainWindow), new PropertyMetadata(0f));   //Property change is handled by Slider.MouseUp event, since lag occurs otherwise while dragging slider
@@ -66,6 +66,13 @@ namespace PaletteGenerator
         #endregion
         #region Rows
 
+        public static Row[] CurrentRows
+        {
+            get => Current.Rows.ToArray();
+            set => Current.Rows.Set(value);
+        }
+            
+
         void Add(object sender = null, RoutedEventArgs e = null)
         {
             if (Rows.Count < MaxRows)
@@ -85,7 +92,7 @@ namespace PaletteGenerator
                 return;
 
             if (animate)
-                await Current.loadingOverlay.Show().Fade(0, 0.5);
+                await ShowLoadingOverlay();
 
             var left = Current.LeftColor;
             var right = Current.RightColor;
@@ -106,14 +113,14 @@ namespace PaletteGenerator
             }
 
             if (animate)
-                (await Current.loadingOverlay.Fade(0, 0.5)).Hide();
+                await HideLoadingOverlay();
 
         }
 
         #endregion
         #region Window
 
-        public static MainWindow Current { get; private set; }
+        public static MainWindow Current { get; set; }
 
         public MainWindow()
         {
@@ -134,6 +141,12 @@ namespace PaletteGenerator
 
         void Update(object sender, RoutedEventArgs e) =>
             Process.Start("explorer.exe", "https://github.com/Zumwani/PaletteGenerator");
+
+        public static async Task ShowLoadingOverlay() =>
+            await Current.loadingOverlay.Show().Fade(0.5);
+
+        public static async Task HideLoadingOverlay() =>
+            (await Current.loadingOverlay.Fade(0)).Hide();
 
         #endregion
         #region Sliders
@@ -182,30 +195,6 @@ namespace PaletteGenerator
 
         private void Slider_MouseLeave(object sender, MouseEventArgs e) =>
             sliderTooltip.IsOpen = false;
-
-        #endregion
-        #region Presets
-
-        void ShowPresets()
-        {
-            PresetsOverlay.Show().Fade(0, 1).ConfigureAwait(false);
-            presetsManager.HorizontalSlide(presetsManager.Width, 0).ConfigureAwait(false);
-        }
-
-        async void HidePresets()
-        {
-            _ = presetsManager.HorizontalSlide(presetsManager.Width).ConfigureAwait(false);
-            (await PresetsOverlay.Fade(0)).Hide();
-        }
-
-        private void PresetsButton_Click(object sender, RoutedEventArgs e) =>
-            ShowPresets();
-
-        private void PresetsOverlay_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            if (e.Source is Border)
-                HidePresets();
-        }
 
         #endregion
 

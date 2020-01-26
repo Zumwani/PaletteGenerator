@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using System.Windows.Media;
 
@@ -13,14 +15,33 @@ namespace PaletteGenerator
 
         public Row() { }
 
-        public BindingList<Color> Left { get; } = new BindingList<Color>();
-        public BindingList<Color> Right { get; } = new BindingList<Color>();
+        [JsonIgnore] public BindingList<Color> Left { get; } = new BindingList<Color>();
+        [JsonIgnore] public BindingList<Color> Right { get; } = new BindingList<Color>();
 
         Color center = Colors.LightSkyBlue;
         public Color Center 
         {
             get => center;
             set { center = value; OnPropertyChanged(); }
+        }
+
+        [JsonIgnore]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0028:Simplify collection initialization", Justification = "Less readable.")]
+        public Color[] AllColors
+        {
+            get
+            {
+
+                var l = new List<Color>();
+                l.Add(MainWindow.Current.LeftColor);
+                l.AddRange(Left);
+                l.Add(Center);
+                l.AddRange(Right);
+                l.Add(MainWindow.Current.RightColor);
+
+                return l.ToArray();
+
+            }
         }
 
         #region INotifyPropertyChanged

@@ -1,12 +1,78 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.IO;
+using System.Linq;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using color = System.Drawing.Color;
+using Color = System.Windows.Media.Color;
 
 namespace PaletteGenerator
 {
 
     public static class ColorUtilty
     {
+
+        public static BitmapSource AsPNGPalette(this Color[][] colors, int cellSize)
+        {
+
+            if (colors.Length == 0)
+                return null;
+
+            for (int i = 0; i < colors.Length; i++)
+                colors[i] = colors[i].SelectMany(c => Enumerable.Repeat(c, cellSize)).ToArray();
+
+            colors = colors.SelectMany(c => Enumerable.Repeat(c, cellSize)).ToArray();
+
+            var width = colors[0].Length;
+            var height = colors.Length;
+
+            var pixelFormat = PixelFormats.Bgra32;
+            var stride = width * 4; // bytes per row
+
+            byte[] pixelData = new byte[height * stride];
+
+            for (int y = 0; y < height; y++)
+                for (int x = 0; x < width; x++)
+                {
+
+                    var color = colors[y][x];
+                    var index = (y * stride) + (x * 4);
+
+                    pixelData[index] = color.B;
+                    pixelData[index + 1] = color.G;
+                    pixelData[index + 2] = color.R;
+                    pixelData[index + 3] = color.A;
+
+                }
+
+            var bitmap = BitmapSource.Create(width, height, 96, 96, pixelFormat, null, pixelData, stride);
+            return bitmap;
+
+        }
+
+        public static color AsDrawing(this Color color) =>
+            System.Drawing.Color.FromArgb(color.A, color.R, color.G, color.B);
+
+        public static MemoryStream AsBytes(this BitmapSource bitmap)
+        {
+
+            var ms = new MemoryStream();
+            var encoder = new PngBitmapEncoder();
+            encoder.Frames.Add(BitmapFrame.Create(bitmap));
+            encoder.Save(ms);
+            return ms;
+
+        }
+
+        public static MemoryStream AsBytes(this Bitmap bitmap)
+        {
+            var ms = new MemoryStream();
+            bitmap.Save(ms, ImageFormat.Png);
+            return ms;
+        }
 
         public static IEnumerable<Color> Blend(this Color from, Color to, int steps)
         {
@@ -27,8 +93,6 @@ namespace PaletteGenerator
 
         public static Color OffsetHue(this Color color, float offset)
         {
-
-            //TODO: Implement hue
 
             var hsv = color.AsHSV();
             hsv.hue += offset;

@@ -1,7 +1,7 @@
 ﻿using Ookii.Dialogs.Wpf;
 using System;
 using System.IO;
-using System.Linq;
+using System.Text.Json;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Markup;
@@ -9,7 +9,7 @@ using System.Windows.Markup;
 namespace PaletteGenerator.Commands
 {
 
-    public class Export : MarkupExtension, ICommand
+    public class LoadPreset : MarkupExtension, ICommand
     {
 
         public event EventHandler CanExecuteChanged;
@@ -19,12 +19,10 @@ namespace PaletteGenerator.Commands
         public async void Execute(object parameter)
         {
 
-            var dialog = new VistaSaveFileDialog
+            var dialog = new VistaOpenFileDialog
             {
                 InitialDirectory = Directory.CreateDirectory(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Palette Generator")).FullName,
-                Filter = "PNG files|*.png|All files|*.*",
-                DefaultExt = ".png",
-                AddExtension = true,
+                Filter = "JSON files|*.json|All files|*.*",
             };
 
             if (dialog.ShowDialog() ?? false)
@@ -32,22 +30,19 @@ namespace PaletteGenerator.Commands
 
                 await MainWindow.ShowLoadingOverlay();
 
+                using var fs = dialog.OpenFile();
+
                 try
                 {
-
-                    var colors = MainWindow.CurrentRows.Select(r => r.AllColors).ToArray();
-                    var bitmap = colors.AsPNGPalette(64);
-
-                    using var ms = bitmap.AsBytes();
-                    await File.WriteAllBytesAsync(dialog.FileName, ms.ToArray());
-
+                    var rows = await JsonSerializer.DeserializeAsync<Row[]>(fs);
+                    MainWindow.CurrentRows = rows;
+                    MainWindow.Recalculate();
                 }
-                catch (Exception e)
+                catch (JsonException e)
                 {
-                    MessageBox.Show(e.GetType().Name + ":" + Environment.NewLine + Environment.NewLine + e.Message + Environment.NewLine + Environment.NewLine, "An error occured when exporting as png.");
+                    _ = MainWindow.HideLoadingOverlay().ConfigureAwait(false);
+                    MessageBox.Show(e.GetType().Name + ":" + Environment.NewLine + Environment.NewLine + e.Message + Environment.NewLine + Environment.NewLine, "An error occured while parsing json file.");
                 }
-
-                _ = MainWindow.HideLoadingOverlay().ConfigureAwait(false);
 
             }
 

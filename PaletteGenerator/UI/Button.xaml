@@ -4,17 +4,8 @@
     <ControlTemplate x:Key="ButtonTemplate" TargetType="{x:Type ButtonBase}">
 
         <Border x:Name="Toggle" IsHitTestVisible="{TemplateBinding IsEnabled}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}">
-            <!--<Border.Background>
-                <SolidColorBrush Color="Black" Opacity="0"/>
-            </Border.Background>-->
-            
             <Border x:Name="Button" Background="{TemplateBinding Background}">
-                <!--<Border.Background>
-                    <SolidColorBrush Color="Black" Opacity="0"/>
-                </Border.Background>-->
-
                 <ContentPresenter Margin="{TemplateBinding Padding}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
-
             </Border>
 
             <VisualStateManager.VisualStateGroups>
@@ -64,4 +55,26 @@
         <Setter Property="Template" Value="{StaticResource ButtonTemplate}"/>
     </Style>
 
+    <Style TargetType="MenuItem">
+        
+        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="BorderThickness" Value="0"/>
+
+        <Setter Property="Background">
+            <Setter.Value>
+                <SolidColorBrush Color="Black" Opacity="0"/>
+            </Setter.Value>
+        </Setter>
+
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="MenuItem">
+                    <Button Content="{TemplateBinding Header}" Width="{TemplateBinding Width}" FontSize="20" Padding="12" Command="{TemplateBinding Command}" CommandParameter="{TemplateBinding CommandParameter}"/>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        
+    </Style>
+    
 </ResourceDictionary>

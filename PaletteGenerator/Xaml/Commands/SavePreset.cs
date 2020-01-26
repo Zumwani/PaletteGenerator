@@ -1,7 +1,7 @@
 ﻿using Ookii.Dialogs.Wpf;
 using System;
 using System.IO;
-using System.Linq;
+using System.Text.Json;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Markup;
@@ -9,7 +9,7 @@ using System.Windows.Markup;
 namespace PaletteGenerator.Commands
 {
 
-    public class Export : MarkupExtension, ICommand
+    public class SavePreset : MarkupExtension, ICommand
     {
 
         public event EventHandler CanExecuteChanged;
@@ -22,8 +22,8 @@ namespace PaletteGenerator.Commands
             var dialog = new VistaSaveFileDialog
             {
                 InitialDirectory = Directory.CreateDirectory(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Palette Generator")).FullName,
-                Filter = "PNG files|*.png|All files|*.*",
-                DefaultExt = ".png",
+                Filter = "JSON files|*.json|All files|*.*",
+                DefaultExt = ".json",
                 AddExtension = true,
             };
 
@@ -34,17 +34,12 @@ namespace PaletteGenerator.Commands
 
                 try
                 {
-
-                    var colors = MainWindow.CurrentRows.Select(r => r.AllColors).ToArray();
-                    var bitmap = colors.AsPNGPalette(64);
-
-                    using var ms = bitmap.AsBytes();
-                    await File.WriteAllBytesAsync(dialog.FileName, ms.ToArray());
-
+                    using var fs = dialog.OpenFile();
+                    await JsonSerializer.SerializeAsync(fs, MainWindow.CurrentRows);
                 }
                 catch (Exception e)
                 {
-                    MessageBox.Show(e.GetType().Name + ":" + Environment.NewLine + Environment.NewLine + e.Message + Environment.NewLine + Environment.NewLine, "An error occured when exporting as png.");
+                    MessageBox.Show(e.GetType().Name + ":" + Environment.NewLine + Environment.NewLine + e.Message + Environment.NewLine + Environment.NewLine, "An error occured while writing json file.");
                 }
 
                 _ = MainWindow.HideLoadingOverlay().ConfigureAwait(false);
