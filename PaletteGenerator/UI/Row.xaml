@@ -44,7 +44,7 @@
 
             </ItemsControl>
 
-            <ui:ColorEditor Color="{Binding Source={x:Static local:MainWindow.Current}, Path=RightColor, Mode=TwoWay}" IsEditable="True" BorderThickness="0,1,1,1" BorderBrush="LightGray"/>
+            <ui:ColorEditor Color="{Binding Source={x:Static local:MainWindow.Current}, Path=RightColor, Mode=TwoWay}" IsEditable="True" BorderThickness="-1,1,1,1" BorderBrush="LightGray"/>
 
             <Canvas>
                 <Button VerticalAlignment="Center" FontSize="12" Margin="4,0" Click="Remove" Foreground="DimGray" Content="✖"/>

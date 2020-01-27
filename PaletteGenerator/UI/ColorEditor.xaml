@@ -9,18 +9,6 @@
              Width="64" Height="64"
              Loaded="UserControl_Loaded">
 
-    <UserControl.Resources>
-
-        <Storyboard x:Key="ShowAnimation">
-            <DoubleAnimation Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.5"/>
-        </Storyboard>
-        
-        <Storyboard x:Key="HideAnimation">
-            <DoubleAnimation Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.5"/>
-        </Storyboard>
-        
-    </UserControl.Resources>
-    
     <ToggleButton x:Name="toggle" BorderThickness="0" Background="{Binding ElementName=editor, Path=Color, Converter={converters:ToBrush}}"
                   IsHitTestVisible="{Binding ElementName=editor, Path=IsEditable}"
                   IsEnabled="{Binding ElementName=popup, Path=IsOpen, Converter={converters:InvertBool}}">
@@ -41,7 +29,7 @@
             </ControlTemplate>
         </ToggleButton.Template>
 
-        <colorPicker:ColorPicker Grid.Row="1" Background="White" SelectedColor="{Binding ElementName=editor, Path=Color, Mode=TwoWay}" x:Name="popup" FontSize="18" BorderThickness="0">
+        <!--<colorPicker:ColorPicker Grid.Row="1" Background="White" SelectedColor="{Binding ElementName=editor, Path=Color, Mode=TwoWay}" x:Name="popup" FontSize="18" BorderThickness="0">
             <colorPicker:ColorPicker.Resources>
                 <ResourceDictionary>
 
@@ -66,18 +54,29 @@
 
                 </ResourceDictionary>
             </colorPicker:ColorPicker.Resources>
-        </colorPicker:ColorPicker>
+        </colorPicker:ColorPicker>-->
 
-        <!--<Popup x:Name="popup" StaysOpen="False" IsOpen="{Binding ElementName=toggle, Path=IsChecked, Delay=10}"
+        <Popup x:Name="popup" StaysOpen="False" IsOpen="{Binding ElementName=toggle, Path=IsChecked, Delay=10}"
                PlacementTarget="{Binding ElementName=toggle}" Placement="Bottom" PopupAnimation="Fade">
+
+            <Popup.Resources>
+                <Style TargetType="TextBox">
+                    <Setter Property="FontFamily" Value="Segoe UI Semilight"/>
+                </Style>
+            </Popup.Resources>
             
             <Border Background="White" BorderThickness="1" BorderBrush="Black">
-                    <Grid>
+                <Grid>
 
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition/>
                     </Grid.RowDefinitions>
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
 
                     <TextBlock Foreground="Black" Text="Pick color:" FontFamily="Segoe UI Semilight" FontSize="16" Margin="6"/>
 
@@ -87,13 +86,28 @@
                         </ToggleButton.Content>
                     </ToggleButton>
 
-                    <colorPicker:ColorPicker Grid.Row="1" Background="White" SelectedColor="{Binding ElementName=editor, Path=Color, Mode=TwoWay}" IsOpen="True"/>
+                    <TabControl Grid.Row="1">
+                        <TabItem Header="Freehand">
+                            <colorPicker:ColorCanvas x:Name="freehand" FontFamily="Segoe UI Semilight" DisplayColorSpace="HSV" SelectedColor="{Binding ElementName=editor, Path=Color, Mode=OneWay}"/>
+                        </TabItem>
+                        <TabItem Header="Known Colors"/>
+                    </TabControl>
+
+                    <DockPanel LastChildFill="False" Grid.Column="1" Grid.Row="1">
+                        <StackPanel>
+
+                            
+
+                        </StackPanel>
+                    </DockPanel>
+
+                    <!--<colorPicker:ColorPicker Grid.Row="1" Background="White" SelectedColor="{Binding ElementName=editor, Path=Color, Mode=TwoWay}" IsOpen="True"/>-->
 
                 </Grid>
-               
+
             </Border>
             
-        </Popup>-->
+        </Popup>
         
     </ToggleButton>
     

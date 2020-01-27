@@ -96,6 +96,7 @@ namespace PaletteGenerator
 
             var hsv = color.AsHSV();
             hsv.hue += offset;
+            Console.WriteLine(hsv.hue);
             color = hsv.AsColor();
 
             return color;

@@ -58,8 +58,8 @@ namespace PaletteGenerator
 
         public Task<(IEnumerable<Color> left, IEnumerable<Color> right)> Calculate(Color left, Color right, int steps, float hueOffset) =>
             Task.Run(() =>
-            (left.Blend(Center, steps).Skip(1).SkipLast(1).Select(c => c.OffsetHue(hueOffset * -255)),
-             Center.Blend(right, steps).Skip(1).SkipLast(1).Select(c => c.OffsetHue(hueOffset * -255)))
+            (left.Blend(Center, steps).Skip(1).SkipLast(1).Select(c => c.OffsetHue(hueOffset * -360)),
+             Center.Blend(right, steps).Skip(1).SkipLast(1).Select(c => c.OffsetHue(hueOffset * -360)))
             );
 
         public void SetColors((IEnumerable<Color> left, IEnumerable<Color> right) colors)

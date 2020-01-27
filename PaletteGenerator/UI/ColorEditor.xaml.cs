@@ -7,6 +7,8 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using FontAwesome.WPF;
+using ColorPickerLib.Controls;
+using System.ComponentModel;
 
 namespace PaletteGenerator.UI
 {
@@ -14,8 +16,21 @@ namespace PaletteGenerator.UI
     public partial class ColorEditor : UserControl
     {
 
-        public ColorEditor() =>
+        static ColorEditor()
+        {
+            //ColorCanvas.DisplayColorSpaceProperty.OverrideMetadata(typeof(ColorEditor), new PropertyMetadata(ColorSpace.RGB, OnDisplayColorChanged));
+        }
+
+        public ColorEditor()
+        {
+            //DependencyPropertyDescriptor.FromProperty(ColorCanvas.DisplayColorSpaceProperty, typeof(ColorCanvas)).AddValueChanged(freehand, OnDisplayColorChanged);
             InitializeComponent();
+        }
+
+        static void OnDisplayColorChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
+        {
+
+        }
 
         public static DependencyProperty ColorProperty = DependencyProperty.Register(nameof(Color), typeof(Color), typeof(ColorEditor), new PropertyMetadata(Colors.White, OnColorChanged));
         public static DependencyProperty IsEditableProperty = DependencyProperty.Register(nameof(IsEditable), typeof(bool), typeof(ColorEditor));
