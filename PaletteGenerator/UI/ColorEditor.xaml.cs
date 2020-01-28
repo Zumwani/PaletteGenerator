@@ -13,6 +13,9 @@ namespace PaletteGenerator.UI
     public partial class ColorEditor : UserControl
     {
 
+        public ColorEditor() =>
+            InitializeComponent();
+
         public static DependencyProperty ColorProperty = DependencyProperty.Register(nameof(Color), typeof(Color), typeof(ColorEditor), new PropertyMetadata(Colors.White, OnColorChanged));
 
         static void OnColorChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
@@ -66,6 +69,17 @@ namespace PaletteGenerator.UI
 
             overlay.Open(Deinitalize);
 
+        }
+
+        private void editor_MouseEnter(object sender, MouseEventArgs e)
+        {
+            
+            colorPicker.Padding = new Thickness(4,0,4,0);
+        }
+
+        private void editor_MouseLeave(object sender, MouseEventArgs e)
+        {
+            colorPicker.Padding = new Thickness(0);
         }
 
     }

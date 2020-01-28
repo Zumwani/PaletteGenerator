@@ -6,11 +6,50 @@
              xmlns:colorPicker="clr-namespace:ColorPickerLib.Controls;assembly=ColorPickerLib"
              xmlns:fa="http://schemas.fontawesome.io/icons/"
              x:Name="editor"
-             Width="64" Height="64"
-             FontFamily="Segoe UI Semilight" BorderBrush="{x:Null}">
+             FontFamily="Segoe UI Semilight" BorderBrush="LightGray"
+             MouseEnter="editor_MouseEnter" MouseLeave="editor_MouseLeave">
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Button.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+            
+        </ResourceDictionary>
+    </UserControl.Resources>
     
-    <colorPicker:ColorPicker SelectedColor="{Binding ElementName=editor, Path=Color, Mode=TwoWay}"
-                                 StandardButtonHeader="Named Colors" AdvancedButtonHeader="Color Picker" AvailableColorsSortingMode="HueSaturationBrightness" ColorMode="ColorCanvas">
+    <Grid>
+        
+        <colorPicker:ColorPicker x:Name="colorPicker" SelectedColor="{Binding ElementName=editor, Path=Color, Mode=TwoWay}"
+                                 StandardButtonHeader="Named Colors" AdvancedButtonHeader="Color Picker" AvailableColorsSortingMode="HueSaturationBrightness" ColorMode="ColorCanvas" ShowDropDownButton="False">
+
+            <colorPicker:ColorPicker.ButtonStyle>
+                <Style TargetType="{x:Type ToggleButton}">
+                    <Setter Property="Width" Value="64"/>
+                    <Setter Property="Height" Value="64"/>
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate>
+                                
+                                <Rectangle x:Name="rectangle" Fill="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}, Path=Color, Converter={converters:ToBrush}}"
+                                           Stroke="LightGray" StrokeThickness="0"/>
+
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter TargetName="rectangle" Property="StrokeThickness" Value="2"/>
+                                    </Trigger>
+                                    <Trigger Property="IsMouseOver" Value="False">
+                                        <Setter TargetName="rectangle" Property="StrokeThickness" Value="0"/>
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                                
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </colorPicker:ColorPicker.ButtonStyle>
+
             <colorPicker:ColorPicker.Resources>
                 <ResourceDictionary>
 
@@ -22,23 +61,39 @@
                         <Setter Property="BorderBrush" Value="Black"/>
                         <Setter Property="BorderThickness" Value="{Binding ElementName=editor, Path=BorderThickness}"/>
                     </Style>
-                    
+
                     <Style TargetType="{x:Type Button}" BasedOn="{StaticResource ButtonBaseStyle}">
                         <Setter Property="Template" Value="{StaticResource ButtonTemplate}"/>
                         <Setter Property="Width" Value="Auto"/>
                         <Setter Property="Padding" Value="12"/>
                     </Style>
 
-                    <Style TargetType="{x:Type ToggleButton}" BasedOn="{StaticResource ButtonBaseStyle}">
-                        <Setter Property="Width" Value="640"/>
-                        <Setter Property="Template" Value="{x:Null}"/>
-                        <Setter Property="Width" Value="Auto"/>
+                    <Style x:Key="ColorDisplayStyle" TargetType="ContentControl">
+                        <Setter Property="Focusable" Value="False" />
+                        <Setter Property="Height" Value="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Border}, Path=ActualHeight}"/>
+                        <Setter Property="ContentTemplate">
+                            <Setter.Value>
+                                <DataTemplate>
+                                    <Border Background="{DynamicResource CheckerBrush}">
+                                        <Rectangle Fill="{Binding SelectedColor, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=colorPicker:ColorPicker}, Converter={converters:ToBrush}}" />
+                                    </Border>
+                                </DataTemplate>
+                            </Setter.Value>
+                        </Setter>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding SelectedColor, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=colorPicker:ColorPicker}}"
+                         Value="{x:Null}">
+                                <Setter Property="Visibility" Value="Collapsed" />
+                            </DataTrigger>
+                        </Style.Triggers>
                     </Style>
-                    
+
                 </ResourceDictionary>
             </colorPicker:ColorPicker.Resources>
         </colorPicker:ColorPicker>
 
+    </Grid>
+    
         <!--<ToggleButton x:Name="eyeDropper" ToolTip="Pick color from screen point" Width="28" Height="28" HorizontalAlignment="Right" VerticalAlignment="Top" Padding="6" Checked="EyeDropper_Checked">
             <ToggleButton.Content>
                 <fa:ImageAwesome Icon="Eyedropper"/>
