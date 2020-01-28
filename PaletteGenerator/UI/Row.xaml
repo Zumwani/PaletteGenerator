@@ -49,11 +49,7 @@
                             <Setter Property="Height" Value="64"/>
                             <Setter Property="BorderThickness" Value="0"/>
                             <Setter Property="Template" Value="{StaticResource ButtonTemplate}"/>
-                            <Setter Property="Background">
-                                <Setter.Value>
-                                    <SolidColorBrush Color="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=colorPicker:ColorPicker}, Path=SelectedColor}" Opacity="0"/>
-                                </Setter.Value>
-                            </Setter>
+                            <Setter Property="Content" Value="{Binding SelectedColor}"/>
                         </Style>
                     </Setter.Value>
                 </Setter>
@@ -80,6 +76,7 @@
             <!--<ui:ColorEditor Color="{Binding Source={x:Static local:WindowUtility.Current}, Path=LeftColor, Mode=TwoWay}" BorderThickness="1,1,0,1"/>-->
             <ItemsControl ItemsSource="{Binding Left}"/>
             <!--<ui:ColorEditor Color="{Binding Center, Mode=TwoWay}" ColorChanged="CenterColorChanged" BorderThickness="0,1" Margin="-1,0"/>-->
+            <!--<colorPicker:ColorPicker SelectedColor="{Binding Center, Mode=TwoWay}" BorderThickness="1,1,0,1"/>-->
             <ItemsControl ItemsSource="{Binding Right}"/>
             <colorPicker:ColorPicker SelectedColor="{Binding Source={x:Static local:WindowUtility.Current}, Path=RightColor, Mode=TwoWay}" BorderThickness="1,1,0,1"/>
             <!--<ui:ColorEditor Color="{Binding Source={x:Static local:WindowUtility.Current}, Path=RightColor, Mode=TwoWay}" BorderThickness="0,1,1,1"/>-->

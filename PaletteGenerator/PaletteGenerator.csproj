@@ -20,14 +20,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="Assets\transparent.png" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Resource Include="Assets\transparent.png" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Dirkster.ColorPickerLib" Version="1.6.0" />
     <PackageReference Include="FontAwesome.WPF" Version="4.7.0.9" />
     <PackageReference Include="MahApps.Metro" Version="1.6.5" />
