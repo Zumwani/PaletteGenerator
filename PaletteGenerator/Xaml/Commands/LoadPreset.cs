@@ -28,21 +28,11 @@ namespace PaletteGenerator.Commands
             if (dialog.ShowDialog() ?? false)
             {
 
-                await MainWindow.ShowLoadingOverlay();
-
                 using var fs = dialog.OpenFile();
 
-                try
-                {
-                    var rows = await JsonSerializer.DeserializeAsync<Row[]>(fs);
-                    MainWindow.CurrentRows = rows;
-                    MainWindow.Recalculate();
-                }
-                catch (JsonException e)
-                {
-                    _ = MainWindow.HideLoadingOverlay().ConfigureAwait(false);
-                    MessageBox.Show(e.GetType().Name + ":" + Environment.NewLine + Environment.NewLine + e.Message + Environment.NewLine + Environment.NewLine, "An error occured while parsing json file.");
-                }
+                var rows = await JsonSerializer.DeserializeAsync<Row[]>(fs);
+                MainWindow.CurrentRows = rows;
+                MainWindow.Recalculate();
 
             }
 

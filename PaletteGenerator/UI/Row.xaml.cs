@@ -13,7 +13,7 @@ namespace PaletteGenerator.UI
         private void CenterColorChanged(object sender, System.EventArgs e)
         {
             if (sender is ColorEditor c && c.DataContext is Row row)
-                MainWindow.Recalculate(true, row);
+                MainWindow.Recalculate(row);
         }
 
     }

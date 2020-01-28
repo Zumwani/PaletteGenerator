@@ -13,22 +13,34 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Xaml\Collections\**" />
+    <EmbeddedResource Remove="Xaml\Collections\**" />
+    <None Remove="Xaml\Collections\**" />
+    <Page Remove="Xaml\Collections\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Assets\transparent.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Assets\transparent.png" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Dirkster.ColorPickerLib" Version="1.6.0" />
     <PackageReference Include="FontAwesome.WPF" Version="4.7.0.9" />
     <PackageReference Include="MahApps.Metro" Version="1.6.5" />
     <PackageReference Include="Ookii.Dialogs" Version="1.0.0" />
     <PackageReference Include="OpenShell.Screens" Version="1.0.0" />
     <PackageReference Include="System.Drawing.Common" Version="4.7.0" />
+    <PackageReference Include="System.Windows.Interactivity.WPF" Version="2.0.20525" />
   </ItemGroup>
 
   <ItemGroup>
     <Page Update="UI\Button.xaml">
       <SubType>Designer</SubType>
     </Page>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Xaml\Collections\" />
   </ItemGroup>
 
 </Project>
