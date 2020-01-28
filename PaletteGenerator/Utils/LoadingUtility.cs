@@ -34,9 +34,9 @@ namespace PaletteGenerator
 
         static void OnTaskCompleted(Task task = null)
         {
-            
-            if (Tasks.Contains(task))
-                Tasks.Remove(task);
+
+            Tasks.RemoveAll(t => task.Id == task?.Id);
+
             if (Tasks.Count == 0)
                 App.Current.Dispatcher.Invoke(async () => (await WindowUtility.Current.loadingOverlay.Fade(0)).Hide()).ConfigureAwait(false);
 

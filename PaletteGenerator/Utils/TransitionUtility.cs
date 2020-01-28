@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 
@@ -55,8 +56,7 @@ namespace PaletteGenerator.Utils
                 animation.Duration = new Duration(DefaultDuration);
 
             element.BeginAnimation(property, animation);
-            await Task.Delay(animation.Duration.TimeSpan + TimeSpan.FromSeconds(0.05));
-
+            await Task.Delay(animation.Duration.TimeSpan);
             return element;
 
         }

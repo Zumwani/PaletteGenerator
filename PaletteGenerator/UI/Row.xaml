@@ -2,49 +2,87 @@
                     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:ui="clr-namespace:PaletteGenerator.UI"
-                    xmlns:local="clr-namespace:PaletteGenerator">
-
+                    xmlns:local="clr-namespace:PaletteGenerator"
+                    xmlns:colorPicker="clr-namespace:ColorPickerLib.Controls;assembly=ColorPickerLib"
+                    xmlns:converters="clr-namespace:PaletteGenerator.Converters">
+    
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="Button.xaml"/>
+    </ResourceDictionary.MergedDictionaries>
+    
     <DataTemplate DataType="{x:Type local:Row}">
 
+        <DataTemplate.Resources>
+
+            <Style TargetType="{x:Type ItemsControl}">
+
+                <Setter Property="VirtualizingPanel.IsVirtualizing"     Value="True"/>
+                <Setter Property="VirtualizingPanel.VirtualizationMode" Value="Recycling"/>
+
+                <Setter Property="ItemTemplate">
+                    <Setter.Value>
+                        <DataTemplate DataType="{x:Type Color}">
+                            <Rectangle Width="64" Height="64" Fill="{Binding Converter={converters:ToBrush}}"/>
+                        </DataTemplate>
+                    </Setter.Value>
+                </Setter>
+                <Setter Property="ItemsPanel">
+                    <Setter.Value>
+                        <ItemsPanelTemplate>
+                            <VirtualizingStackPanel Orientation="Horizontal"/>
+                        </ItemsPanelTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <Style TargetType="{x:Type colorPicker:ColorPicker}">
+                
+                <Setter Property="StandardButtonHeader" Value="Named Colors"/>
+                <Setter Property="AdvancedButtonHeader" Value="Color Picker"/>
+                <Setter Property="AvailableColorsSortingMode" Value="HueSaturationBrightness"/>
+                <Setter Property="ColorMode" Value="ColorCanvas"/>
+
+                <Setter Property="ButtonStyle">
+                    <Setter.Value>
+                        <Style TargetType="{x:Type ToggleButton}">
+                            <Setter Property="Width" Value="64"/>
+                            <Setter Property="Height" Value="64"/>
+                            <Setter Property="BorderThickness" Value="0"/>
+                            <Setter Property="Template" Value="{StaticResource ButtonTemplate}"/>
+                            <Setter Property="Background">
+                                <Setter.Value>
+                                    <SolidColorBrush Color="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=colorPicker:ColorPicker}, Path=SelectedColor}" Opacity="0"/>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </Setter.Value>
+                </Setter>
+                
+                <Style.Resources>
+                    <ResourceDictionary>
+
+                        <Style TargetType="{x:Type Button}" BasedOn="{StaticResource ButtonBaseStyle}">
+                            <Setter Property="Template" Value="{StaticResource ButtonTemplate}"/>
+                            <Setter Property="Width" Value="Auto"/>
+                            <Setter Property="Padding" Value="12"/>
+                        </Style>
+                        
+                    </ResourceDictionary>
+                </Style.Resources>
+
+            </Style>
+            
+        </DataTemplate.Resources>
+        
         <StackPanel Orientation="Horizontal" Margin="0,6">
 
-            <ui:ColorEditor Color="{Binding Source={x:Static local:WindowUtility.Current}, Path=LeftColor, Mode=TwoWay}" IsEditable="True" BorderThickness="1,1,0,1" BorderBrush="LightGray"/>
-
-            <ItemsControl ItemsSource="{Binding Left}">
-
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <StackPanel Orientation="Horizontal"/>
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
-
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate DataType="{x:Type Color}">
-                        <ui:ColorEditor Color="{Binding}" DataContext="{Binding}"/>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-
-            </ItemsControl>
-
-            <ui:ColorEditor Color="{Binding Center, Mode=TwoWay}" IsEditable="True" ColorChanged="CenterColorChanged" BorderThickness="0,1" BorderBrush="LightGray" Margin="-1,0"/>
-
-            <ItemsControl ItemsSource="{Binding Right}">
-
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <StackPanel Orientation="Horizontal"/>
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
-
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <ui:ColorEditor Color="{Binding}"/>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-
-            </ItemsControl>
-
-            <ui:ColorEditor Color="{Binding Source={x:Static local:WindowUtility.Current}, Path=RightColor, Mode=TwoWay}" IsEditable="True" BorderThickness="0,1,1,1" BorderBrush="LightGray"/>
+            <colorPicker:ColorPicker SelectedColor="{Binding Source={x:Static local:WindowUtility.Current}, Path=LeftColor, Mode=TwoWay}" BorderThickness="1,1,0,1"/>
+            <!--<ui:ColorEditor Color="{Binding Source={x:Static local:WindowUtility.Current}, Path=LeftColor, Mode=TwoWay}" BorderThickness="1,1,0,1"/>-->
+            <ItemsControl ItemsSource="{Binding Left}"/>
+            <!--<ui:ColorEditor Color="{Binding Center, Mode=TwoWay}" ColorChanged="CenterColorChanged" BorderThickness="0,1" Margin="-1,0"/>-->
+            <ItemsControl ItemsSource="{Binding Right}"/>
+            <colorPicker:ColorPicker SelectedColor="{Binding Source={x:Static local:WindowUtility.Current}, Path=RightColor, Mode=TwoWay}" BorderThickness="1,1,0,1"/>
+            <!--<ui:ColorEditor Color="{Binding Source={x:Static local:WindowUtility.Current}, Path=RightColor, Mode=TwoWay}" BorderThickness="0,1,1,1"/>-->
 
             <Canvas>
                 <Button VerticalAlignment="Center" FontSize="12" Margin="4,0" Click="Remove" Foreground="DimGray" Content="✖"/>

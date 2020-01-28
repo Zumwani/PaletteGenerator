@@ -5,9 +5,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Linq;
 using System.ComponentModel;
-using System;
 using System.Diagnostics;
-using PaletteGenerator.Utils;
 
 namespace PaletteGenerator
 {
@@ -116,10 +114,7 @@ namespace PaletteGenerator
                     var rowTemplate = App.Current.Dispatcher.Invoke(() => 
                         (FrameworkElement)WindowUtility.Current.list.ItemContainerGenerator.ContainerFromItem(row));
 
-                    await rowTemplate.Fade(1, 0, TimeSpan.FromSeconds(0.1));
-
                     row.SetColors(await row.Calculate(left, right, steps, hue, sat));
-                    await rowTemplate.Fade(0, 1, TimeSpan.FromSeconds(0.1));
 
                 }
 
@@ -127,7 +122,7 @@ namespace PaletteGenerator
 
             });
 
-            tasks.ForEach(t => t.ShowLoadingScreen());
+            tasks.ForEach(t => t.ConfigureAwait(false));
 
         }
 
