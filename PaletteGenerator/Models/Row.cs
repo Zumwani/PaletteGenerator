@@ -33,11 +33,11 @@ namespace PaletteGenerator
             {
 
                 var l = new List<Color>();
-                l.Add(MainWindow.Current.LeftColor);
+                l.Add(App.Current.Dispatcher.Invoke(() => WindowUtility.Current.LeftColor));
                 l.AddRange(Left);
                 l.Add(Center);
                 l.AddRange(Right);
-                l.Add(MainWindow.Current.RightColor);
+                l.Add(App.Current.Dispatcher.Invoke(() => WindowUtility.Current.RightColor));
 
                 return l.ToArray();
 
@@ -51,15 +51,12 @@ namespace PaletteGenerator
         void OnPropertyChanged([CallerMemberName] string name = "") =>
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 
-        void OnAllPropertiesChanged() =>
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(string.Empty));
-
         #endregion
 
-        public Task<(IEnumerable<Color> left, IEnumerable<Color> right)> Calculate(Color left, Color right, int steps, float hueOffset) =>
+        public Task<(IEnumerable<Color> left, IEnumerable<Color> right)> Calculate(Color left, Color right, int steps, float hueOffset, float saturationOffset) =>
             Task.Run(() =>
-            (left.Blend(Center, steps).Skip(1).SkipLast(1).Select(c => c.OffsetHue(hueOffset * -360)),
-             Center.Blend(right, steps).Skip(1).SkipLast(1).Select(c => c.OffsetHue(hueOffset * -360)))
+            (left.Blend(Center, steps).Skip(1).SkipLast(1).Select(c => c.OffsetHue(hueOffset).OffsetSaturation(saturationOffset)),
+             Center.Blend(right, steps).Skip(1).SkipLast(1).Select(c => c.OffsetHue(hueOffset).OffsetSaturation(saturationOffset)))
             );
 
         public void SetColors((IEnumerable<Color> left, IEnumerable<Color> right) colors)

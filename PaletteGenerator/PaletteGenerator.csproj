@@ -13,6 +13,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Xaml\Collections\**" />
+    <EmbeddedResource Remove="Xaml\Collections\**" />
+    <None Remove="Xaml\Collections\**" />
+    <Page Remove="Xaml\Collections\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="Assets\transparent.png" />
   </ItemGroup>
 
@@ -27,16 +34,13 @@
     <PackageReference Include="Ookii.Dialogs" Version="1.0.0" />
     <PackageReference Include="OpenShell.Screens" Version="1.0.0" />
     <PackageReference Include="System.Drawing.Common" Version="4.7.0" />
+    <PackageReference Include="System.Windows.Interactivity.WPF" Version="2.0.20525" />
   </ItemGroup>
 
   <ItemGroup>
     <Page Update="UI\Button.xaml">
       <SubType>Designer</SubType>
     </Page>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Xaml\Collections\" />
   </ItemGroup>
 
 </Project>

@@ -95,8 +95,18 @@ namespace PaletteGenerator
         {
 
             var hsv = color.AsHSV();
-            hsv.hue += offset;
-            Console.WriteLine(hsv.hue);
+            hsv.hue = MathUtility.Wrap(hsv.hue + (offset * 360), 0, 360);
+            color = hsv.AsColor();
+
+            return color;
+
+        }
+
+        public static Color OffsetSaturation(this Color color, float offset)
+        {
+
+            var hsv = color.AsHSV();
+            hsv.saturation = (hsv.saturation * offset).Clamp01();
             color = hsv.AsColor();
 
             return color;

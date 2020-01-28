@@ -29,7 +29,7 @@
             </ControlTemplate>
         </ToggleButton.Template>
 
-        <!--<colorPicker:ColorPicker Grid.Row="1" Background="White" SelectedColor="{Binding ElementName=editor, Path=Color, Mode=TwoWay}" x:Name="popup" FontSize="18" BorderThickness="0">
+        <colorPicker:ColorPicker Grid.Row="1" Background="White" SelectedColor="{Binding ElementName=editor, Path=Color, Mode=TwoWay}" x:Name="popup" FontSize="18">
             <colorPicker:ColorPicker.Resources>
                 <ResourceDictionary>
 
@@ -54,9 +54,9 @@
 
                 </ResourceDictionary>
             </colorPicker:ColorPicker.Resources>
-        </colorPicker:ColorPicker>-->
+        </colorPicker:ColorPicker>
 
-        <Popup x:Name="popup" StaysOpen="False" IsOpen="{Binding ElementName=toggle, Path=IsChecked, Delay=10}"
+        <!--<Popup x:Name="popup" StaysOpen="False" IsOpen="{Binding ElementName=toggle, Path=IsChecked, Delay=10}"
                PlacementTarget="{Binding ElementName=toggle}" Placement="Bottom" PopupAnimation="Fade">
 
             <Popup.Resources>
@@ -101,13 +101,13 @@
                         </StackPanel>
                     </DockPanel>
 
-                    <!--<colorPicker:ColorPicker Grid.Row="1" Background="White" SelectedColor="{Binding ElementName=editor, Path=Color, Mode=TwoWay}" IsOpen="True"/>-->
+                    --><!--<colorPicker:ColorPicker Grid.Row="1" Background="White" SelectedColor="{Binding ElementName=editor, Path=Color, Mode=TwoWay}" IsOpen="True"/>--><!--
 
                 </Grid>
 
             </Border>
             
-        </Popup>
+        </Popup>-->
         
     </ToggleButton>
     

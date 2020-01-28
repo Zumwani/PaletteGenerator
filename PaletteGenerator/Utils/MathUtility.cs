@@ -1,4 +1,6 @@
-﻿namespace PaletteGenerator
+﻿using System;
+
+namespace PaletteGenerator
 {
 
     public static class MathUtility
@@ -23,6 +25,14 @@
             if (value > max) value = max;
             if (value < min) value = min;
             return value;
+        }
+
+        public static float Clamp01(this float value) =>
+            Clamp(value, 0, 1);
+
+        public static float Wrap(this float value, float min, float max)
+        {
+            return value - (max - min) * MathF.Floor(value / (max - min));
         }
 
     }

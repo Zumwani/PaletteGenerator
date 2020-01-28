@@ -2,6 +2,7 @@
 using System;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Markup;
@@ -16,7 +17,7 @@ namespace PaletteGenerator.Commands
         public bool CanExecute(object parameter) => true;
         public override object ProvideValue(IServiceProvider serviceProvider) => this;
 
-        public async void Execute(object parameter)
+        public void Execute(object parameter)
         {
 
             var dialog = new VistaSaveFileDialog
@@ -30,24 +31,27 @@ namespace PaletteGenerator.Commands
             if (dialog.ShowDialog() ?? false)
             {
 
-                await MainWindow.ShowLoadingOverlay();
+                var rows = MainWindow.CurrentRows;
 
-                try
+                LoadingUtility.ShowLoadingScreen(async () => 
                 {
 
-                    var colors = MainWindow.CurrentRows.Select(r => r.AllColors).ToArray();
-                    var bitmap = colors.AsPNGPalette(64);
+                    try
+                    {
 
-                    using var ms = bitmap.AsBytes();
-                    await File.WriteAllBytesAsync(dialog.FileName, ms.ToArray());
+                        var colors = rows.Select(r => r.AllColors).ToArray();
+                        var bitmap = colors.AsPNGPalette(64);
 
-                }
-                catch (Exception e)
-                {
-                    MessageBox.Show(e.GetType().Name + ":" + Environment.NewLine + Environment.NewLine + e.Message + Environment.NewLine + Environment.NewLine, "An error occured when exporting as png.");
-                }
+                        using var ms = bitmap.AsBytes();
+                        await File.WriteAllBytesAsync(dialog.FileName, ms.ToArray());
 
-                _ = MainWindow.HideLoadingOverlay().ConfigureAwait(false);
+                    }
+                    catch (Exception e)
+                    {
+                        MessageBox.Show(e.GetType().Name + ":" + Environment.NewLine + Environment.NewLine + e.Message + Environment.NewLine + Environment.NewLine, "An error occured when exporting as png.");
+                    }
+
+                });
 
             }
 

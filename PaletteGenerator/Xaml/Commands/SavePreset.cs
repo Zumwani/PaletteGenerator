@@ -16,7 +16,7 @@ namespace PaletteGenerator.Commands
         public bool CanExecute(object parameter) => true;
         public override object ProvideValue(IServiceProvider serviceProvider) => this;
 
-        public async void Execute(object parameter)
+        public void Execute(object parameter)
         {
 
             var dialog = new VistaSaveFileDialog
@@ -30,19 +30,22 @@ namespace PaletteGenerator.Commands
             if (dialog.ShowDialog() ?? false)
             {
 
-                await MainWindow.ShowLoadingOverlay();
+                var rows = MainWindow.CurrentRows;
 
-                try
+                LoadingUtility.ShowLoadingScreen(async () =>
                 {
-                    using var fs = dialog.OpenFile();
-                    await JsonSerializer.SerializeAsync(fs, MainWindow.CurrentRows);
-                }
-                catch (Exception e)
-                {
-                    MessageBox.Show(e.GetType().Name + ":" + Environment.NewLine + Environment.NewLine + e.Message + Environment.NewLine + Environment.NewLine, "An error occured while writing json file.");
-                }
 
-                _ = MainWindow.HideLoadingOverlay().ConfigureAwait(false);
+                    try
+                    {
+                        using var fs = dialog.OpenFile();
+                        await JsonSerializer.SerializeAsync(fs, rows);
+                    }
+                    catch (Exception e)
+                    {
+                        MessageBox.Show(e.GetType().Name + ":" + Environment.NewLine + Environment.NewLine + e.Message + Environment.NewLine + Environment.NewLine, "An error occured while writing json file.");
+                    }
+
+                });
 
             }
 

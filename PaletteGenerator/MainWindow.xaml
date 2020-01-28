@@ -6,7 +6,7 @@
         xmlns:converters="clr-namespace:PaletteGenerator.Converters"
         xmlns:commands="clr-namespace:PaletteGenerator.Commands"
         xmlns:mahApps="http://metro.mahapps.com/winfx/xaml/controls"
-        SizeChanged="UpdateMaximizeToggleButton"
+        xmlns:fa="http://schemas.fontawesome.io/icons/"
         Title="Palette Generator" Height="528" Width="1250"
         WindowStartupLocation="CenterScreen" WindowStyle="None" 
         DataContext="{Binding RelativeSource={RelativeSource Mode=Self}}" FontFamily="Segoe UI Semilight" AllowsTransparency="True">
@@ -45,7 +45,7 @@
 
     <Border Background="White" BorderThickness="1" BorderBrush="Black">
         <Grid>
-
+            
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
@@ -65,31 +65,48 @@
                     </Button.Background>
                 </Button>
 
-                <Button ToolTip="Maximize" x:Name="maximizeButton" Click="UpdateMaximizeToggleButton" Content="" Style="{StaticResource ToolButton}" Command="{commands:ToggleMaximizeWindow}" CommandParameter="{Binding}" WindowChrome.IsHitTestVisibleInChrome="True"/>
+                <Button ToolTip="Maximize" ui:WindowUtility.IsMaximizeButton="True" Content="" Style="{StaticResource ToolButton}" Command="{commands:ToggleMaximizeWindow}" CommandParameter="{Binding}" WindowChrome.IsHitTestVisibleInChrome="True"/>
                 <Button ToolTip="Minimize" Content="" Style="{StaticResource ToolButton}" Command="{commands:MinimizeWindow}" CommandParameter="{Binding}" WindowChrome.IsHitTestVisibleInChrome="True"/>
                 <TextBlock Text="{Binding Title}" FontSize="16" DockPanel.Dock="Left" Padding="12"/>
 
             </DockPanel>
 
-            <StackPanel Grid.Row="1" Margin="0,64,0,0">
+            <StackPanel Grid.Row="0" Grid.RowSpan="4" Margin="12" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="226">
 
-                <TextBlock Text="Hue" HorizontalAlignment="Center" FontSize="18"/>
-                <Slider Value="{Binding Hue, Mode=TwoWay}" HorizontalAlignment="Center" Width="200" TickFrequency="0.1"
-                        KeyUp="Slider_KeyUp" MouseMove="Slider_MouseMove" MouseLeave="Slider_MouseLeave" Maximum="1"/>
+                <ToggleButton x:Name="offsetsButton" IsHitTestVisible="{Binding ElementName=offsetsPopup, Path=IsOpen, Converter={converters:InvertBool}}" fa:Awesome.Content="ChevronUp" Width="Auto" Height="22"/>
+                <DockPanel>
+                    
+                    <Button Click="Add" ToolTip="Add row" Content="" Style="{StaticResource ToolButton}" DockPanel.Dock="Right" Height="32" Margin="12,0,0,0"/>
+                    
+                    <Slider Value="{Binding Columns, Mode=TwoWay}" VerticalAlignment="Center" Minimum="{Binding MinColumns}" Maximum="{Binding MaxColumns}"
+                            TickFrequency="2" SmallChange="2" LargeChange="2" Thumb.DragCompleted="Slider_DragCompleted" KeyUp="Slider_KeyUp"/>
+                
+                </DockPanel>
 
+                <Popup x:Name="offsetsPopup" IsOpen="{Binding ElementName=offsetsButton, Path=IsChecked}" StaysOpen="False" PopupAnimation="Fade" Placement="Top" PlacementTarget="{Binding ElementName=offsetsButton}">
+                    <Border Background="White" BorderThickness="1" BorderBrush="Black">
+                        <StackPanel Margin="12">
+
+                            <TextBlock Text="Offsets:" FontSize="16" Margin="0,0,0,12"/>
+
+                            <TextBlock Text="Hue" HorizontalAlignment="Center" FontSize="16"/>
+                            <Slider Value="{Binding Hue, Mode=TwoWay}" Width="200"  Thumb.DragCompleted="Slider_DragCompleted" KeyUp="Slider_KeyUp"/>
+
+                            <TextBlock Text="Saturation" HorizontalAlignment="Center" FontSize="16"/>
+                            <Slider Value="{Binding Saturation, Mode=TwoWay}" Width="200"  Thumb.DragCompleted="Slider_DragCompleted" KeyUp="Slider_KeyUp"/>
+
+                        </StackPanel>
+                    </Border>
+                </Popup>
+                
             </StackPanel>
             
             <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto">
-                <ItemsControl x:Name="list" ItemsSource="{Binding Rows}" Margin="42" HorizontalAlignment="Center"/>
+                <ItemsControl x:Name="list" ItemsSource="{Binding Rows}" Margin="42" HorizontalAlignment="Center" VerticalAlignment="Center"/>
             </ScrollViewer>
             
-            <DockPanel Background="Transparent" Grid.Row="3" LastChildFill="False" Margin="12">
+            <DockPanel Grid.Row="3" LastChildFill="False" Margin="12" HorizontalAlignment="Right">
 
-                <Slider Value="{Binding Columns, Mode=TwoWay}" Minimum="{Binding MinColumns}" Maximum="{Binding MaxColumns}" Width="100" Margin="0,16,6,0" DockPanel.Dock="Left"
-                        TickFrequency="2" SmallChange="2" LargeChange="2"
-                        KeyUp="Slider_KeyUp" MouseMove="Slider_MouseMove" MouseLeave="Slider_MouseLeave"/>
-                
-                <Button Click="Add" ToolTip="Add row" Content="" Style="{StaticResource ToolButton}" DockPanel.Dock="Left"/>
                 <Button Click="Update" ToolTip="Check for updates" Content="" Style="{StaticResource ToolButton}"/>
 
                 <ToggleButton x:Name="presetsButton" Content="Presets" Width="Auto" DockPanel.Dock="Right" FontSize="18" Margin="12,0" Padding="12" 
@@ -101,8 +118,8 @@
             <Popup x:Name="presetsMenu" IsOpen="{Binding RelativeSource={RelativeSource Mode=Self}, Path=PlacementTarget.IsChecked}" PlacementTarget="{Binding ElementName=presetsButton}" Placement="Top" StaysOpen="False" PopupAnimation="Fade">
                 <Border Background="White" BorderBrush="Black" BorderThickness="1">
                     <ItemsControl>
-                        <MenuItem Header="Load..." Command="{commands:LoadPreset}"/>
                         <MenuItem Header="Save..." Command="{commands:SavePreset}"/>
+                        <MenuItem Header="Load..." Command="{commands:LoadPreset}"/>
                     </ItemsControl>
                 </Border>
             </Popup>
