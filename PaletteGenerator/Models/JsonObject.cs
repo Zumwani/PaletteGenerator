@@ -10,25 +10,34 @@ using System.Windows;
 namespace PaletteGenerator
 {
     
-    public static class JsonObject<T> where T : new() 
+    public static class Prompt
     {
 
         static string DefaultFolder =>
             Directory.CreateDirectory(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Palette Generator")).FullName;
 
-        #region Prompt
+        const string DefaultExt = "json";
 
-        public static string? PromptSave() => Prompt<VistaSaveFileDialog>();
-        public static string? PromptLoad() => Prompt<VistaOpenFileDialog>();
+        public static string? Save() => DoPrompt<VistaSaveFileDialog>();
+        public static string? Load() => DoPrompt<VistaOpenFileDialog>();
 
-        static string? Prompt<T1>() where T1 : VistaFileDialog, new()
+        public static string? Save(string initialFolder, string? ext = null) => DoPrompt<VistaSaveFileDialog>(initialFolder, ext);
+        public static string? Load(string initialFolder, string? ext = null) => DoPrompt<VistaOpenFileDialog>(initialFolder, ext);
+
+        static string? DoPrompt<T1>(string? initialFolder = null, string? ext = null) where T1 : VistaFileDialog, new()
         {
+
+            initialFolder ??= DefaultFolder;
+            ext ??= DefaultExt;
+
+            if (ext.StartsWith("."))
+                ext = ext.Remove(0, 1);
 
             var dialog = new T1
             {
-                InitialDirectory = DefaultFolder,
-                Filter = "JSON files|*.json|All files|*.*",
-                DefaultExt = ".json",
+                InitialDirectory = initialFolder,
+                Filter = $"{ext} files|*.{ext}|All files|*.*",
+                DefaultExt = $".{ext}",
                 AddExtension = true,
             };
 
@@ -37,11 +46,13 @@ namespace PaletteGenerator
         }
 #nullable disable
 
-        public static async Task<T> PromptAndLoad() =>  await Load(PromptLoad() ?? string.Empty);
-        public static void PromptAndSave(T obj)     => Save(obj, PromptSave() ?? string.Empty);
+    }
 
-        #endregion
-        #region Json
+    public static class JsonObject<T> where T : new() 
+    {
+
+        public static async Task<T> PromptAndLoad() =>  await Load(Prompt.Load() ?? string.Empty);
+        public static void PromptAndSave(T obj)     => Save(obj, Prompt.Save() ?? string.Empty);
 
         public static async Task<T> Load(string path, bool createNewIfNotFound = false)
         {
@@ -88,8 +99,6 @@ namespace PaletteGenerator
 
         static void ErrorMessage(Exception e, string action) =>
             MessageBox.Show(e.GetType().Name + ":" + Environment.NewLine + Environment.NewLine + e.Message + Environment.NewLine + Environment.NewLine, $"An error occured while {action} json file.");
-
-        #endregion
 
     }
 

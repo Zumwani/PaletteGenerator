@@ -19,22 +19,14 @@ namespace PaletteGenerator.Commands
         public void Execute(object parameter)
         {
 
-            var dialog = new VistaSaveFileDialog
-            {
-                InitialDirectory = Directory.CreateDirectory(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Palette Generator")).FullName,
-                Filter = "PNG files|*.png|All files|*.*",
-                DefaultExt = ".png",
-                AddExtension = true,
-            };
+            var rows = App.Window.Rows;
+            var hue = App.Window.Hue;
+            var saturation = App.Window.Saturation;
 
-            if (dialog.ShowDialog() ?? false)
+            LoadingUtility.ShowLoadingScreen(async () =>
             {
 
-                var rows = App.Window.Rows;
-                var hue = App.Window.Hue;
-                var saturation = App.Window.Saturation;
-
-                LoadingUtility.ShowLoadingScreen(async () => 
+                if (Prompt.Save(Directory.CreateDirectory(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Palette Generator")).FullName, "png") is string path)
                 {
 
                     try
@@ -44,7 +36,7 @@ namespace PaletteGenerator.Commands
                         var bitmap = colors.AsPNGPalette(64);
 
                         using var ms = bitmap.AsBytes();
-                        await File.WriteAllBytesAsync(dialog.FileName, ms.ToArray());
+                        await File.WriteAllBytesAsync(path, ms.ToArray());
 
                     }
                     catch (Exception e)
@@ -52,9 +44,9 @@ namespace PaletteGenerator.Commands
                         MessageBox.Show(e.GetType().Name + ":" + Environment.NewLine + Environment.NewLine + e.Message + Environment.NewLine + Environment.NewLine, "An error occured when exporting as png.");
                     }
 
-                });
+                }
 
-            }
+            });
 
         }
 
