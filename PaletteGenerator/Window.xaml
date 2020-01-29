@@ -1,4 +1,4 @@
-﻿<Window x:Class="PaletteGenerator.MainWindow"
+﻿<Window x:Class="PaletteGenerator.Window"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:local="clr-namespace:PaletteGenerator"
@@ -20,10 +20,11 @@
 
             <ResourceDictionary.MergedDictionaries>
 
+                <ResourceDictionary Source="/ColorPickerLib;component/Themes/LightBrushs.xaml"/>
                 <ResourceDictionary Source="UI/Button.xaml"/>
                 <ResourceDictionary Source="UI/Slider.xaml"/>
                 <ResourceDictionary Source="UI/Row.xaml"/>
-
+                
             </ResourceDictionary.MergedDictionaries>
 
             <Style x:Key="ToolButton" TargetType="{x:Type Button}" BasedOn="{StaticResource ButtonBaseStyle}">

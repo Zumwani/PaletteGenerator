@@ -31,7 +31,9 @@ namespace PaletteGenerator.Commands
             if (dialog.ShowDialog() ?? false)
             {
 
-                var rows = MainWindow.CurrentRows;
+                var rows = App.Window.Rows;
+                var hue = App.Window.Hue;
+                var saturation = App.Window.Saturation;
 
                 LoadingUtility.ShowLoadingScreen(async () => 
                 {
@@ -39,7 +41,7 @@ namespace PaletteGenerator.Commands
                     try
                     {
 
-                        var colors = rows.Select(r => r.AllColors).ToArray();
+                        var colors = rows.Select(r => r.AllColors.ApplyOffsets(hue, saturation)).ToArray();
                         var bitmap = colors.AsPNGPalette(64);
 
                         using var ms = bitmap.AsBytes();

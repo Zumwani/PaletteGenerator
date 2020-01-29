@@ -38,11 +38,11 @@
         
         <StackPanel Orientation="Horizontal" Margin="0,6">
 
-            <ui:ColorEditor Color="{Binding Source={x:Static local:WindowUtility.Current}, Path=LeftColor, Mode=TwoWay}" BorderThickness="1,1,0,1"/>
+            <ui:ColorEditor Color="{Binding Source={x:Static local:App.Window}, Path=LeftColor, Mode=TwoWay}" BorderThickness="1,1,0,1"/>
             <ItemsControl ItemsSource="{Binding Left}"/>
             <ui:ColorEditor Color="{Binding Center, Mode=TwoWay}" ColorChanged="CenterColorChanged" BorderThickness="0,1"/>
             <ItemsControl ItemsSource="{Binding Right}"/>
-            <ui:ColorEditor Color="{Binding Source={x:Static local:WindowUtility.Current}, Path=RightColor, Mode=TwoWay}" BorderThickness="0,1,1,1"/>
+            <ui:ColorEditor Color="{Binding Source={x:Static local:App.Window}, Path=RightColor, Mode=TwoWay}" BorderThickness="0,1,1,1"/>
 
             <Canvas>
                 <Button VerticalAlignment="Center" FontSize="12" Margin="4,0" Click="Remove" Foreground="DimGray" Content="✖"/>

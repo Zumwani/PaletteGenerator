@@ -95,6 +95,11 @@ namespace PaletteGenerator.UI
 
         }
 
+        private void ColorModeButton_Click(object sender, RoutedEventArgs e)
+        {
+            //Settings.Current.ColorMode.Value = colorPicker.ColorMode;
+        }
+
     }
 
 }

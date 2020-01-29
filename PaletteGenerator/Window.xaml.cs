@@ -14,10 +14,8 @@ namespace PaletteGenerator
     //TODO: Make toggle button popup stay pressed while popup open
     //TODO: Fix eye dropper cursor
     //TODO: Save color mode
-    //TODO: Save offsets in presets
-    //TODO: Apply offsets when exporting
 
-    public partial class MainWindow : Window
+    public partial class Window : System.Windows.Window
     {
 
         #region Properties
@@ -26,11 +24,11 @@ namespace PaletteGenerator
         public double MaxColumns => 16;
         public double MinColumns => 2;
 
-        public static DependencyProperty ColumnsProperty    = DependencyProperty.Register(nameof(Columns),    typeof(int),   typeof(MainWindow), new PropertyMetadata(4));      //Property change is handled by Slider.MouseUp event, since lag occurs otherwise while dragging slider
-        public static DependencyProperty HueProperty        = DependencyProperty.Register(nameof(Hue),        typeof(float), typeof(MainWindow), new PropertyMetadata(0f));   //Property change is handled by Slider.MouseUp event, since lag occurs otherwise while dragging slider
-        public static DependencyProperty SaturationProperty = DependencyProperty.Register(nameof(Saturation), typeof(float), typeof(MainWindow), new PropertyMetadata(1f));   //Property change is handled by Slider.MouseUp event, since lag occurs otherwise while dragging slider
-        public static DependencyProperty LeftColorProperty  = DependencyProperty.Register(nameof(LeftColor),  typeof(Color), typeof(MainWindow), new PropertyMetadata(Colors.White, OnColumnsChanged));
-        public static DependencyProperty RightColorProperty = DependencyProperty.Register(nameof(RightColor), typeof(Color), typeof(MainWindow), new PropertyMetadata(Colors.Black, OnColumnsChanged));
+        public static DependencyProperty ColumnsProperty    = DependencyProperty.Register(nameof(Columns),    typeof(int),   typeof(Window), new PropertyMetadata(4));      //Property change is handled by Slider.MouseUp event, since lag occurs otherwise while dragging slider
+        public static DependencyProperty HueProperty        = DependencyProperty.Register(nameof(Hue),        typeof(float), typeof(Window), new PropertyMetadata(0f));   //Property change is handled by Slider.MouseUp event, since lag occurs otherwise while dragging slider
+        public static DependencyProperty SaturationProperty = DependencyProperty.Register(nameof(Saturation), typeof(float), typeof(Window), new PropertyMetadata(1f));   //Property change is handled by Slider.MouseUp event, since lag occurs otherwise while dragging slider
+        public static DependencyProperty LeftColorProperty  = DependencyProperty.Register(nameof(LeftColor),  typeof(Color), typeof(Window), new PropertyMetadata(Colors.White, OnColumnsChanged));
+        public static DependencyProperty RightColorProperty = DependencyProperty.Register(nameof(RightColor), typeof(Color), typeof(Window), new PropertyMetadata(Colors.Black, OnColumnsChanged));
 
         static void OnColumnsChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e) =>
             Recalculate();
@@ -70,12 +68,6 @@ namespace PaletteGenerator
         #endregion
         #region Rows
 
-        public static Row[] CurrentRows
-        {
-            get => WindowUtility.Current.Rows.ToArray();
-            set => WindowUtility.Current.Rows.Set(value);
-        }
-
         void Add(object sender = null, RoutedEventArgs e = null)
         {
             if (Rows.Count < MaxRows)
@@ -84,10 +76,10 @@ namespace PaletteGenerator
         }
 
         public static void Remove(Row row) =>
-            WindowUtility.Current.Rows.Remove(row);
+            App.Window.Rows.Remove(row);
 
         public static void Recalculate() =>
-            Recalculate(WindowUtility.Current.Rows.ToArray());
+            Recalculate(App.Window.Rows.ToArray());
 
         static int recalculationCount;
         public static void Recalculate(params Row[] rows)
@@ -99,25 +91,23 @@ namespace PaletteGenerator
             recalculationCount += 1;
             var currentCount = recalculationCount;
 
-            var left =  WindowUtility.Current.LeftColor;
-            var right = WindowUtility.Current.RightColor;
-            var hue =   WindowUtility.Current.Hue;
-            var sat =   WindowUtility.Current.Saturation;
+            var left = App.Window.LeftColor;
+            var right = App.Window.RightColor;
 
             var tasks = rows.Select(async Task => 
             {
 
-                var steps = WindowUtility.Current.Columns / 2 + 1;
+                var steps = App.Window.Columns / 2 + 1;
                 foreach (var row in rows)
                 {
 
                     if (recalculationCount != currentCount)
                         return System.Threading.Tasks.Task.CompletedTask;
 
-                    var rowTemplate = App.Current.Dispatcher.Invoke(() => 
-                        (FrameworkElement)WindowUtility.Current.list.ItemContainerGenerator.ContainerFromItem(row));
+                    var rowTemplate = App.Dispatcher.Invoke(() => 
+                        (FrameworkElement)App.Window.list.ItemContainerGenerator.ContainerFromItem(row));
 
-                    row.SetColors(await row.Calculate(left, right, steps, hue, sat));
+                    row.SetColors(await row.Calculate(left, right, steps));
 
                 }
 
@@ -134,10 +124,10 @@ namespace PaletteGenerator
         #endregion
         #region Window
 
-        public MainWindow()
+        public Window()
         {
             InitializeComponent();
-            Add(); Add();
+            //Add(); Add();
         }
 
         void Update(object sender, RoutedEventArgs e) =>
