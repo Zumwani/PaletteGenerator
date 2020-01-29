@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Globalization;
+using System.Windows;
 using System.Windows.Data;
 using System.Windows.Markup;
-using System.Windows.Media;
 
 namespace PaletteGenerator
 {
@@ -10,14 +10,15 @@ namespace PaletteGenerator
     namespace Converters
     {
 
-        public class ToBrush : MarkupExtension, IValueConverter
+        public class ShowIf : MarkupExtension, IValueConverter
         {
 
             public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
             {
-                if (value is Color c)
-                    return new SolidColorBrush(c.OffsetHue(App.Window.Hue).OffsetSaturation(App.Window.Saturation));
-                return default;
+                if (Equals(value, parameter))
+                    return Visibility.Visible;
+                else
+                    return Visibility.Collapsed;
             }
 
             public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

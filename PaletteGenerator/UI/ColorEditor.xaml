@@ -6,109 +6,94 @@
              xmlns:colorPicker="clr-namespace:ColorPickerLib.Controls;assembly=ColorPickerLib"
              xmlns:fa="http://schemas.fontawesome.io/icons/"
              x:Name="editor"
-             Width="64" Height="64"
-             Loaded="UserControl_Loaded">
+             FontFamily="Segoe UI Semilight" BorderBrush="LightGray">
 
-    <ToggleButton x:Name="toggle" BorderThickness="0" Background="{Binding ElementName=editor, Path=Color, Converter={converters:ToBrush}}"
-                  IsHitTestVisible="{Binding ElementName=editor, Path=IsEditable}"
-                  IsEnabled="{Binding ElementName=popup, Path=IsOpen, Converter={converters:InvertBool}}">
-
-        <ToggleButton.Template>
-            <ControlTemplate TargetType="{x:Type ToggleButton}">
-                
-                <Border x:Name="border" Background="{TemplateBinding Background}">
-                    <ContentPresenter/>
-                </Border>
-
-                <ControlTemplate.Triggers>
-                    <Trigger Property="IsMouseOver" Value="True">
-                        <Setter TargetName="border" Property="Margin" Value="4"/>
-                    </Trigger>
-                </ControlTemplate.Triggers>
-                
-            </ControlTemplate>
-        </ToggleButton.Template>
-
-        <colorPicker:ColorPicker Grid.Row="1" Background="White" SelectedColor="{Binding ElementName=editor, Path=Color, Mode=TwoWay}" x:Name="popup" FontSize="18">
-            <colorPicker:ColorPicker.Resources>
-                <ResourceDictionary>
-
-                    <ResourceDictionary.MergedDictionaries>
-                        <ResourceDictionary Source="Button.xaml"/>
-                    </ResourceDictionary.MergedDictionaries>
-
-                    <Style TargetType="{x:Type Border}">
-                        <Setter Property="BorderBrush" Value="Black"/>
-                    </Style>
-                    
-                    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource ButtonBaseStyle}">
-                        <Setter Property="Template" Value="{StaticResource ButtonTemplate}"/>
-                        <Setter Property="Width" Value="Auto"/>
-                        <Setter Property="Padding" Value="12"/>
-                    </Style>
-
-                    <Style TargetType="{x:Type ToggleButton}" BasedOn="{StaticResource ButtonBaseStyle}">
-                        <Setter Property="Template" Value="{x:Null}"/>
-                        <Setter Property="Width" Value="Auto"/>
-                    </Style>
-
-                </ResourceDictionary>
-            </colorPicker:ColorPicker.Resources>
-        </colorPicker:ColorPicker>
-
-        <!--<Popup x:Name="popup" StaysOpen="False" IsOpen="{Binding ElementName=toggle, Path=IsChecked, Delay=10}"
-               PlacementTarget="{Binding ElementName=toggle}" Placement="Bottom" PopupAnimation="Fade">
-
-            <Popup.Resources>
-                <Style TargetType="TextBox">
-                    <Setter Property="FontFamily" Value="Segoe UI Semilight"/>
-                </Style>
-            </Popup.Resources>
-            
-            <Border Background="White" BorderThickness="1" BorderBrush="Black">
-                <Grid>
-
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition/>
-                    </Grid.RowDefinitions>
-
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition/>
-                        <ColumnDefinition/>
-                    </Grid.ColumnDefinitions>
-
-                    <TextBlock Foreground="Black" Text="Pick color:" FontFamily="Segoe UI Semilight" FontSize="16" Margin="6"/>
-
-                    <ToggleButton x:Name="eyeDropper" ToolTip="Pick color from screen point" Width="28" Height="28" HorizontalAlignment="Right" VerticalAlignment="Top" Padding="6" Checked="EyeDropper_Checked">
-                        <ToggleButton.Content>
-                            <fa:ImageAwesome Icon="Eyedropper"/>
-                        </ToggleButton.Content>
-                    </ToggleButton>
-
-                    <TabControl Grid.Row="1">
-                        <TabItem Header="Freehand">
-                            <colorPicker:ColorCanvas x:Name="freehand" FontFamily="Segoe UI Semilight" DisplayColorSpace="HSV" SelectedColor="{Binding ElementName=editor, Path=Color, Mode=OneWay}"/>
-                        </TabItem>
-                        <TabItem Header="Known Colors"/>
-                    </TabControl>
-
-                    <DockPanel LastChildFill="False" Grid.Column="1" Grid.Row="1">
-                        <StackPanel>
-
-                            
-
-                        </StackPanel>
-                    </DockPanel>
-
-                    --><!--<colorPicker:ColorPicker Grid.Row="1" Background="White" SelectedColor="{Binding ElementName=editor, Path=Color, Mode=TwoWay}" IsOpen="True"/>--><!--
-
-                </Grid>
-
-            </Border>
-            
-        </Popup>-->
-        
-    </ToggleButton>
+    <UserControl.Background>
+        <ImageBrush ImageSource="pack://application:,,,/Assets/transparent.png" Stretch="None"/>
+    </UserControl.Background>
     
+    <UserControl.Resources>
+        <ResourceDictionary>
+
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Button.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+            
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <colorPicker:ColorPicker x:Name="colorPicker" SelectedColor="{Binding ElementName=editor, Path=Color, Mode=TwoWay}"
+                             StandardButtonHeader="Named Colors" AdvancedButtonHeader="Color Picker" AvailableColorsSortingMode="HueSaturationBrightness" ShowDropDownButton="False"
+                             ColorMode="{Binding Source={local:Settings}, Path=ColorMode.Value, Mode=TwoWay}" ShowRecentColors="True">
+
+        <colorPicker:ColorPicker.ButtonStyle>
+            <Style TargetType="{x:Type ToggleButton}">
+                <Setter Property="Width" Value="64"/>
+                <Setter Property="Height" Value="64"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate>
+
+                            <Rectangle x:Name="rectangle" Fill="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}, Path=DisplayColor, Converter={converters:ToBrush}}" StrokeThickness="0" Stroke="LightGray"/>
+
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="rectangle" Property="StrokeThickness" Value="2"/>
+                                </Trigger>
+                                <Trigger Property="IsMouseOver" Value="False">
+                                    <Setter TargetName="rectangle" Property="StrokeThickness" Value="0"/>
+                                </Trigger>
+                                <Trigger Property="ToggleButton.IsChecked" Value="True">
+                                    <Setter TargetName="rectangle" Property="StrokeThickness" Value="2"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+        </colorPicker:ColorPicker.ButtonStyle>
+
+        <colorPicker:ColorPicker.Resources>
+            <ResourceDictionary>
+
+                <ResourceDictionary.MergedDictionaries>
+                    <ResourceDictionary Source="Button.xaml"/>
+                </ResourceDictionary.MergedDictionaries>
+
+                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource ButtonBaseStyle}">
+
+                    <Setter Property="Width" Value="Auto"/>
+                    <Setter Property="Padding" Value="12"/>
+
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="{x:Type Button}">
+                                <Grid>
+
+                                    <Button Template="{StaticResource ButtonTemplate}" Content="{TemplateBinding Content}"/>
+
+                                    <ToggleButton ToolTip="Pick color from screen point" Width="28" Height="28" Visibility="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=colorPicker:ColorPicker}, Path=ColorMode, Converter={converters:ShowIf}, ConverterParameter={x:Static colorPicker:ColorMode.ColorCanvas}}" 
+                                                  HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,-32,0,0"
+                                                  PreviewMouseLeftButtonDown="EyeDropper_PreviewMouseLeftButtonDown">
+                                        <ToggleButton.Content>
+                                            <fa:ImageAwesome Icon="Eyedropper"/>
+                                        </ToggleButton.Content>
+                                    </ToggleButton>
+
+                                </Grid>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+
+                </Style>
+
+                <Style TargetType="{x:Type colorPicker:ColorCanvas}">
+                    <Setter Property="DisplayColorSpace" Value="{Binding Source={local:Settings}, Path=ColorSpace.Value, Mode=TwoWay}"/>
+                </Style>
+                
+            </ResourceDictionary>
+        </colorPicker:ColorPicker.Resources>
+    </colorPicker:ColorPicker>
+
 </UserControl>

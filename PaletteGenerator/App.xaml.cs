@@ -1,16 +1,20 @@
-﻿using System;
-using System.IO;
-using System.Windows;
+﻿using System.Windows.Threading;
 
 namespace PaletteGenerator
 {
 
-    public partial class App : Application
+    public partial class App
     {
 
-        public static string DataFolder(string subfolder = "", string subfile = "") =>
-            Path.Combine(Directory.CreateDirectory(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Palette Generator", subfolder)).FullName, subfile);
-    
+        public new static Dispatcher Dispatcher { get; } = Dispatcher.CurrentDispatcher;
+        public static Window Window { get; } = new Window();
+
+        private async void Application_Startup(object sender, System.Windows.StartupEventArgs e)
+        {
+            await Settings.Load();
+            Window.Show();
+        }
+
     }
 
 }

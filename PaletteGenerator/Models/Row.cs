@@ -33,11 +33,11 @@ namespace PaletteGenerator
             {
 
                 var l = new List<Color>();
-                l.Add(App.Current.Dispatcher.Invoke(() => WindowUtility.Current.LeftColor));
+                l.Add(App.Dispatcher.Invoke(() => App.Window.LeftColor));
                 l.AddRange(Left);
                 l.Add(Center);
                 l.AddRange(Right);
-                l.Add(App.Current.Dispatcher.Invoke(() => WindowUtility.Current.RightColor));
+                l.Add(App.Dispatcher.Invoke(() => App.Window.RightColor));
 
                 return l.ToArray();
 
@@ -53,10 +53,10 @@ namespace PaletteGenerator
 
         #endregion
 
-        public Task<(IEnumerable<Color> left, IEnumerable<Color> right)> Calculate(Color left, Color right, int steps, float hueOffset, float saturationOffset) =>
+        public Task<(IEnumerable<Color> left, IEnumerable<Color> right)> Calculate(Color left, Color right, int steps) =>
             Task.Run(() =>
-            (left.Blend(Center, steps).Skip(1).SkipLast(1).Select(c => c.OffsetHue(hueOffset).OffsetSaturation(saturationOffset)),
-             Center.Blend(right, steps).Skip(1).SkipLast(1).Select(c => c.OffsetHue(hueOffset).OffsetSaturation(saturationOffset)))
+            (left.Blend(Center, steps).Skip(1).SkipLast(1),
+             Center.Blend(right, steps).Skip(1).SkipLast(1))
             );
 
         public void SetColors((IEnumerable<Color> left, IEnumerable<Color> right) colors)

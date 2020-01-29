@@ -4,7 +4,7 @@
     <OutputType>WinExe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <UseWPF>true</UseWPF>
-    <StartupObject>PaletteGenerator.App</StartupObject>
+    <StartupObject></StartupObject>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
   </PropertyGroup>
 
@@ -20,11 +20,16 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Remove="App.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Assets\color-picker.cur" />
     <None Remove="Assets\transparent.png" />
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="Assets\transparent.png" />
+    <None Include="..\.editorconfig" Link=".editorconfig" />
   </ItemGroup>
 
   <ItemGroup>
@@ -35,6 +40,17 @@
     <PackageReference Include="OpenShell.Screens" Version="1.0.0" />
     <PackageReference Include="System.Drawing.Common" Version="4.7.0" />
     <PackageReference Include="System.Windows.Interactivity.WPF" Version="2.0.20525" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Include="App.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Assets\color-picker.cur" />
+    <Resource Include="Assets\transparent.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
 
   <ItemGroup>

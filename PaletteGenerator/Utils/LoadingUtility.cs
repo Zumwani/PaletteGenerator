@@ -12,9 +12,6 @@ namespace PaletteGenerator
 
         static readonly List<Task> Tasks = new List<Task>();
 
-        public static void ClearAll()
-        { Tasks.Clear(); OnTaskCompleted(); }
-
         public static void ShowLoadingScreen(this Action action) =>
             ShowLoadingScreen(Task.Run(action));
 
@@ -27,18 +24,18 @@ namespace PaletteGenerator
             Tasks.Add(task);
 
             if (!blocks.Any())
-                await App.Current.Dispatcher.Invoke(async () => await WindowUtility.Current.loadingOverlay.Show().Fade(0.5));
+                await App.Dispatcher.Invoke(async () => await App.Window.loadingOverlay.Show().Fade(0.5));
             await task.ContinueWith(OnTaskCompleted);
 
         }
 
         static void OnTaskCompleted(Task task = null)
         {
-            
-            if (Tasks.Contains(task))
-                Tasks.Remove(task);
+
+            Tasks.RemoveAll(t => task.Id == task?.Id);
+
             if (Tasks.Count == 0)
-                App.Current.Dispatcher.Invoke(async () => (await WindowUtility.Current.loadingOverlay.Fade(0)).Hide()).ConfigureAwait(false);
+                App.Dispatcher.Invoke(async () => (await App.Window.loadingOverlay.Fade(0)).Hide()).ConfigureAwait(false);
 
         }
 

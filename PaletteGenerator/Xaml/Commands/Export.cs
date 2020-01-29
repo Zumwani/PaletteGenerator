@@ -2,7 +2,6 @@
 using System;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Markup;
@@ -31,7 +30,9 @@ namespace PaletteGenerator.Commands
             if (dialog.ShowDialog() ?? false)
             {
 
-                var rows = MainWindow.CurrentRows;
+                var rows = App.Window.Rows;
+                var hue = App.Window.Hue;
+                var saturation = App.Window.Saturation;
 
                 LoadingUtility.ShowLoadingScreen(async () => 
                 {
@@ -39,7 +40,7 @@ namespace PaletteGenerator.Commands
                     try
                     {
 
-                        var colors = rows.Select(r => r.AllColors).ToArray();
+                        var colors = rows.Select(r => r.AllColors.ApplyOffsets(hue, saturation)).ToArray();
                         var bitmap = colors.AsPNGPalette(64);
 
                         using var ms = bitmap.AsBytes();
