@@ -8,6 +8,8 @@ using System.Windows.Media;
 using FontAwesome.WPF;
 using System.Collections.Generic;
 using System.ComponentModel;
+using window = System.Windows.Window;
+using System.Windows.Shapes;
 
 namespace PaletteGenerator.UI
 {
@@ -26,10 +28,8 @@ namespace PaletteGenerator.UI
         ~ColorEditor() =>
             controls.Remove(this);
 
-        public static void RefreshAll()
-        {
+        public static void RefreshAll() =>
             controls.ForEach(c => c.PropertyChanged?.Invoke(c, new PropertyChangedEventArgs(nameof(DisplayColor))));
-        }
 
         public static DependencyProperty ColorProperty = DependencyProperty.Register(nameof(Color), typeof(Color), typeof(ColorEditor), new PropertyMetadata(Colors.White, OnColorChanged));
 
@@ -50,7 +50,6 @@ namespace PaletteGenerator.UI
         public event EventHandler ColorChanged;
         public event PropertyChangedEventHandler PropertyChanged;
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0062:Make local function 'static'", Justification = "It cant...")]
         private async void EyeDropper_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
 
@@ -64,21 +63,21 @@ namespace PaletteGenerator.UI
             void OnMouseDown(object s, object e) => wasMousePressed = true;
             void OnKeyDown(object s, KeyEventArgs e) { if (e.Key == Key.Escape) wasEscPressed = true; }
 
-            void Initalize(Window w)
+            void Initalize(window w)
             {
-                w.Cursor = FontAwesomeIcon.Eyedropper.AsCursor();
+                Mouse.OverrideCursor = new Cursor(Application.GetResourceStream(new Uri("pack://application:,,,/Assets/color-picker.cur", UriKind.Absolute)).Stream);
                 w.MouseLeftButtonDown += OnMouseDown;
                 w.KeyDown += OnKeyDown;
             }
 
-            void Deinitalize(Window w)
+            void Deinitalize(window w)
             {
                 w.MouseLeftButtonDown -= OnMouseDown;
                 w.KeyDown -= OnKeyDown;
+                Mouse.OverrideCursor = null;
             }
 
-            var overlay = new OverlayUtility.Overlay();
-            overlay.Open(Initalize);
+            OverlayUtility.Open(Initalize, Deinitalize);
 
             var savedColor = Color;
             while (!(wasMousePressed || wasEscPressed))
@@ -90,14 +89,9 @@ namespace PaletteGenerator.UI
             if (toggle.IsMouseOver || wasEscPressed)
                 Color = savedColor;
 
-            overlay.Close(Deinitalize);
+            OverlayUtility.Close();
             toggle.IsChecked = false;
 
-        }
-
-        private void ColorModeButton_Click(object sender, RoutedEventArgs e)
-        {
-            //Settings.Current.ColorMode.Value = colorPicker.ColorMode;
         }
 
     }

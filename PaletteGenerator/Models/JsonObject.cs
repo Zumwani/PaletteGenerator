@@ -1,4 +1,5 @@
-﻿using Ookii.Dialogs.Wpf;
+﻿#nullable enable
+using Ookii.Dialogs.Wpf;
 using PaletteGenerator.UI;
 using System;
 using System.IO;
@@ -9,7 +10,7 @@ using System.Windows;
 namespace PaletteGenerator
 {
     
-    public static class JsonObject<T>
+    public static class JsonObject<T> where T : new() 
     {
 
         static string DefaultFolder =>
@@ -17,26 +18,13 @@ namespace PaletteGenerator
 
         #region Prompt
 
-        public static async Task<T> PromptLoad()
+        public static string? PromptSave() => Prompt<VistaSaveFileDialog>();
+        public static string? PromptLoad() => Prompt<VistaOpenFileDialog>();
+
+        static string? Prompt<T1>() where T1 : VistaFileDialog, new()
         {
 
-            var dialog = new VistaOpenFileDialog
-            {
-                InitialDirectory = DefaultFolder,
-                Filter = "JSON files|*.json|All files|*.*",
-            };
-
-            if (dialog.ShowDialog() ?? false)
-                return await Load(dialog.FileName);
-
-            return default;
-
-        }
-
-        public static void PromptSave(T obj)
-        {
-
-            var dialog = new VistaSaveFileDialog
+            var dialog = new T1
             {
                 InitialDirectory = DefaultFolder,
                 Filter = "JSON files|*.json|All files|*.*",
@@ -44,10 +32,13 @@ namespace PaletteGenerator
                 AddExtension = true,
             };
 
-            if (dialog.ShowDialog() ?? false)
-                Save(obj, dialog.FileName);
+            return (dialog.ShowDialog() ?? false) ? dialog.FileName : default;
 
         }
+#nullable disable
+
+        public static async Task<T> PromptAndLoad() =>  await Load(PromptLoad() ?? string.Empty);
+        public static void PromptAndSave(T obj)     => Save(obj, PromptSave() ?? string.Empty);
 
         #endregion
         #region Json
@@ -55,34 +46,34 @@ namespace PaletteGenerator
         public static async Task<T> Load(string path, bool createNewIfNotFound = false)
         {
 
-            if (DesignModeUtility.IsInDesignMode)
+            if (path == string.Empty || DesignModeUtility.IsInDesignMode)
                 return default;
+
+            if (!File.Exists(path))
+                if (createNewIfNotFound)
+                    return new T();
+                else
+                    ErrorMessage(new FileNotFoundException("", path), "reading");
 
             try
             {
-                var t = JsonSerializer.Deserialize<T>(await File.ReadAllTextAsync(path));
-                return t;
+                return JsonSerializer.Deserialize<T>(await File.ReadAllTextAsync(path));
             }
             catch (Exception e)
             {
-                if (createNewIfNotFound && e is FileNotFoundException)
-                    return Activator.CreateInstance<T>();
-                else
-                    MessageBox.Show(e.GetType().Name + ":" + Environment.NewLine + Environment.NewLine + e.Message + Environment.NewLine + Environment.NewLine, "An error occured while writing json file.");
+                ErrorMessage(e, "reading");
             }
 
             return default;
 
         }
 
-        public static void Save(T obj, string path)
-        {
-
-            if (DesignModeUtility.IsInDesignMode)
-                return;
-
-            LoadingUtility.ShowLoadingScreen(async () =>
+        public static Task Save(T obj, string path) =>
+            Task.Run(() =>
             {
+
+                if (path == string.Empty || DesignModeUtility.IsInDesignMode)
+                    return;
 
                 try
                 {
@@ -90,12 +81,13 @@ namespace PaletteGenerator
                 }
                 catch (Exception e)
                 {
-                    MessageBox.Show(e.GetType().Name + ":" + Environment.NewLine + Environment.NewLine + e.Message + Environment.NewLine + Environment.NewLine, "An error occured while writing json file.");
+                    ErrorMessage(e, "writing");
                 }
 
             });
 
-        }
+        static void ErrorMessage(Exception e, string action) =>
+            MessageBox.Show(e.GetType().Name + ":" + Environment.NewLine + Environment.NewLine + e.Message + Environment.NewLine + Environment.NewLine, $"An error occured while {action} json file.");
 
         #endregion
 

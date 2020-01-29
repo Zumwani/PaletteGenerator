@@ -9,7 +9,8 @@
         xmlns:fa="http://schemas.fontawesome.io/icons/"
         Title="Palette Generator" Height="528" Width="1250"
         WindowStartupLocation="CenterScreen" WindowStyle="None" 
-        DataContext="{Binding RelativeSource={RelativeSource Mode=Self}}" FontFamily="Segoe UI Semilight" AllowsTransparency="True">
+        DataContext="{Binding RelativeSource={RelativeSource Mode=Self}}" FontFamily="Segoe UI Semilight" AllowsTransparency="True"
+        Loaded="Window_Loaded">
 
     <WindowChrome.WindowChrome>
         <WindowChrome CaptionHeight="{Binding ElementName=titlebar, Path=ActualHeight}" ResizeBorderThickness="5"/>
@@ -80,7 +81,7 @@
                     <Button Click="Add" ToolTip="Add row" Content="" Style="{StaticResource ToolButton}" DockPanel.Dock="Right" Height="32" Margin="12,0,0,0"/>
                     
                     <Slider Value="{Binding Columns, Mode=TwoWay}" VerticalAlignment="Center" Minimum="{Binding MinColumns}" Maximum="{Binding MaxColumns}"
-                            TickFrequency="2" SmallChange="2" LargeChange="2" Thumb.DragCompleted="Slider_DragCompleted" KeyUp="Slider_KeyUp"/>
+                            TickFrequency="2" SmallChange="2" LargeChange="2"/>
                 
                 </DockPanel>
 
@@ -91,10 +92,10 @@
                             <TextBlock Text="Offsets:" FontSize="16" Margin="0,0,0,12"/>
 
                             <TextBlock Text="Hue" HorizontalAlignment="Center" FontSize="16"/>
-                            <Slider Value="{Binding Hue, Mode=TwoWay}" Width="200"  Thumb.DragCompleted="Slider_DragCompleted" KeyUp="Slider_KeyUp"/>
+                            <Slider Value="{Binding Hue, Mode=TwoWay}" Width="200"/>
 
                             <TextBlock Text="Saturation" HorizontalAlignment="Center" FontSize="16"/>
-                            <Slider Value="{Binding Saturation, Mode=TwoWay}" Width="200"  Thumb.DragCompleted="Slider_DragCompleted" KeyUp="Slider_KeyUp"/>
+                            <Slider Value="{Binding Saturation, Mode=TwoWay}" Width="200"/>
 
                         </StackPanel>
                     </Border>

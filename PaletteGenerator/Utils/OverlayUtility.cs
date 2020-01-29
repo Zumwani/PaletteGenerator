@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Windows;
 using System.Windows.Media;
+using window = System.Windows.Window;
 
 namespace PaletteGenerator
 {
@@ -10,46 +11,54 @@ namespace PaletteGenerator
     public static class OverlayUtility
     {
 
-        public class Overlay
+        static window[] windows;
+        static Action<window> deinitialize;
+
+        public static void Open(Action<window> initialize, Action<window> deinitialize)
         {
 
-            public Overlay() =>
-                windows = OpenShell.Screens.Screen.All().Select(GetWindow).ToArray();
+            if (windows?.Length == 0)
+                Close();
 
-            readonly Window[] windows;
+            windows = OpenShell.Screens.Screen.All().Select(GetWindow).ToArray();
 
-            public void Open(Action<Window> action)
+            if (initialize != null) 
+                windows.ForEach(initialize);
+
+            windows.ForEach(w => w.Show());
+            OverlayUtility.deinitialize = deinitialize;
+
+        }
+
+        public static void Close()
+        {
+
+            if (deinitialize != null)
+                windows.ForEach(deinitialize);
+
+            windows.ForEach(w => { if (w.IsLoaded) w.Close(); });
+            windows = Array.Empty<window>();
+
+        }
+
+        static window GetWindow(OpenShell.Screens.Screen screen)
+        {
+
+            var window = new window
             {
-                windows.ForEach(action);
-                windows.ForEach(w => w.Show());
-            }
+                Topmost = true,
+                AllowsTransparency = true,
+                Background = new SolidColorBrush(Color.FromArgb(1, 1, 1, 1)),
+                WindowStyle = WindowStyle.None,
+                Left = screen.Bounds.Left,
+                Top = screen.Bounds.Top,
+                Width = screen.Bounds.Width,
+                Height = screen.Bounds.Height,
+                ShowInTaskbar = false,
+                ShowActivated = false,
+            };
 
-            public void Close(Action<Window> action)
-            {
-                windows.ForEach(action);
-                windows.ForEach(w => { if (w.IsLoaded) w.Close(); });
-            }
-
-            Window GetWindow(OpenShell.Screens.Screen screen)
-            {
-
-                var window = new Window
-                {
-                    Topmost = true,
-                    AllowsTransparency = true,
-                    Background = new SolidColorBrush(Color.FromArgb(1, 1, 1, 1)),
-                    WindowStyle = WindowStyle.None,
-                    Left = screen.Bounds.Left,
-                    Top = screen.Bounds.Top,
-                    Width = screen.Bounds.Width,
-                    Height = screen.Bounds.Height,
-                    ShowInTaskbar = false,
-                    ShowActivated = false,
-                };
-
-                return window;
-
-            }
+            return window;
 
         }
 

@@ -15,10 +15,6 @@ Global
 		{7CD9E5D8-1BD9-4338-AD1D-6A406ACFB751}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7CD9E5D8-1BD9-4338-AD1D-6A406ACFB751}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7CD9E5D8-1BD9-4338-AD1D-6A406ACFB751}.Release|Any CPU.Build.0 = Release|Any CPU
-		{22D4EEE5-8A1D-4626-868E-B8C9D8BCFABB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{22D4EEE5-8A1D-4626-868E-B8C9D8BCFABB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{22D4EEE5-8A1D-4626-868E-B8C9D8BCFABB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{22D4EEE5-8A1D-4626-868E-B8C9D8BCFABB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

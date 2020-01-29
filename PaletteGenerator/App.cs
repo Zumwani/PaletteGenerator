@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
-using System.Windows;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Threading;
 
 namespace PaletteGenerator
@@ -20,6 +21,7 @@ namespace PaletteGenerator
         {
             Settings.Load().Wait();
             Window.ShowDialog();
+            TaskScheduler.GetScheduledTasks();
         }
 
     }

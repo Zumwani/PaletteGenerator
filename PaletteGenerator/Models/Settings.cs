@@ -12,7 +12,8 @@ namespace PaletteGenerator
     public class Settings : MarkupExtension
     {
 
-        public Property<ColorMode> ColorMode { get; set; } = new Property<ColorMode>();
+        public Property<ColorMode> ColorMode { get; set; }   = new Property<ColorMode>();
+        public Property<ColorSpace> ColorSpace { get; set; } = new Property<ColorSpace>();
 
         #region Setup
 
@@ -33,13 +34,13 @@ namespace PaletteGenerator
 
             void OnPropertyChanged([CallerMemberName] string name = "")
             {
-                Current.Save();
+                Current?.Save();
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
             }
 
         }
         
-        public void Save()        => JsonObject<Settings>.Save(this, SettingsFile);
+        public void Save()              => JsonObject<Settings>.Save(this, SettingsFile);
         public static async Task Load() => Current = await JsonObject<Settings>.Load(SettingsFile, true);
 
         public static Settings Current { get; private set; }

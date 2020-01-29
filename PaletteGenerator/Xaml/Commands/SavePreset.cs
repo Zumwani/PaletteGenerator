@@ -12,8 +12,11 @@ namespace PaletteGenerator.Commands
         public bool CanExecute(object parameter) => true;
         public override object ProvideValue(IServiceProvider serviceProvider) => this;
 
-        public void Execute(object parameter) =>
-            JsonObject<Preset>.PromptSave(Preset.FromCurrent());
+        public void Execute(object parameter)
+        {
+            var preset = Preset.FromCurrent();
+            LoadingUtility.ShowLoadingScreen(() => JsonObject<Preset>.PromptAndSave(preset));
+        }
 
     }
 

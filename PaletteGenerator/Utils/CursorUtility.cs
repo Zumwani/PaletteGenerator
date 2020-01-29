@@ -47,10 +47,16 @@ namespace PaletteGenerator
 
         public static Cursor AsCursor(this FontAwesomeIcon icon)
         {
-            return Cursors.Arrow;
-            var image = new Image();
+
+            var image = new Image
+            {
+                Width = 32,
+                Height = 32
+            };
+
             Awesome.SetContent(image, icon);
             return CreateCursor(image);
+
         }
 
         public static Point GetScreenPosition()
@@ -121,11 +127,11 @@ namespace PaletteGenerator
             element.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
             element.Arrange(new Rect(new Point(), element.DesiredSize));
 
-            RenderTargetBitmap rtb =
-              new RenderTargetBitmap(
-                (int)element.DesiredSize.Width,
-                (int)element.DesiredSize.Height,
-                96, 96, PixelFormats.Pbgra32);
+            var rtb =
+                new RenderTargetBitmap(
+                    (int)element.DesiredSize.Width,
+                    (int)element.DesiredSize.Height,
+                    96, 96, PixelFormats.Pbgra32);
 
             rtb.Render(element);
 
