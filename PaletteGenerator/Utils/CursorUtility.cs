@@ -47,6 +47,7 @@ namespace PaletteGenerator
 
         public static Cursor AsCursor(this FontAwesomeIcon icon)
         {
+            return Cursors.Arrow;
             var image = new Image();
             Awesome.SetContent(image, icon);
             return CreateCursor(image);

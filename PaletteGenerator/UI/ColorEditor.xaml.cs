@@ -33,8 +33,13 @@ namespace PaletteGenerator.UI
         public event EventHandler ColorChanged;
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0062:Make local function 'static'", Justification = "It cant...")]
-        private async void EyeDropper_Checked(object sender, RoutedEventArgs e)
+        private async void eyeDropper_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
+
+            if (!(sender is ToggleButton toggle))
+                return;
+
+            e.Handled = true;
 
             var wasMousePressed = false;
             var wasEscPressed = false;
@@ -64,22 +69,12 @@ namespace PaletteGenerator.UI
                 await Task.Delay(100);
             }
 
-            if ((sender is ToggleButton t && t.IsMouseOver) || wasEscPressed)
+            if (toggle.IsMouseOver || wasEscPressed)
                 Color = savedColor;
 
-            overlay.Open(Deinitalize);
+            overlay.Close(Deinitalize);
+            toggle.IsChecked = false;
 
-        }
-
-        private void editor_MouseEnter(object sender, MouseEventArgs e)
-        {
-            
-            colorPicker.Padding = new Thickness(4,0,4,0);
-        }
-
-        private void editor_MouseLeave(object sender, MouseEventArgs e)
-        {
-            colorPicker.Padding = new Thickness(0);
         }
 
     }

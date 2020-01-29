@@ -41,7 +41,8 @@ namespace PaletteGenerator
                     WindowStyle = WindowStyle.None,
                     Left = screen.Bounds.Left,
                     Top = screen.Bounds.Top,
-                    WindowState = WindowState.Maximized,
+                    Width = screen.Bounds.Width,
+                    Height = screen.Bounds.Height,
                     ShowInTaskbar = false,
                     ShowActivated = false,
                 };

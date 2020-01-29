@@ -8,10 +8,14 @@ using System.Diagnostics;
 
 namespace PaletteGenerator
 {
-
-    //TODO: Look for another color picker or create own
+    
+    //TODO: Fix eye dropper
     //TODO: Fix installer (integrate with github and download from release branch (create dev and release branches), perhaps installer should be reuseable as well)
-    //TODO: Fix color buttons when hovering at edge
+    //TODO: Invert toggle button hover color to selected color
+    //TODO: Make toggle button popup stay pressed while popup open
+    //TODO: Fix left, center, and right colors not affected by offsets
+    //TODO: Fix eye dropper cursor
+    //TODO: Save color mode
 
     public partial class MainWindow : Window
     {
