@@ -16,7 +16,7 @@ namespace PaletteGenerator
             public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
             {
                 if (value is Color c)
-                    return new SolidColorBrush(c);
+                    return new SolidColorBrush(c.OffsetHue(WindowUtility.Current.Hue).OffsetSaturation(WindowUtility.Current.Saturation));
                 return default;
             }
 

@@ -6,15 +6,30 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
 using FontAwesome.WPF;
+using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace PaletteGenerator.UI
 {
 
-    public partial class ColorEditor : UserControl
+    public partial class ColorEditor : UserControl, INotifyPropertyChanged
     {
 
-        public ColorEditor() =>
+        static readonly List<ColorEditor> controls = new List<ColorEditor>();
+
+        public ColorEditor()
+        {
+            controls.Add(this);
             InitializeComponent();
+        }
+
+        ~ColorEditor() =>
+            controls.Remove(this);
+
+        public static void RefreshAll()
+        {
+            controls.ForEach(c => c.PropertyChanged?.Invoke(c, new PropertyChangedEventArgs(nameof(DisplayColor))));
+        }
 
         public static DependencyProperty ColorProperty = DependencyProperty.Register(nameof(Color), typeof(Color), typeof(ColorEditor), new PropertyMetadata(Colors.White, OnColorChanged));
 
@@ -30,10 +45,13 @@ namespace PaletteGenerator.UI
             set => SetValue(ColorProperty, value);
         }
 
+        public Color DisplayColor => Color;
+
         public event EventHandler ColorChanged;
+        public event PropertyChangedEventHandler PropertyChanged;
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0062:Make local function 'static'", Justification = "It cant...")]
-        private async void eyeDropper_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        private async void EyeDropper_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
 
             if (!(sender is ToggleButton toggle))

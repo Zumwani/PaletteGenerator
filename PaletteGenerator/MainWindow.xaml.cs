@@ -9,13 +9,13 @@ using System.Diagnostics;
 namespace PaletteGenerator
 {
     
-    //TODO: Fix eye dropper
     //TODO: Fix installer (integrate with github and download from release branch (create dev and release branches), perhaps installer should be reuseable as well)
     //TODO: Invert toggle button hover color to selected color
     //TODO: Make toggle button popup stay pressed while popup open
-    //TODO: Fix left, center, and right colors not affected by offsets
     //TODO: Fix eye dropper cursor
     //TODO: Save color mode
+    //TODO: Save offsets in presets
+    //TODO: Apply offsets when exporting
 
     public partial class MainWindow : Window
     {
@@ -126,6 +126,8 @@ namespace PaletteGenerator
             });
 
             tasks.ForEach(t => t.ConfigureAwait(false));
+
+            UI.ColorEditor.RefreshAll();
 
         }
 
