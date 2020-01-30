@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using PaletteGenerator.UI;
+using System.Linq;
 using System.Windows.Media;
 
 namespace PaletteGenerator
@@ -24,7 +25,6 @@ namespace PaletteGenerator
             App.Window.Saturation = SaturationOffset;
             App.Window.Columns = ColumnCount;
             App.Window.Rows.Set(Rows.Select(c => new Row() { Center = c }));
-            Window.Recalculate();
         }
 
         public int ColumnCount { get; set; }

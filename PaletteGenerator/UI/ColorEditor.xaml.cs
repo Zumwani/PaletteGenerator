@@ -5,11 +5,9 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
-using FontAwesome.WPF;
 using System.Collections.Generic;
 using System.ComponentModel;
 using window = System.Windows.Window;
-using System.Windows.Shapes;
 
 namespace PaletteGenerator.UI
 {

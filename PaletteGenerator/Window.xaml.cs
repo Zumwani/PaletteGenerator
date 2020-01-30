@@ -2,13 +2,15 @@
 using System.Windows.Media;
 using System.Linq;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Threading.Tasks;
+using PaletteGenerator.UI;
 
 namespace PaletteGenerator
 {
     
     //TODO: Fix installer (integrate with github and download from release branch (create dev and release branches), perhaps installer should be reuseable as well)
+    //TODO: Fix left, center, right color delay
+    //TODO: Turn add / remove row into commands
 
     public partial class Window : System.Windows.Window
     {
@@ -18,15 +20,15 @@ namespace PaletteGenerator
         public double MaxRows => 16;
         public double MaxColumns => 16;
         public double MinColumns => 2;
+        public string Github => "https://github.com/Zumwani/PaletteGenerator";
+        public string Discord => "https://discord.gg/P8VX7Wb";
+        public string Version => typeof(Window).Assembly.GetName().Version.ToString();
 
-        public static DependencyProperty ColumnsProperty    = DependencyProperty.Register(nameof(Columns),    typeof(int),   typeof(Window), new PropertyMetadata(4, OnColumnsChanged));      
-        public static DependencyProperty HueProperty        = DependencyProperty.Register(nameof(Hue),        typeof(float), typeof(Window), new PropertyMetadata(0f, OnColumnsChanged));   
-        public static DependencyProperty SaturationProperty = DependencyProperty.Register(nameof(Saturation), typeof(float), typeof(Window), new PropertyMetadata(1f, OnColumnsChanged));   
-        public static DependencyProperty LeftColorProperty  = DependencyProperty.Register(nameof(LeftColor),  typeof(Color), typeof(Window), new PropertyMetadata(Colors.White, OnColumnsChanged));
-        public static DependencyProperty RightColorProperty = DependencyProperty.Register(nameof(RightColor), typeof(Color), typeof(Window), new PropertyMetadata(Colors.Black, OnColumnsChanged));
-
-        static void OnColumnsChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e) =>
-            Recalculate();
+        public static DependencyProperty ColumnsProperty    = DependencyProperty.Register(nameof(Columns),    typeof(int),   typeof(Window), new PropertyMetadata(4));      
+        public static DependencyProperty HueProperty        = DependencyProperty.Register(nameof(Hue),        typeof(float), typeof(Window), new PropertyMetadata(0f));   
+        public static DependencyProperty SaturationProperty = DependencyProperty.Register(nameof(Saturation), typeof(float), typeof(Window), new PropertyMetadata(1f));   
+        public static DependencyProperty LeftColorProperty  = DependencyProperty.Register(nameof(LeftColor),  typeof(Color), typeof(Window), new PropertyMetadata(Colors.White));
+        public static DependencyProperty RightColorProperty = DependencyProperty.Register(nameof(RightColor), typeof(Color), typeof(Window), new PropertyMetadata(Colors.Black));
 
         public BindingList<Row> Rows { get; } = new BindingList<Row>();
 
@@ -67,61 +69,17 @@ namespace PaletteGenerator
         {
             if (Rows.Count < MaxRows)
                 using (LoadingUtility.KeepLoadingScreenHidden) 
-                { Recalculate(Rows.Create()); };
+                    Rows.Create();
         }
 
         public static void Remove(Row row) =>
             App.Window.Rows.Remove(row);
-
-        public static void Recalculate() =>
-            Recalculate(App.Window.Rows.ToArray());
-
-        static int recalculationCount;
-        public static void Recalculate(params Row[] rows)
-        {
-
-            if (rows.Length == 0)
-                return;
-
-            recalculationCount += 1;
-            var currentCount = recalculationCount;
-
-            var left = App.Window.LeftColor;
-            var right = App.Window.RightColor;
-
-            var tasks = rows.Select(async Task => 
-            {
-
-                var steps = App.Window.Columns / 2 + 1;
-                foreach (var row in rows)
-                {
-
-                    if (recalculationCount != currentCount)
-                        return System.Threading.Tasks.Task.CompletedTask;
-
-                    var rowTemplate = App.Dispatcher.Invoke(() => 
-                        (FrameworkElement)App.Window.list.ItemContainerGenerator.ContainerFromItem(row));
-
-                    row.SetColors(await row.Calculate(left, right, steps));
-
-                }
-
-                return System.Threading.Tasks.Task.CompletedTask;
-
-            });
-
-            Task.WhenAll(tasks).ContinueWith(t => UI.ColorEditor.RefreshAll()).ConfigureAwait(false);
-
-        }
 
         #endregion
         #region Window
 
         public Window() =>
             InitializeComponent();
-
-        void Update(object sender, RoutedEventArgs e) =>
-            Process.Start("explorer.exe", "https://github.com/Zumwani/PaletteGenerator");
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
