@@ -1,4 +1,4 @@
-# PaletteGenerator
+# Palette Generator
 A tool that aims to help generating color palettes. Inspired by [*Mortalizer*](https://invisiblespiders.com/mortalizer_2.html)
 
 ### Features:
