@@ -6,6 +6,10 @@
     <UseWPF>true</UseWPF>
     <StartupObject></StartupObject>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <PublishTrimmed>true</PublishTrimmed>
+    <PublishReadyToRun>true</PublishReadyToRun>
+    <PublishSingleFile>true</PublishSingleFile>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

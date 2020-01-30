@@ -4,8 +4,7 @@
              xmlns:local="clr-namespace:PaletteGenerator.UI"
              xmlns:converters="clr-namespace:PaletteGenerator.Converters"
              xmlns:commands="clr-namespace:PaletteGenerator.Commands"
-             xmlns:fa="http://schemas.fontawesome.com/icons/"
-             Margin="12">
+             xmlns:fa="http://schemas.fontawesome.com/icons/">
 
     <UserControl.Resources>
         <ResourceDictionary>
@@ -31,11 +30,11 @@
 
             </StackPanel>
 
-            <ToggleButton x:Name="menuButton" Content="⋮" FontSize="22" DockPanel.Dock="Right" IsChecked="{Binding ElementName=menu, Path=IsOpen, Mode=OneWay}" IsHitTestVisible="{Binding ElementName=menu, Path=IsOpen, Converter={converters:InvertBool}}"/>
+            <ToggleButton x:Name="menuButton" Content="⋮" FontSize="22" DockPanel.Dock="Right" IsChecked="{Binding ElementName=menu, Path=IsOpen, Mode=OneWay}" IsHitTestVisible="{Binding ElementName=menu, Path=IsOpen, Converter={converters:InvertBool}}" Height="42"/>
 
-            <ToggleButton x:Name="presetsButton" Content="Presets" Width="Auto" DockPanel.Dock="Right" FontSize="18" Margin="12,0" Padding="12" 
+            <ToggleButton x:Name="presetsButton" Content="Presets" Width="Auto" DockPanel.Dock="Right" FontSize="16" Margin="12,0" Padding="22,0" Height="42"
                               IsChecked="{Binding ElementName=presetsMenu, Path=IsOpen, Mode=OneWay}" IsHitTestVisible="{Binding ElementName=presetsMenu, Path=IsOpen, Converter={converters:InvertBool}}"/>
-            <Button Content="Export" Width="Auto" DockPanel.Dock="Right" FontSize="18" Padding="12" Command="{commands:Export}"/>
+            <Button Content="Export" Width="Auto" DockPanel.Dock="Right" FontSize="16" Padding="22, 0" Command="{commands:Export}" Height="42"/>
 
         </DockPanel>
 
