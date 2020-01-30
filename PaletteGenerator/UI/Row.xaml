@@ -1,18 +1,15 @@
-﻿<ResourceDictionary x:Class="PaletteGenerator.UI.RowTemplate"
-                    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:ui="clr-namespace:PaletteGenerator.UI"
-                    xmlns:local="clr-namespace:PaletteGenerator"
-                    xmlns:converters="clr-namespace:PaletteGenerator.Converters">
-    
-    <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="Button.xaml"/>
-    </ResourceDictionary.MergedDictionaries>
-    
-    <DataTemplate DataType="{x:Type local:Row}">
+﻿<UserControl x:Class="PaletteGenerator.Row"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:PaletteGenerator"
+             xmlns:converters="clr-namespace:PaletteGenerator.Converters"
+             xmlns:ui="clr-namespace:PaletteGenerator.UI"
+             xmlns:commands="clr-namespace:PaletteGenerator.Commands"
+             x:Name="row">
 
-        <DataTemplate.Resources>
-
+    <UserControl.Resources>
+        <ResourceDictionary>
+            
             <Style TargetType="{x:Type ItemsControl}">
 
                 <Setter Property="VirtualizingPanel.IsVirtualizing"     Value="True"/>
@@ -33,23 +30,32 @@
                     </Setter.Value>
                 </Setter>
             </Style>
+            
+        </ResourceDictionary>
+    </UserControl.Resources>
 
-        </DataTemplate.Resources>
-        
-        <StackPanel Orientation="Horizontal" Margin="0,6">
+    <UserControl.Style>
+        <Style TargetType="{x:Type local:Row}">
+            <Setter Property="LeftColor"  Value="{Binding Source={x:Static local:App.Window}, Mode=OneWay, Path=LeftColor}"/>
+            <Setter Property="RightColor" Value="{Binding Source={x:Static local:App.Window}, Mode=OneWay, Path=RightColor}"/>
+            <Setter Property="Hue"        Value="{Binding Source={x:Static local:App.Window}, Mode=OneWay, Path=Hue}"/>
+            <Setter Property="Saturation" Value="{Binding Source={x:Static local:App.Window}, Mode=OneWay, Path=Saturation}"/>
+            <Setter Property="Columns"    Value="{Binding Source={x:Static local:App.Window}, Mode=OneWay, Path=Columns}"/>
+        </Style>
+    </UserControl.Style>
+    
+    <StackPanel Orientation="Horizontal" Margin="0,6">
 
-            <ui:ColorEditor Color="{Binding Source={x:Static local:App.Window}, Path=LeftColor, Mode=TwoWay}" BorderThickness="1,1,0,1"/>
-            <ItemsControl ItemsSource="{Binding Left}"/>
-            <ui:ColorEditor Color="{Binding Center, Mode=TwoWay}" ColorChanged="CenterColorChanged" BorderThickness="0,1"/>
-            <ItemsControl ItemsSource="{Binding Right}"/>
-            <ui:ColorEditor Color="{Binding Source={x:Static local:App.Window}, Path=RightColor, Mode=TwoWay}" BorderThickness="0,1,1,1"/>
+        <ui:ColorEditor x:Name="leftColorPicker" GlobalColor="{Binding Source={x:Static local:App.Window}, Path=LeftColor, Mode=OneWay}" SelectedColor="{Binding ElementName=row, Path=LeftColor, Mode=OneWayToSource}"  Width="64" BorderThickness="1,1,0,1"/>
+        <ItemsControl ItemsSource="{Binding ElementName=row, Path=LeftSide, Mode=OneWay}"/>
+        <ui:ColorEditor x:Name="centerColorPicker" CustomColor="{Binding ElementName=row, Path=CenterColor, Mode=OneWay}" BorderThickness="0,1" SelectedColor="{Binding ElementName=row, Path=CenterColor, Mode=OneWayToSource}"/>
+        <ItemsControl ItemsSource="{Binding ElementName=row, Path=RightSide, Mode=OneWay}"/>
+        <ui:ColorEditor x:Name="rightColorPicker" GlobalColor="{Binding Source={x:Static local:App.Window}, Path=RightColor, Mode=OneWay}" SelectedColor="{Binding ElementName=row, Path=RightColor, Mode=OneWayToSource}" BorderThickness="0,1,1,1"/>
 
-            <Canvas>
-                <Button VerticalAlignment="Center" FontSize="12" Margin="4,0" Click="Remove" Foreground="DimGray" Content="✖"/>
-            </Canvas>
+        <Canvas>
+            <Button Content="✖" Command="{commands:RemoveRow}" CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:Row}}" FontSize="12" Margin="4,0" Foreground="DimGray"/>
+        </Canvas>
 
-        </StackPanel>
+    </StackPanel>
 
-    </DataTemplate>
-
-</ResourceDictionary>
+</UserControl>

@@ -41,7 +41,7 @@ namespace PaletteGenerator
                 AddExtension = true,
             };
 
-            return (dialog.ShowDialog() ?? false) ? dialog.FileName : default;
+            return App.Dispatcher.Invoke(() => (dialog.ShowDialog(App.Window) ?? false) ? dialog.FileName : default);
 
         }
 #nullable disable

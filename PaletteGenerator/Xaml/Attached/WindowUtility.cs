@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
 
 namespace PaletteGenerator.UI
@@ -12,19 +13,20 @@ namespace PaletteGenerator.UI
 
         public static readonly DependencyProperty IsMaximizeButtonProperty = DependencyProperty.RegisterAttached("IsMaximizeButton", typeof(bool), typeof(SliderUtility), new PropertyMetadata
         {
-            PropertyChangedCallback = (obj, e) =>
+            PropertyChangedCallback = async (obj, e) =>
             {
 
                 if (!(obj is Button button) || DesignModeUtility.IsInDesignMode)
                     return;
 
-                var window = Window.GetWindow(button);
+                while (App.Window == null)
+                    await Task.Delay(100);
 
-                window.SizeChanged += (s, e1) =>
+                App.Window.SizeChanged += (s, e1) =>
                 {
-                    if (window.WindowState == WindowState.Maximized)
+                    if (App.Window.WindowState == WindowState.Maximized)
                         button.Content = "";
-                    else if (window.WindowState == WindowState.Normal)
+                    else if (App.Window.WindowState == WindowState.Normal)
                         button.Content = "";
                 };
 

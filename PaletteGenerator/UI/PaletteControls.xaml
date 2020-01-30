@@ -1,0 +1,86 @@
+﻿<UserControl x:Class="PaletteGenerator.UI.PaletteControls"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:PaletteGenerator.UI"
+             xmlns:converters="clr-namespace:PaletteGenerator.Converters"
+             xmlns:commands="clr-namespace:PaletteGenerator.Commands"
+             xmlns:fa="http://schemas.fontawesome.com/icons/">
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Button.xaml"/>
+                <ResourceDictionary Source="Slider.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    
+    <Grid>
+
+        <DockPanel LastChildFill="False">
+
+            <StackPanel Grid.Row="3" Margin="12" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="226" DockPanel.Dock="Left">
+
+                <ToggleButton x:Name="offsetsButton" IsHitTestVisible="{Binding ElementName=offsetsPopup, Path=IsOpen, Converter={converters:InvertBool}}" fa:Awesome.Content="Solid_ChevronUp" Width="Auto" Height="22"/>
+                <DockPanel>
+                    <Button ToolTip="Add row" Content="" Command="{commands:AddRow}" Style="{StaticResource ToolButton}" DockPanel.Dock="Right" Height="32" Margin="12,0,0,0"/>
+                    <Slider Value="{Binding Columns, Mode=TwoWay}" VerticalAlignment="Center" Minimum="{Binding MinColumns}" Maximum="{Binding MaxColumns}"
+                            TickFrequency="2" SmallChange="2" LargeChange="2"/>
+                </DockPanel>
+
+            </StackPanel>
+
+            <ToggleButton x:Name="menuButton" Content="⋮" FontSize="22" DockPanel.Dock="Right" IsChecked="{Binding ElementName=menu, Path=IsOpen, Mode=OneWay}" IsHitTestVisible="{Binding ElementName=menu, Path=IsOpen, Converter={converters:InvertBool}}" Height="42"/>
+
+            <ToggleButton x:Name="presetsButton" Content="Presets" Width="Auto" DockPanel.Dock="Right" FontSize="16" Margin="12,0" Padding="22,0" Height="42"
+                              IsChecked="{Binding ElementName=presetsMenu, Path=IsOpen, Mode=OneWay}" IsHitTestVisible="{Binding ElementName=presetsMenu, Path=IsOpen, Converter={converters:InvertBool}}"/>
+            <Button Content="Export" Width="Auto" DockPanel.Dock="Right" FontSize="16" Padding="22, 0" Command="{commands:Export}" Height="42"/>
+
+        </DockPanel>
+
+        <Popup x:Name="presetsMenu" IsOpen="{Binding RelativeSource={RelativeSource Mode=Self}, Path=PlacementTarget.IsChecked}" PlacementTarget="{Binding ElementName=presetsButton}" Placement="Top" StaysOpen="False" PopupAnimation="Fade">
+            <Border Background="White" BorderBrush="Black" BorderThickness="1">
+                <ItemsControl>
+                    <MenuItem Header="Save..." Command="{commands:SavePreset}"/>
+                    <MenuItem Header="Load..." Command="{commands:LoadPreset}"/>
+                </ItemsControl>
+            </Border>
+        </Popup>
+
+        <Popup x:Name="menu" IsOpen="{Binding RelativeSource={RelativeSource Mode=Self}, Path=PlacementTarget.IsChecked}" PlacementTarget="{Binding ElementName=menuButton}" Placement="Top" StaysOpen="False" PopupAnimation="Fade">
+            <Border Background="White" BorderBrush="Black" BorderThickness="1">
+                <ItemsControl>
+                    <MenuItem IsEnabled="False">
+                        <MenuItem.Header>
+                            <TextBlock>
+                                    <Run Text="Palette Generator"/>
+                                    <LineBreak/>
+                                    <Run Text="Version: 1.0.0"/>
+                            </TextBlock>
+                        </MenuItem.Header>
+                    </MenuItem>
+                    <Separator/>
+                    <MenuItem Header="Check for updates..." Command="{commands:CheckForUpdates}"/>
+                </ItemsControl>
+            </Border>
+        </Popup>
+
+        <Popup x:Name="offsetsPopup" IsOpen="{Binding ElementName=offsetsButton, Path=IsChecked}" StaysOpen="False" PopupAnimation="Fade" Placement="Top" PlacementTarget="{Binding ElementName=offsetsButton}">
+            <Border Background="White" BorderThickness="1" BorderBrush="Black">
+                <StackPanel Margin="12">
+                    
+                    <TextBlock Text="Offsets:" FontSize="16" Margin="0,0,0,12"/>
+
+                    <TextBlock Text="Hue" HorizontalAlignment="Center" FontSize="16"/>
+                    <Slider Value="{Binding Hue, Mode=TwoWay}" Width="200"/>
+
+                    <TextBlock Text="Saturation" HorizontalAlignment="Center" FontSize="16"/>
+                    <Slider Value="{Binding Saturation, Mode=TwoWay}" Width="200"/>
+
+                </StackPanel>
+            </Border>
+        </Popup>
+
+    </Grid>
+
+</UserControl>

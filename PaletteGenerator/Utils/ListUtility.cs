@@ -32,12 +32,6 @@ namespace PaletteGenerator
             return l.ToArray();
         }
 
-        //public static void AddRange<T>(this IList<T> list, params T[] items)
-        //{
-        //    foreach (var item in items)
-        //        list.Add(item);
-        //}
-
         public static void AddRange<T>(this IList<T> list, IEnumerable<T> items)
         {
             foreach (var item in items)
@@ -63,8 +57,9 @@ namespace PaletteGenerator
             list.ResetBindings();
         }
 
-        public static T Create<T>(this IList<T> list)
+        public static T Create<T>(this IList<T> list, int? maxCount = null)
         {
+            if (list.Count > (maxCount ?? int.MaxValue)) return default;
             var item = Activator.CreateInstance<T>();
             list.Add(item);
             return item;

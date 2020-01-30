@@ -23,6 +23,8 @@ namespace PaletteGenerator.Commands
             var hue = App.Window.Hue;
             var saturation = App.Window.Saturation;
 
+            var colors = rows.Select(r => r.AllColors.ApplyOffsets(hue, saturation)).ToArray();
+
             LoadingUtility.ShowLoadingScreen(async () =>
             {
 
@@ -31,8 +33,7 @@ namespace PaletteGenerator.Commands
 
                     try
                     {
-
-                        var colors = rows.Select(r => r.AllColors.ApplyOffsets(hue, saturation)).ToArray();
+                        
                         var bitmap = colors.AsPNGPalette(64);
 
                         using var ms = bitmap.AsBytes();
