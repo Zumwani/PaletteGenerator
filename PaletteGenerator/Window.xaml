@@ -3,17 +3,14 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:local="clr-namespace:PaletteGenerator"
         xmlns:ui="clr-namespace:PaletteGenerator.UI"
-        xmlns:converters="clr-namespace:PaletteGenerator.Converters"
-        xmlns:commands="clr-namespace:PaletteGenerator.Commands"
         xmlns:mahApps="http://metro.mahapps.com/winfx/xaml/controls"
-        xmlns:fa="http://schemas.fontawesome.com/icons/"
         Title="Palette Generator" Height="528" Width="1250"
         WindowStartupLocation="CenterScreen" WindowStyle="None" 
         DataContext="{Binding RelativeSource={RelativeSource Mode=Self}}" FontFamily="Segoe UI Semilight" AllowsTransparency="True"
         Loaded="Window_Loaded">
 
     <WindowChrome.WindowChrome>
-        <WindowChrome CaptionHeight="{Binding ElementName=titlebar, Path=ActualHeight}" ResizeBorderThickness="5"/>
+        <WindowChrome CaptionHeight="42" ResizeBorderThickness="5"/>
     </WindowChrome.WindowChrome>
 
     <Window.Resources>
@@ -53,127 +50,23 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
-            <UniformGrid Grid.Row="1" Rows="2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="12" Panel.ZIndex="10">
-
-                <Button Height="42" Padding="6" Command="{commands:OpenUri}" CommandParameter="{Binding Github}">
-                    <Button.ToolTip>
-                        <ToolTip DataContext="{Binding RelativeSource={RelativeSource Mode=Self}, Path=PlacementTarget.DataContext}">
-                            <TextBlock>
-                                <Run Text="Github"/>
-                                <LineBreak/>
-                                <Run Text="{Binding Github, Mode=OneWay}"/>
-                            </TextBlock>
-                        </ToolTip>
-                    </Button.ToolTip>
-                    <Button.Content>
-                        <fa:ImageAwesome Icon="Brands_Github"/>
-                    </Button.Content>
-                </Button>
-                <Button Height="42" Padding="6" Command="{commands:OpenUri}" CommandParameter="{Binding Discord}">
-                    <Button.ToolTip>
-                        <ToolTip DataContext="{Binding RelativeSource={RelativeSource Mode=Self}, Path=PlacementTarget.DataContext}">
-                            <TextBlock>
-                                <Run Text="Github"/>
-                                <LineBreak/>
-                                <Run Text="{Binding Discord, Mode=OneWay}"/>
-                            </TextBlock>
-                        </ToolTip>
-                    </Button.ToolTip>
-                    <Button.Content>
-                        <fa:ImageAwesome Icon="Brands_Discord" Foreground="#FF7288D9"/>
-                    </Button.Content>
-                </Button>
-
-            </UniformGrid>
+            <ui:Header x:Name="header"/>
 
             <Border x:Name="loadingOverlay" Grid.Row="1" Grid.RowSpan="3" Background="Black" Opacity="0.5" Panel.ZIndex="100" Visibility="Collapsed">
                 <mahApps:ProgressRing Foreground="White"/>
             </Border>
             
-            <DockPanel x:Name="titlebar" Background="Transparent" Panel.ZIndex="200">
-
-                <Button Content="" ToolTip="Close" Style="{StaticResource ToolButton}" Command="{commands:CloseWindow}" CommandParameter="{Binding}" WindowChrome.IsHitTestVisibleInChrome="True">
-                    <Button.Background>
-                        <SolidColorBrush Color="Red"/>
-                    </Button.Background>
-                </Button>
-
-                <Button ToolTip="Maximize" ui:WindowUtility.IsMaximizeButton="True" Content="" Style="{StaticResource ToolButton}" Command="{commands:ToggleMaximizeWindow}" CommandParameter="{Binding}" WindowChrome.IsHitTestVisibleInChrome="True"/>
-                <Button ToolTip="Minimize" Content="" Style="{StaticResource ToolButton}" Command="{commands:MinimizeWindow}" CommandParameter="{Binding}" WindowChrome.IsHitTestVisibleInChrome="True"/>
-                <TextBlock Text="{Binding Title}" FontSize="16" DockPanel.Dock="Left" Padding="12"/>
-
-            </DockPanel>
-
-            <StackPanel Grid.Row="0" Grid.RowSpan="4" Margin="12" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="226">
-
-                <ToggleButton x:Name="offsetsButton" IsHitTestVisible="{Binding ElementName=offsetsPopup, Path=IsOpen, Converter={converters:InvertBool}}" fa:Awesome.Content="Solid_ChevronUp" Width="Auto" Height="22"/>
-                <DockPanel>
-                    
-                    <Button ToolTip="Add row" Content="" Command="{commands:AddRow}" Style="{StaticResource ToolButton}" DockPanel.Dock="Right" Height="32" Margin="12,0,0,0"/>
-                    
-                    <Slider Value="{Binding Columns, Mode=TwoWay}" VerticalAlignment="Center" Minimum="{Binding MinColumns}" Maximum="{Binding MaxColumns}"
-                            TickFrequency="2" SmallChange="2" LargeChange="2"/>
-                
-                </DockPanel>
-
-                <Popup x:Name="offsetsPopup" IsOpen="{Binding ElementName=offsetsButton, Path=IsChecked}" StaysOpen="False" PopupAnimation="Fade" Placement="Top" PlacementTarget="{Binding ElementName=offsetsButton}">
-                    <Border Background="White" BorderThickness="1" BorderBrush="Black">
-                        <StackPanel Margin="12">
-
-                            <TextBlock Text="Offsets:" FontSize="16" Margin="0,0,0,12"/>
-
-                            <TextBlock Text="Hue" HorizontalAlignment="Center" FontSize="16"/>
-                            <Slider Value="{Binding Hue, Mode=TwoWay}" Width="200"/>
-
-                            <TextBlock Text="Saturation" HorizontalAlignment="Center" FontSize="16"/>
-                            <Slider Value="{Binding Saturation, Mode=TwoWay}" Width="200"/>
-
-                        </StackPanel>
-                    </Border>
-                </Popup>
-                
-            </StackPanel>
-            
             <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
-                <ItemsControl x:Name="list" ItemsSource="{Binding Rows}" Margin="42" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                <StackPanel HorizontalAlignment="Center">
+                    <DockPanel LastChildFill="False" Margin="42,0,42,-36">
+                        <ui:ColorEditor CustomColor="{Binding LeftColor, Mode=TwoWay}" DockPanel.Dock="Left" BorderThickness="1"/>
+                        <ui:ColorEditor CustomColor="{Binding RightColor, Mode=TwoWay}" DockPanel.Dock="Right" BorderThickness="1"/>
+                    </DockPanel>
+                    <ItemsControl x:Name="list" ItemsSource="{Binding Rows}" Margin="42" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                </StackPanel>
             </ScrollViewer>
-            
-            <DockPanel Grid.Row="2" LastChildFill="False" Margin="12" HorizontalAlignment="Right">
 
-                <ToggleButton x:Name="menuButton" Content="⋮" FontSize="22" DockPanel.Dock="Right" IsChecked="{Binding ElementName=menu, Path=IsOpen, Mode=OneWay}" IsHitTestVisible="{Binding ElementName=menu, Path=IsOpen, Converter={converters:InvertBool}}"/>
-
-                <ToggleButton x:Name="presetsButton" Content="Presets" Width="Auto" DockPanel.Dock="Right" FontSize="18" Margin="12,0" Padding="12" 
-                              IsChecked="{Binding ElementName=presetsMenu, Path=IsOpen, Mode=OneWay}" IsHitTestVisible="{Binding ElementName=presetsMenu, Path=IsOpen, Converter={converters:InvertBool}}"/>
-                <Button Content="Export" Width="Auto" DockPanel.Dock="Right" FontSize="18" Padding="12" Command="{commands:Export}"/>
-
-            </DockPanel>
-
-            <Popup x:Name="presetsMenu" IsOpen="{Binding RelativeSource={RelativeSource Mode=Self}, Path=PlacementTarget.IsChecked}" PlacementTarget="{Binding ElementName=presetsButton}" Placement="Top" StaysOpen="False" PopupAnimation="Fade">
-                <Border Background="White" BorderBrush="Black" BorderThickness="1">
-                    <ItemsControl>
-                        <MenuItem Header="Save..." Command="{commands:SavePreset}"/>
-                        <MenuItem Header="Load..." Command="{commands:LoadPreset}"/>
-                    </ItemsControl>
-                </Border>
-            </Popup>
-            
-            <Popup x:Name="menu" IsOpen="{Binding RelativeSource={RelativeSource Mode=Self}, Path=PlacementTarget.IsChecked}" PlacementTarget="{Binding ElementName=menuButton}" Placement="Top" StaysOpen="False" PopupAnimation="Fade">
-                <Border Background="White" BorderBrush="Black" BorderThickness="1">
-                    <ItemsControl>
-                        <MenuItem IsEnabled="False">
-                            <MenuItem.Header>
-                                <TextBlock>
-                                    <Run Text="Palette Generator"/>
-                                    <LineBreak/>
-                                    <Run Text="Version: 1.0.0"/>
-                                </TextBlock>
-                            </MenuItem.Header>
-                        </MenuItem>
-                        <Separator/>
-                        <MenuItem Header="Check for updates..." Command="{commands:CheckForUpdates}"/>
-                    </ItemsControl>
-                </Border>
-            </Popup>
+            <ui:PaletteControls Grid.Row="2"/>
 
         </Grid>
     </Border>

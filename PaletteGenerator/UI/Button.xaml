@@ -77,5 +77,13 @@
         </Setter>
         
     </Style>
-    
+
+    <Style x:Key="ToolButton" TargetType="{x:Type Button}" BasedOn="{StaticResource ButtonBaseStyle}">
+        <Setter Property="Template" Value="{StaticResource ButtonTemplate}"/>
+        <Setter Property="FontFamily" Value="Segoe MDL2 Assets"/>
+        <Setter Property="FontSize" Value="22"/>
+        <Setter Property="DockPanel.Dock" Value="Right"/>
+        <Setter Property="ToolTipService.InitialShowDelay" Value="1000"/>
+    </Style>
+
 </ResourceDictionary>
