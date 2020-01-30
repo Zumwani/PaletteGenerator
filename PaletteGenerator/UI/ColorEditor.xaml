@@ -34,7 +34,7 @@
                     <Setter.Value>
                         <ControlTemplate>
 
-                            <Rectangle x:Name="rectangle" Fill="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}, Path=DisplayColor, Converter={converters:ToBrush}}" StrokeThickness="0" Stroke="LightGray"/>
+                            <Rectangle x:Name="rectangle" Fill="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}, Path=Color, Converter={converters:ToBrush}, Mode=OneWay}" StrokeThickness="0" Stroke="LightGray"/>
 
                             <ControlTemplate.Triggers>
                                 <Trigger Property="IsMouseOver" Value="True">

@@ -109,7 +109,7 @@
                 <ToggleButton x:Name="offsetsButton" IsHitTestVisible="{Binding ElementName=offsetsPopup, Path=IsOpen, Converter={converters:InvertBool}}" fa:Awesome.Content="Solid_ChevronUp" Width="Auto" Height="22"/>
                 <DockPanel>
                     
-                    <Button Click="Add" ToolTip="Add row" Content="" Style="{StaticResource ToolButton}" DockPanel.Dock="Right" Height="32" Margin="12,0,0,0"/>
+                    <Button ToolTip="Add row" Content="" Command="{commands:AddRow}" Style="{StaticResource ToolButton}" DockPanel.Dock="Right" Height="32" Margin="12,0,0,0"/>
                     
                     <Slider Value="{Binding Columns, Mode=TwoWay}" VerticalAlignment="Center" Minimum="{Binding MinColumns}" Maximum="{Binding MaxColumns}"
                             TickFrequency="2" SmallChange="2" LargeChange="2"/>

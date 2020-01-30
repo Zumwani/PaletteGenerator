@@ -26,9 +26,6 @@ namespace PaletteGenerator.UI
         ~ColorEditor() =>
             controls.Remove(this);
 
-        public static void RefreshAll() =>
-            controls.ForEach(c => c.PropertyChanged?.Invoke(c, new PropertyChangedEventArgs(nameof(DisplayColor))));
-
         public static DependencyProperty ColorProperty = DependencyProperty.Register(nameof(Color), typeof(Color), typeof(ColorEditor), new PropertyMetadata(Colors.White, OnColorChanged));
 
         static void OnColorChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
@@ -42,8 +39,6 @@ namespace PaletteGenerator.UI
             get => (Color)GetValue(ColorProperty);
             set => SetValue(ColorProperty, value);
         }
-
-        public Color DisplayColor => Color;
 
         public event EventHandler ColorChanged;
         public event PropertyChangedEventHandler PropertyChanged;

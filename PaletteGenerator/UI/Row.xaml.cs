@@ -1,31 +1,30 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Media;
+using System.Windows.Shapes;
 
-namespace PaletteGenerator.UI
+namespace PaletteGenerator
 {
 
     public partial class Row
     {
 
-        public Row() =>
+        public Row()
+        {
             InitializeComponent();
-
-        public void Remove(object sender, RoutedEventArgs e) =>
-            Window.Remove((sender as Button)?.DataContext as Row);
+            Refresh();
+        }
 
         #region Properties
 
         public BindingList<Color> LeftSide { get; } = new BindingList<Color>();
         public BindingList<Color> RightSide { get; } = new BindingList<Color>();
 
-        public static DependencyProperty CenterProperty = DependencyProperty.Register(nameof(Center), typeof(Color), typeof(Row), new PropertyMetadata(Colors.LightSkyBlue, OnPropertyChanged));
-        public static DependencyProperty LeftProperty = DependencyProperty.Register(nameof(Left), typeof(Color), typeof(Row), new PropertyMetadata(OnPropertyChanged));
-        public static DependencyProperty RightProperty = DependencyProperty.Register(nameof(Right), typeof(Color), typeof(Row), new PropertyMetadata(OnPropertyChanged));
+        public static DependencyProperty CenterColorProperty = DependencyProperty.Register(nameof(CenterColor), typeof(Color), typeof(Row), new PropertyMetadata(Colors.LightSkyBlue, OnPropertyChanged));
+        public static DependencyProperty LeftColorProperty = DependencyProperty.Register(nameof(LeftColor), typeof(Color), typeof(Row), new PropertyMetadata(OnPropertyChanged));
+        public static DependencyProperty RightColorProperty = DependencyProperty.Register(nameof(RightColor), typeof(Color), typeof(Row), new PropertyMetadata(OnPropertyChanged));
         public static DependencyProperty HueProperty = DependencyProperty.Register(nameof(Hue), typeof(float), typeof(Row), new PropertyMetadata(OnPropertyChanged));
         public static DependencyProperty SaturationProperty = DependencyProperty.Register(nameof(Saturation), typeof(float), typeof(Row), new PropertyMetadata(OnPropertyChanged));
         public static DependencyProperty ColumnsProperty = DependencyProperty.Register(nameof(Columns), typeof(int), typeof(Row), new PropertyMetadata(OnPropertyChanged));
@@ -35,22 +34,22 @@ namespace PaletteGenerator.UI
             (s as Row).Refresh();
         }
 
-        public Color Center
+        public Color CenterColor
         {
-            get => (Color)GetValue(CenterProperty);
-            set => SetValue(CenterProperty, value);
+            get => (Color)GetValue(CenterColorProperty);
+            set => SetValue(CenterColorProperty, value);
         }
 
-        public Color Left
+        public Color LeftColor
         {
-            get => (Color)GetValue(LeftProperty);
-            set => SetValue(LeftProperty, value);
+            get => (Color)GetValue(LeftColorProperty);
+            set => SetValue(LeftColorProperty, value);
         }
 
-        public Color Right
+        public Color RightColor
         {
-            get => (Color)GetValue(RightProperty);
-            set => SetValue(RightProperty, value);
+            get => (Color)GetValue(RightColorProperty);
+            set => SetValue(RightColorProperty, value);
         }
 
         public float Hue
@@ -80,11 +79,11 @@ namespace PaletteGenerator.UI
             {
 
                 var l = new List<Color>();
-                l.Add(Left);
+                l.Add(LeftColor);
                 l.AddRange(LeftSide);
-                l.Add(Center);
+                l.Add(CenterColor);
                 l.AddRange(RightSide);
-                l.Add(Right);
+                l.Add(RightColor);
 
                 return l.ToArray();
 
@@ -94,10 +93,23 @@ namespace PaletteGenerator.UI
         public void Refresh()
         {
 
-            var steps = Columns / 2 + 1;
-            LeftSide.Set(Left.Blend(Center, steps).Skip(1).SkipLast(1));
-            RightSide.Set(Center.Blend(Right, steps).Skip(1).SkipLast(1));
+            if (Columns == 0)
+                return;
 
+            var steps = Columns / 2 + 1;
+            LeftSide.Set(LeftColor.Blend(CenterColor, steps).Skip(1).SkipLast(1));
+            RightSide.Set(CenterColor.Blend(RightColor, steps).Skip(1).SkipLast(1));
+
+            RefreshColorPicker(leftColorPicker);
+            RefreshColorPicker(centerColorPicker);
+            RefreshColorPicker(rightColorPicker);
+
+        }
+
+        void RefreshColorPicker(UI.ColorEditor colorPicker)
+        {
+            var rectangle = colorPicker.FindVisualChildren<Rectangle>().FirstOrDefault();
+            rectangle?.GetBindingExpression(Shape.FillProperty)?.UpdateTarget();
         }
 
     }

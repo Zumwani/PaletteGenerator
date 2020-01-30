@@ -1,25 +1,20 @@
 ﻿using System.Windows;
 using System.Windows.Media;
-using System.Linq;
 using System.ComponentModel;
-using System.Threading.Tasks;
-using PaletteGenerator.UI;
 
 namespace PaletteGenerator
 {
     
     //TODO: Fix installer (integrate with github and download from release branch (create dev and release branches), perhaps installer should be reuseable as well)
-    //TODO: Fix left, center, right color delay
-    //TODO: Turn add / remove row into commands
 
     public partial class Window : System.Windows.Window
     {
 
         #region Properties
 
-        public double MaxRows => 16;
-        public double MaxColumns => 16;
-        public double MinColumns => 2;
+        public int MaxRows => 16;
+        public int MaxColumns => 16;
+        public int MinColumns => 2;
         public string Github => "https://github.com/Zumwani/PaletteGenerator";
         public string Discord => "https://discord.gg/P8VX7Wb";
         public string Version => typeof(Window).Assembly.GetName().Version.ToString();
@@ -63,19 +58,6 @@ namespace PaletteGenerator
         }
 
         #endregion
-        #region Rows
-
-        void Add(object sender = null, RoutedEventArgs e = null)
-        {
-            if (Rows.Count < MaxRows)
-                using (LoadingUtility.KeepLoadingScreenHidden) 
-                    Rows.Create();
-        }
-
-        public static void Remove(Row row) =>
-            App.Window.Rows.Remove(row);
-
-        #endregion
         #region Window
 
         public Window() =>
@@ -83,7 +65,8 @@ namespace PaletteGenerator
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            Add(); Add();
+            Commands.AddRow.Execute();
+            Commands.AddRow.Execute();
         }
 
         #endregion

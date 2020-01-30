@@ -14,9 +14,9 @@ namespace PaletteGenerator
                 ColumnCount = App.Window.Columns,
                 HueOffset = App.Window.Hue,
                 SaturationOffset = App.Window.Saturation,
-                Left = App.Window.RightColor,
-                Right = App.Window.RightColor,
-                Rows = App.Window.Rows.Select(r => r.Center).ToArray(),
+                LeftColor = App.Window.RightColor,
+                RightColor = App.Window.RightColor,
+                Rows = App.Window.Rows.Select(r => r.CenterColor).ToArray(),
             };
 
         public void SetCurrent()
@@ -24,14 +24,14 @@ namespace PaletteGenerator
             App.Window.Hue = HueOffset;
             App.Window.Saturation = SaturationOffset;
             App.Window.Columns = ColumnCount;
-            App.Window.Rows.Set(Rows.Select(c => new Row() { Center = c }));
+            App.Window.Rows.Set(Rows.Select(c => new Row() { CenterColor = c }));
         }
 
         public int ColumnCount { get; set; }
         public float HueOffset { get; set; }
         public float SaturationOffset { get; set; }
-        public Color Left { get; set; }
-        public Color Right { get; set; }
+        public Color LeftColor { get; set; }
+        public Color RightColor { get; set; }
         public Color[] Rows { get; set; }
 
     }
