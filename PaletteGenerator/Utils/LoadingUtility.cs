@@ -24,7 +24,7 @@ namespace PaletteGenerator
             Tasks.Add(task);
 
             if (!blocks.Any())
-                await App.Dispatcher.Invoke(async () => await App.Window.loadingOverlay.Show().Fade(0.5));
+                await App.Dispatcher.Invoke(async () => await App.Window.loadingOverlay.Show().Fade(1));
             await task.ContinueWith(OnTaskCompleted);
 
         }

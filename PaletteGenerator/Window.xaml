@@ -17,11 +17,9 @@
         <ResourceDictionary>
 
             <ResourceDictionary.MergedDictionaries>
-
                 <ResourceDictionary Source="/ColorPickerLib;component/Themes/LightBrushs.xaml"/>
                 <ResourceDictionary Source="UI/Button.xaml"/>
                 <ResourceDictionary Source="UI/Slider.xaml"/>
-
             </ResourceDictionary.MergedDictionaries>
 
             <Style x:Key="ToolButton" TargetType="{x:Type Button}" BasedOn="{StaticResource ButtonBaseStyle}">
@@ -52,15 +50,18 @@
 
             <ui:Header x:Name="header"/>
 
-            <Border x:Name="loadingOverlay" Grid.Row="0" Grid.RowSpan="3" Background="Black" Opacity="0.5" Panel.ZIndex="100" Visibility="Collapsed" WindowChrome.IsHitTestVisibleInChrome="True">
+            <Border x:Name="loadingOverlay" Grid.Row="0" Grid.RowSpan="3" Opacity="0" Panel.ZIndex="100" Visibility="Collapsed" WindowChrome.IsHitTestVisibleInChrome="True">
+                <Border.Background>
+                    <SolidColorBrush Color="Black" Opacity="0.5"/>
+                </Border.Background>
                 <mahApps:ProgressRing Foreground="White"/>
             </Border>
             
             <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
                 <StackPanel HorizontalAlignment="Center">
                     <DockPanel LastChildFill="False" Margin="64,0,64,-36">
-                        <ui:ColorEditor CustomColor="{Binding LeftColor, Mode=TwoWay}" DockPanel.Dock="Left" BorderThickness="1"/>
-                        <ui:ColorEditor CustomColor="{Binding RightColor, Mode=TwoWay}" DockPanel.Dock="Right" BorderThickness="1"/>
+                        <ui:ColorEditor x:Name="LeftColorPicker" DockPanel.Dock="Left" BorderThickness="1"/>
+                        <ui:ColorEditor x:Name="RightColorPicker" DockPanel.Dock="Right" BorderThickness="1"/>
                     </DockPanel>
                     <ItemsControl x:Name="list" ItemsSource="{Binding Rows}" Margin="42" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                 </StackPanel>

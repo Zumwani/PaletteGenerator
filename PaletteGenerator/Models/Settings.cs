@@ -40,8 +40,8 @@ namespace PaletteGenerator
 
         }
         
-        public void Save()              => JsonObject<Settings>.Save(this, SettingsFile);
-        public static async Task Load() => Current = await JsonObject<Settings>.Load(SettingsFile, true);
+        public void Save()              => JsonUtility<Settings>.Save(this, SettingsFile);
+        public static async Task Load() => Current = await JsonUtility<Settings>.Load(SettingsFile, true);
 
         public static Settings Current { get; private set; }
 

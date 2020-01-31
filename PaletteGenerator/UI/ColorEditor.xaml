@@ -14,13 +14,11 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="Button.xaml"/>
             </ResourceDictionary.MergedDictionaries>
-
-            <Color x:Key="EmptyColor"/>
-
+            
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <colorPicker:ColorPicker x:Name="colorPicker" SelectedColor="{Binding ElementName=editor, Path=CustomColor, Mode=TwoWay}"
+    <colorPicker:ColorPicker x:Name="colorPicker" SelectedColor="{Binding ElementName=editor, Path=Color.Custom, Mode=TwoWay}"
                              StandardButtonHeader="Named Colors" AdvancedButtonHeader="Color Picker" AvailableColorsSortingMode="HueSaturationBrightness" ShowDropDownButton="False"
                              ColorMode="{Binding Source={local:Settings}, Path=ColorMode.Value, Mode=TwoWay}" ShowRecentColors="True">
 
@@ -32,18 +30,17 @@
                     <Setter.Value>
                         <ControlTemplate>
 
-                            <Grid>
-                                <Rectangle x:Name="rectangle" Fill="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}, Path=SelectedColor, Converter={converters:ToBrush}, ConverterParameter={StaticResource True}, Mode=OneWay}" StrokeThickness="0" Stroke="LightGray"/>
-                                <Border HorizontalAlignment="Left" VerticalAlignment="Top"
-                                        Visibility="{Binding Converter={converters:ShowIfNot}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}, Path=GlobalColor, ConverterParameter={StaticResource EmptyColor}}">
-                                    <Button x:Name="button" Content="✖" Foreground="LightGray" Padding="0" Height="16" Width="16" Click="ResetColorButton_Click"
+                            <Grid><!---->
+                                <Rectangle x:Name="rectangle"  StrokeThickness="0" Stroke="LightGray"
+                                           Fill="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}, Path=Color.Selected, Converter={converters:ToBrush}, Mode=OneWay}"/>
+                                <Button x:Name="button" Content="✖" Foreground="LightGray" Padding="0" Height="16" Width="16" HorizontalAlignment="Left" VerticalAlignment="Top"
+                                        Visibility="{Binding Converter={converters:ShowIf}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}, Path=Color.IsCustom, ConverterParameter={StaticResource True}}"
                                         ToolTip="Remove custom color" Style="{StaticResource ButtonBaseStyle}" Template="{StaticResource ButtonTemplate}"
-                                        Visibility="{Binding Converter={converters:ShowIf}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}, Path=HasCustomColor, ConverterParameter={StaticResource True}}">
-                                        <Button.Effect>
-                                            <DropShadowEffect BlurRadius="5" ShadowDepth="2" Opacity="0.5"/>
-                                        </Button.Effect>
-                                    </Button>
-                                </Border>
+                                        Click="ResetColorButton_Click">
+                                    <Button.Effect>
+                                        <DropShadowEffect BlurRadius="5" ShadowDepth="2" Opacity="0.5"/>
+                                    </Button.Effect>
+                                </Button>
                             </Grid>
 
                             <ControlTemplate.Triggers>

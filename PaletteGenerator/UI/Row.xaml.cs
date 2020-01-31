@@ -1,5 +1,9 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
@@ -8,14 +12,154 @@ using System.Windows.Shapes;
 namespace PaletteGenerator
 {
 
+    public class CustomValue<T> : INotifyPropertyChanged, IDisposable
+    {
+        
+        /// <summary>Binds to global value, one way.</summary>
+        public static CustomValue<T> FromGlobal(DependencyObject source, DependencyProperty property, bool setUseCustomAutomatically = true)
+        {
+
+            var v = new CustomValue<T> 
+            { Global = (T)property.DefaultMetadata.DefaultValue };
+            v.custom = v.Global;
+
+            v.descriptor = DependencyPropertyDescriptor.FromProperty(property, source.GetType());
+            v.descriptor.AddValueChanged(source, v.OnSourceChanged);
+
+            v.source = source;
+            v.property = property;
+            v.setUseCustomAutomatically = setUseCustomAutomatically;
+
+            return v;
+
+        }
+
+        /// <summary>Binds to global value, two way.</summary>
+        public static CustomValue<T> FromToGlobal(DependencyObject source, DependencyProperty property, bool setUseCustomAutomatically = true)
+        {
+
+            var v = FromGlobal(source, property, setUseCustomAutomatically);
+            v.isTwoWay = !v.descriptor.IsReadOnly;
+            v.CanUseCustom = false;
+            return v;
+
+        }
+
+        void OnSourceChanged(object s, EventArgs e)
+        {
+            Global = (T)source.GetValue(property);
+            //custom = global;
+        }
+
+        public CustomValue() { }
+        public CustomValue(T custom) => Custom = custom;
+
+        DependencyObject source;
+        DependencyProperty property;
+        DependencyPropertyDescriptor descriptor;
+        bool isTwoWay;
+        bool setUseCustomAutomatically;
+
+        T global;
+        T custom;
+        bool useCustom;
+
+        [JsonIgnore]
+        public Action OnValueChanged { get; set; }
+
+        [JsonIgnore]
+        public T Global
+        {
+            get => global;
+            set { global = value; OnPropertyChanged(); }
+        }
+
+        public T Custom
+        {
+            get => custom;
+            set { custom = value; OnPropertyChanged(); }
+        }
+
+        public bool UseCustom
+        {
+            get => useCustom;
+            set { useCustom = value; OnPropertyChanged(); }
+        }
+
+        public bool IsCustom => UseCustom && CanUseCustom;
+        public bool IsGlobal => !UseCustom;
+        public bool CanUseCustom { get; set; } = true;
+
+        [JsonIgnore]
+        public T Selected => IsCustom ? Custom : Global;
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        void OnPropertyChanged([CallerMemberName] string name = "")
+        {
+
+            if (name == nameof(Custom) && setUseCustomAutomatically)
+                if (CanUseCustom)
+                    useCustom = true;
+                else
+                    Global = Custom;
+
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsCustom)));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsGlobal)));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Selected)));
+
+            OnValueChanged?.Invoke();
+
+            if (isTwoWay)
+                source?.SetValue(property, Selected);
+
+        }
+
+        public void Reset() =>
+            UseCustom = false;
+
+        public static implicit operator T(CustomValue<T> value) =>
+            value.Selected;
+
+        public static implicit operator CustomValue<T>(T value) =>
+            new CustomValue<T>(value);
+
+        public void Set(CustomValue<T> custom) =>
+            Set(custom.Custom, custom.UseCustom);
+
+        public void Set(T custom, bool useCustom)
+        {
+            Custom = custom;
+            UseCustom = useCustom;
+        }
+
+        public void Dispose() =>
+            descriptor.RemoveValueChanged(source, OnSourceChanged);
+
+    }
+
     public partial class Row
     {
 
-        public Row()
+        private void Row_Loaded(object sender, RoutedEventArgs e)
         {
-            InitializeComponent();
+            CenterColorPicker.Color = CustomValue<Color>.FromToGlobal(this, CenterColorProperty);
+            LeftColor.OnValueChanged    = Refresh;
+            RightColor.OnValueChanged   = Refresh;
+            Hue.OnValueChanged          = Refresh;
+            Saturation.OnValueChanged   = Refresh;
             Refresh();
         }
+
+        private void Row_Unloaded(object sender, RoutedEventArgs e)
+        {
+            LeftColor.Dispose();
+            RightColor.Dispose();
+        }
+
+        public Row() =>
+            InitializeComponent();
 
         #region Properties
 
@@ -23,20 +167,8 @@ namespace PaletteGenerator
         public BindingList<Color> RightSide { get; } = new BindingList<Color>();
 
         public static DependencyProperty ColumnsProperty = DependencyProperty.Register(nameof(Columns), typeof(int), typeof(Row), new PropertyMetadata(OnPropertyChanged));
-
         public static DependencyProperty CenterColorProperty = DependencyProperty.Register(nameof(CenterColor), typeof(Color), typeof(Row), new PropertyMetadata(Colors.LightSkyBlue, OnPropertyChanged));
-        public static DependencyProperty LeftColorProperty = DependencyProperty.Register(nameof(LeftColor), typeof(Color), typeof(Row), new PropertyMetadata(OnPropertyChanged));
-        public static DependencyProperty RightColorProperty = DependencyProperty.Register(nameof(RightColor), typeof(Color), typeof(Row), new PropertyMetadata(OnPropertyChanged));
-
-        public static DependencyProperty GlobalHueProperty = DependencyProperty.Register(nameof(GlobalHue), typeof(float), typeof(Row), new PropertyMetadata(OnPropertyChanged));
-        public static DependencyProperty GlobalSaturationProperty = DependencyProperty.Register(nameof(GlobalSaturation), typeof(float), typeof(Row), new PropertyMetadata(OnPropertyChanged));
-
-        public static DependencyProperty CustomHueProperty = DependencyProperty.Register(nameof(CustomHue), typeof(float), typeof(Row), new PropertyMetadata(OnPropertyChanged));
-        public static DependencyProperty CustomSaturationProperty = DependencyProperty.Register(nameof(CustomSaturation), typeof(float), typeof(Row), new PropertyMetadata(1f, OnPropertyChanged));
-
-        public static DependencyProperty UseCustomHueProperty = DependencyProperty.Register(nameof(UseCustomHue), typeof(bool), typeof(Row), new PropertyMetadata(OnPropertyChanged));
-        public static DependencyProperty UseCustomSaturationProperty = DependencyProperty.Register(nameof(UseCustomSaturation), typeof(bool), typeof(Row), new PropertyMetadata(OnPropertyChanged));
-
+        
         async static void OnPropertyChanged(object s, DependencyPropertyChangedEventArgs e)
             { await Task.Delay(10); (s as Row).Refresh(); }
 
@@ -52,66 +184,20 @@ namespace PaletteGenerator
             set => SetValue(CenterColorProperty, value);
         }
 
-        public Color LeftColor
-        {
-            get => (Color)GetValue(LeftColorProperty);
-            set => SetValue(LeftColorProperty, value);
-        }
+        public CustomValue<Color> LeftColor  { get; } = CustomValue<Color>.FromGlobal(App.Window, Window.LeftColorProperty);
+        public CustomValue<Color> RightColor { get; } = CustomValue<Color>.FromGlobal(App.Window, Window.RightColorProperty);
 
-        public Color RightColor
-        {
-            get => (Color)GetValue(RightColorProperty);
-            set => SetValue(RightColorProperty, value);
-        }
-
-        public float GlobalHue
-        {
-            get => (float)GetValue(GlobalHueProperty);
-            set => SetValue(GlobalHueProperty, value);
-        }
-
-        public float GlobalSaturation
-        {
-            get => (float)GetValue(GlobalSaturationProperty);
-            set => SetValue(GlobalSaturationProperty, value);
-        }
-
-        public float CustomHue
-        {
-            get => (float)GetValue(CustomHueProperty);
-            set => SetValue(CustomHueProperty, value);
-        }
-
-        public float CustomSaturation
-        {
-            get => (float)GetValue(CustomSaturationProperty);
-            set => SetValue(CustomSaturationProperty, value);
-        }
-
-        public bool UseCustomHue
-        {
-            get => (bool)GetValue(UseCustomHueProperty);
-            set => SetValue(UseCustomHueProperty, value);
-        }
-
-        public bool UseCustomSaturation
-        {
-            get => (bool)GetValue(UseCustomSaturationProperty);
-            set => SetValue(UseCustomSaturationProperty, value);
-        }
-
-        public float SelectedHue        => UseCustomHue        ? CustomHue        : GlobalHue; 
-        public float SelectedSaturation => UseCustomSaturation ? CustomSaturation : GlobalSaturation;
+        public CustomValue<float> Hue        { get; } = CustomValue<float>.FromGlobal(App.Window, Window.HueProperty, false);
+        public CustomValue<float> Saturation { get; } = CustomValue<float>.FromGlobal(App.Window, Window.SaturationProperty, false);
 
         #endregion
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0028:Simplify collection initialization", Justification = "Less readable.")]
         public Color[] AllColors =>
-            LeftColor.AsArray().
+            LeftColor.Selected.ApplyOffsets(Hue, Saturation).AsArray().
             Concat(LeftSide).
-            Concat(CenterColor).
+            Concat(CenterColor.ApplyOffsets(Hue, Saturation)).
             Concat(RightSide).
-            Concat(RightColor).
+            Concat(RightColor.Selected.ApplyOffsets(Hue, Saturation)).
             ToArray();
 
         public void Refresh()
@@ -120,35 +206,35 @@ namespace PaletteGenerator
             if (Columns == 0)
                 return;
 
-            var left = LeftColor.ApplyOffsets(SelectedHue, SelectedSaturation);
-            var center = CenterColor.ApplyOffsets(SelectedHue, SelectedSaturation);
-            var right = RightColor.ApplyOffsets(SelectedHue, SelectedSaturation);
+            var left = LeftColor.Selected.ApplyOffsets(Hue, Saturation);
+            var center = CenterColor.ApplyOffsets(Hue, Saturation);
+            var right = RightColor.Selected.ApplyOffsets(Hue, Saturation);
 
             var steps = Columns / 2 + 1;
             LeftSide.Set(left.Blend(center, steps).Skip(1).SkipLast(1));
             RightSide.Set(center.Blend(right, steps).Skip(1).SkipLast(1));
 
-            RefreshColorPicker(leftColorPicker);
-            RefreshColorPicker(centerColorPicker);
-            RefreshColorPicker(rightColorPicker);
+            RefreshColorPicker(LeftColorPicker, left);
+            RefreshColorPicker(CenterColorPicker, center);
+            RefreshColorPicker(RightColorPicker, right);
 
         }
 
-        void RefreshColorPicker(UI.ColorEditor colorPicker)
+        void RefreshColorPicker(UI.ColorEditor colorPicker, Color color)
         {
             var rectangle = colorPicker.FindVisualChildren<Rectangle>().FirstOrDefault();
-            rectangle?.GetBindingExpression(Shape.FillProperty)?.UpdateTarget();
+            rectangle?.SetValue(Shape.FillProperty, new SolidColorBrush(color));
         }
 
         private void StackPanel_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
         {
-            offsetsButton.Visibility = Visibility.Visible;
+            OffsetsButton.Visibility = Visibility.Visible;
             RemoveButton.Visibility = Visibility.Visible;
         }
 
         private void StackPanel_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
         {
-            offsetsButton.Visibility = Visibility.Collapsed;
+            OffsetsButton.Visibility = Visibility.Collapsed;
             RemoveButton.Visibility = Visibility.Collapsed;
         }
 

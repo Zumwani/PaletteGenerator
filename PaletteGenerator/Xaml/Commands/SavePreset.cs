@@ -15,7 +15,7 @@ namespace PaletteGenerator.Commands
         public void Execute(object parameter)
         {
             var preset = Preset.FromCurrent();
-            LoadingUtility.ShowLoadingScreen(() => JsonObject<Preset>.PromptAndSave(preset));
+            LoadingUtility.ShowLoadingScreen(() => JsonUtility<Preset>.PromptAndSave(preset));
         }
 
     }

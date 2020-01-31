@@ -16,53 +16,38 @@ namespace PaletteGenerator.UI
 
         public ColorEditor() => InitializeComponent();
 
-        public static DependencyProperty GlobalColorProperty = DependencyProperty.Register(nameof(GlobalColor), typeof(Color), typeof(ColorEditor), new PropertyMetadata(OnColorChanged));
-        public static DependencyProperty CustomColorProperty = DependencyProperty.Register(nameof(CustomColor), typeof(Color), typeof(ColorEditor), new PropertyMetadata(OnColorChanged));
-        public static DependencyProperty SelectedColorProperty = DependencyProperty.Register(nameof(SelectedColor), typeof(Color), typeof(ColorEditor), new PropertyMetadata(Colors.LightSkyBlue));
+        public static DependencyProperty ColorProperty = DependencyProperty.Register(nameof(Color), typeof(CustomValue<Color>), typeof(ColorEditor));
+
+        public CustomValue<Color> Color
+        {
+            get => (CustomValue<Color>)GetValue(ColorProperty);
+            set => SetValue(ColorProperty, value);
+        }
 
         static void OnColorChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
         {
 
-            if (!(sender is ColorEditor c))
-                return;
+            //if (!(sender is ColorEditor c))
+            //    return;
 
-            if (e.Property == GlobalColorProperty && c.CustomColor == (Color)e.OldValue)
-                c.CustomColor = c.GlobalColor;
+            //if (e.Property == GlobalColorProperty && c.CustomColor == (Color)e.OldValue)
+            //    c.CustomColor = c.GlobalColor;
 
-            Task.Run(async () =>
-            {
+            //Task.Run(async () =>
+            //{
 
-                await Task.Delay(100);
+            //    await Task.Delay(100);
 
-                App.Dispatcher.Invoke(() =>
-                {
+            //    App.Dispatcher.Invoke(() =>
+            //    {
 
-                    c.OnPropertyChanged(nameof(HasCustomColor));
-                    c.SetValue(SelectedColorProperty, c.HasCustomColor ? c.CustomColor : c.GlobalColor);
+            //        c.OnPropertyChanged(nameof(HasCustomColor));
+            //        c.SetValue(SelectedColorProperty, c.HasCustomColor ? c.CustomColor : c.GlobalColor);
 
-                });
+            //    });
 
-            }).ConfigureAwait(false);
+            //}).ConfigureAwait(false);
 
-        }
-
-        public Color GlobalColor
-        {
-            get => (Color)GetValue(GlobalColorProperty);
-            set => SetValue(GlobalColorProperty, value);
-        }
-
-        public Color CustomColor
-        {
-            get => (Color)GetValue(CustomColorProperty);
-            set => SetValue(CustomColorProperty, value);
-        }
-
-        public bool HasCustomColor => CustomColor != GlobalColor; 
-        public Color SelectedColor
-        {
-            get => (Color)GetValue(SelectedColorProperty);
-            set => SetValue(SelectedColorProperty, value);
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -98,25 +83,23 @@ namespace PaletteGenerator.UI
 
             OverlayUtility.Open(Initalize, Deinitalize);
 
-            var savedColor = CustomColor;
+            var savedColor = Color.Custom;
             while (!(wasMousePressed || wasEscPressed))
             {
-                CustomColor = CursorUtility.GetColorUnderCursor();
+                Color.Custom = CursorUtility.GetColorUnderCursor();
                 await Task.Delay(100);
             }
 
             if (toggle.IsMouseOver || wasEscPressed)
-                CustomColor = savedColor;
+                Color.Custom = savedColor;
 
             OverlayUtility.Close();
             toggle.IsChecked = false;
 
         }
 
-        private void ResetColorButton_Click(object sender, RoutedEventArgs e)
-        {
-            CustomColor = GlobalColor;
-        }
+        private void ResetColorButton_Click(object sender, RoutedEventArgs e) =>
+            Color.Reset();
 
     }
 

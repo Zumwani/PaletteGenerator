@@ -1,5 +1,4 @@
-﻿using Ookii.Dialogs.Wpf;
-using System;
+﻿using System;
 using System.IO;
 using System.Linq;
 using System.Windows;
@@ -20,15 +19,13 @@ namespace PaletteGenerator.Commands
         {
 
             var rows = App.Window.Rows;
-            var hue = App.Window.Hue;
-            var saturation = App.Window.Saturation;
 
-            var colors = rows.Select(r => r.AllColors.ApplyOffsets(hue, saturation)).ToArray();
+            var colors = rows.Select(r => r.AllColors).ToArray();
 
             LoadingUtility.ShowLoadingScreen(async () =>
             {
 
-                if (Prompt.Save(Directory.CreateDirectory(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Palette Generator")).FullName, "png") is string path)
+                if (PromptUtility.Save(Directory.CreateDirectory(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Palette Generator")).FullName, "png") is string path)
                 {
 
                     try

@@ -22,7 +22,9 @@ namespace PaletteGenerator
 
             public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
             {
-                throw new NotImplementedException();
+                if (value is SolidColorBrush b)
+                    return b.Color;
+                return default;
             }
 
             public override object ProvideValue(IServiceProvider serviceProvider) =>
