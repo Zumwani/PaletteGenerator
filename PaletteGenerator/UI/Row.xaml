@@ -5,10 +5,16 @@
              xmlns:converters="clr-namespace:PaletteGenerator.Converters"
              xmlns:ui="clr-namespace:PaletteGenerator.UI"
              xmlns:commands="clr-namespace:PaletteGenerator.Commands"
-             x:Name="row">
-
+             xmlns:fa="http://schemas.fontawesome.com/icons/"
+             x:Name="row"
+             MouseEnter="StackPanel_MouseEnter" MouseLeave="StackPanel_MouseLeave">
+    
     <UserControl.Resources>
         <ResourceDictionary>
+
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Button.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
             
             <Style TargetType="{x:Type ItemsControl}">
 
@@ -36,25 +42,57 @@
 
     <UserControl.Style>
         <Style TargetType="{x:Type local:Row}">
-            <Setter Property="LeftColor"  Value="{Binding Source={x:Static local:App.Window}, Mode=OneWay, Path=LeftColor}"/>
-            <Setter Property="RightColor" Value="{Binding Source={x:Static local:App.Window}, Mode=OneWay, Path=RightColor}"/>
-            <Setter Property="Hue"        Value="{Binding Source={x:Static local:App.Window}, Mode=OneWay, Path=Hue}"/>
-            <Setter Property="Saturation" Value="{Binding Source={x:Static local:App.Window}, Mode=OneWay, Path=Saturation}"/>
-            <Setter Property="Columns"    Value="{Binding Source={x:Static local:App.Window}, Mode=OneWay, Path=Columns}"/>
+            <Setter Property="LeftColor"  Value="{Binding Source={StaticResource Window}, Mode=OneWay, Path=LeftColor}"/>
+            <Setter Property="RightColor" Value="{Binding Source={StaticResource Window}, Mode=OneWay, Path=RightColor}"/>
+            <Setter Property="GlobalHue"        Value="{Binding Source={StaticResource Window}, Mode=OneWay, Path=Hue}"/>
+            <Setter Property="GlobalSaturation" Value="{Binding Source={StaticResource Window}, Mode=OneWay, Path=Saturation}"/>
+            <Setter Property="Columns"    Value="{Binding Source={StaticResource Window}, Mode=OneWay, Path=Columns}"/>
         </Style>
     </UserControl.Style>
-    
+
     <StackPanel Orientation="Horizontal" Margin="0,6">
 
-        <ui:ColorEditor x:Name="leftColorPicker" GlobalColor="{Binding Source={x:Static local:App.Window}, Path=LeftColor, Mode=OneWay}" SelectedColor="{Binding ElementName=row, Path=LeftColor, Mode=OneWayToSource}"  Width="64" BorderThickness="1,1,0,1"/>
+        <Border Background="Transparent" Height="64" Width="22">
+            <ToggleButton x:Name="offsetsButton" CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:Row}}" FontSize="12" Width="22" Padding="6" Visibility="Collapsed"
+                          IsHitTestVisible="{Binding ElementName=OffsetsPopup, Path=IsOpen, Converter={converters:InvertBool}}">
+                <ToggleButton.Content>
+                    <fa:ImageAwesome Icon="Solid_ChevronLeft" Foreground="DimGray"/>
+                </ToggleButton.Content>
+            </ToggleButton>
+        </Border>
+
+        <ui:ColorEditor x:Name="leftColorPicker" GlobalColor="{Binding Source={StaticResource Window}, Path=LeftColor, Mode=OneWay}" SelectedColor="{Binding ElementName=row, Path=LeftColor, Mode=OneWayToSource}"  Width="64" BorderThickness="1,1,0,1"/>
         <ItemsControl ItemsSource="{Binding ElementName=row, Path=LeftSide, Mode=OneWay}"/>
         <ui:ColorEditor x:Name="centerColorPicker" CustomColor="{Binding ElementName=row, Path=CenterColor, Mode=OneWay}" BorderThickness="0,1" SelectedColor="{Binding ElementName=row, Path=CenterColor, Mode=OneWayToSource}"/>
         <ItemsControl ItemsSource="{Binding ElementName=row, Path=RightSide, Mode=OneWay}"/>
-        <ui:ColorEditor x:Name="rightColorPicker" GlobalColor="{Binding Source={x:Static local:App.Window}, Path=RightColor, Mode=OneWay}" SelectedColor="{Binding ElementName=row, Path=RightColor, Mode=OneWayToSource}" BorderThickness="0,1,1,1"/>
+        <ui:ColorEditor x:Name="rightColorPicker" GlobalColor="{Binding Source={StaticResource Window}, Path=RightColor, Mode=OneWay}" SelectedColor="{Binding ElementName=row, Path=RightColor, Mode=OneWayToSource}" BorderThickness="0,1,1,1"/>
 
-        <Canvas>
-            <Button Content="✖" Command="{commands:RemoveRow}" CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:Row}}" FontSize="12" Margin="4,0" Foreground="DimGray"/>
-        </Canvas>
+        <Border Background="Transparent" Width="22">
+            <Button Content="✖" x:Name="RemoveButton" Visibility="Collapsed" Height="22" VerticalAlignment="Top" Command="{commands:RemoveRow}" CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:Row}}" FontSize="12" Foreground="DimGray"
+                    Style="{StaticResource ButtonBaseStyle}" Template="{StaticResource ButtonTemplate}"/>
+        </Border>
+
+        <Popup x:Name="offsetsPopup" IsOpen="{Binding ElementName=offsetsButton, Path=IsChecked}" StaysOpen="False" PopupAnimation="Fade" Placement="Left" PlacementTarget="{Binding ElementName=offsetsButton}">
+            <Border Background="White" BorderThickness="1" BorderBrush="Black">
+                <StackPanel Margin="12">
+
+                    <TextBlock Text="Offsets:" FontSize="16" Margin="0,0,0,12"/>
+
+                    <TextBlock Text="Hue" HorizontalAlignment="Center" FontSize="16"/>
+                    <DockPanel LastChildFill="False">
+                        <Slider Value="{Binding ElementName=row, Path=CustomHue, Mode=TwoWay}" Width="200"/>
+                        <CheckBox VerticalAlignment="Center" IsChecked="{Binding ElementName=row, Path=UseCustomHue}" Margin="12,0"/>
+                    </DockPanel>
+
+                    <TextBlock Text="Saturation" HorizontalAlignment="Center" FontSize="16"/>
+                    <DockPanel LastChildFill="False">
+                        <Slider Value="{Binding ElementName=row, Path=CustomSaturation, Mode=TwoWay}" Width="200"/>
+                        <CheckBox VerticalAlignment="Center" IsChecked="{Binding ElementName=row, Path=UseCustomSaturation}" Margin="12,0"/>
+                    </DockPanel>
+                    
+                </StackPanel>
+            </Border>
+        </Popup>
 
     </StackPanel>
 

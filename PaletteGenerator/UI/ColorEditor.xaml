@@ -6,11 +6,7 @@
              xmlns:colorPicker="clr-namespace:ColorPickerLib.Controls;assembly=ColorPickerLib"
              xmlns:fa="http://schemas.fontawesome.com/icons/"
              x:Name="editor"
-             FontFamily="Segoe UI Semilight" BorderBrush="LightGray">
-
-    <UserControl.Background>
-        <ImageBrush ImageSource="pack://application:,,,/Assets/transparent.png" Stretch="None"/>
-    </UserControl.Background>
+             FontFamily="Segoe UI Semilight" BorderBrush="LightGray" Background="{StaticResource TransparentImage}">
 
     <UserControl.Resources>
         <ResourceDictionary>
@@ -37,7 +33,7 @@
                         <ControlTemplate>
 
                             <Grid>
-                                <Rectangle x:Name="rectangle" Fill="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}, Path=SelectedColor, Converter={converters:ToBrush}, Mode=OneWay}" StrokeThickness="0" Stroke="LightGray"/>
+                                <Rectangle x:Name="rectangle" Fill="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}, Path=SelectedColor, Converter={converters:ToBrush}, ConverterParameter={StaticResource True}, Mode=OneWay}" StrokeThickness="0" Stroke="LightGray"/>
                                 <Border HorizontalAlignment="Left" VerticalAlignment="Top"
                                         Visibility="{Binding Converter={converters:ShowIfNot}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}, Path=GlobalColor, ConverterParameter={StaticResource EmptyColor}}">
                                     <Button x:Name="button" Content="✖" Foreground="LightGray" Padding="0" Height="16" Width="16" Click="ResetColorButton_Click"

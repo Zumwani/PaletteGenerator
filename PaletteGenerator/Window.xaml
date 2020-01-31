@@ -58,7 +58,7 @@
             
             <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
                 <StackPanel HorizontalAlignment="Center">
-                    <DockPanel LastChildFill="False" Margin="42,0,42,-36">
+                    <DockPanel LastChildFill="False" Margin="64,0,64,-36">
                         <ui:ColorEditor CustomColor="{Binding LeftColor, Mode=TwoWay}" DockPanel.Dock="Left" BorderThickness="1"/>
                         <ui:ColorEditor CustomColor="{Binding RightColor, Mode=TwoWay}" DockPanel.Dock="Right" BorderThickness="1"/>
                     </DockPanel>

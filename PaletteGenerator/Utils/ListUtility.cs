@@ -8,6 +8,12 @@ namespace PaletteGenerator
     public static class ListUtility
     {
 
+        public static IEnumerable<T> Concat<T>(this IEnumerable<T> list, T item) =>
+            System.Linq.Enumerable.Concat(list, new[] { item });
+
+        public static T[] AsArray<T>(this T item) =>
+            new[] { item };
+
         public static IEnumerable<T> ForEach<T>(this IEnumerable<T> list, Action<T> action)
         {
             foreach (var item in list)

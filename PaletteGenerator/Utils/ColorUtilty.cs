@@ -15,11 +15,11 @@ namespace PaletteGenerator
     public static class ColorUtilty
     {
 
-        public static Color[] ApplyOffsets(this Color[] colors) =>
-            colors.ApplyOffsets(App.Window.Hue, App.Window.Saturation);
+        public static Color ApplyOffsets(this Color color)     => color.ApplyOffsets(App.Window?.Hue ?? 0, App.Window?.Saturation ?? 0);
+        public static Color[] ApplyOffsets(this Color[] colors) => colors.ApplyOffsets(App.Window?.Hue ?? 0, App.Window?.Saturation ?? 0);
 
-        public static Color[] ApplyOffsets(this Color[] colors, float hue, float saturation) =>
-            colors.Select(c => c.OffsetHue(hue).OffsetSaturation(saturation)).ToArray();
+        public static Color ApplyOffsets(this Color color, float hue, float saturation)      => color.OffsetHue(hue).OffsetSaturation(saturation);
+        public static Color[] ApplyOffsets(this Color[] colors, float hue, float saturation) => colors.Select(c => c.ApplyOffsets(hue, saturation)).ToArray();
 
         public static BitmapSource AsPNGPalette(this Color[][] colors, int cellSize)
         {

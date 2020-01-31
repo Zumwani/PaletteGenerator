@@ -6,6 +6,9 @@ namespace PaletteGenerator
 {
     
     //TODO: Fix installer (integrate with github and download from release branch (create dev and release branches), perhaps installer should be reuseable as well)
+    //TODO: Change all x:Name to PascalCase
+    //TODO: Fix attached property for popups
+    //TODO: Fix left, center, right colors not refreshing (ToBrush converter doesn't work when row can have offsets...)
 
     public partial class Window : System.Windows.Window
     {

@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Shapes;
@@ -22,16 +22,28 @@ namespace PaletteGenerator
         public BindingList<Color> LeftSide { get; } = new BindingList<Color>();
         public BindingList<Color> RightSide { get; } = new BindingList<Color>();
 
+        public static DependencyProperty ColumnsProperty = DependencyProperty.Register(nameof(Columns), typeof(int), typeof(Row), new PropertyMetadata(OnPropertyChanged));
+
         public static DependencyProperty CenterColorProperty = DependencyProperty.Register(nameof(CenterColor), typeof(Color), typeof(Row), new PropertyMetadata(Colors.LightSkyBlue, OnPropertyChanged));
         public static DependencyProperty LeftColorProperty = DependencyProperty.Register(nameof(LeftColor), typeof(Color), typeof(Row), new PropertyMetadata(OnPropertyChanged));
         public static DependencyProperty RightColorProperty = DependencyProperty.Register(nameof(RightColor), typeof(Color), typeof(Row), new PropertyMetadata(OnPropertyChanged));
-        public static DependencyProperty HueProperty = DependencyProperty.Register(nameof(Hue), typeof(float), typeof(Row), new PropertyMetadata(OnPropertyChanged));
-        public static DependencyProperty SaturationProperty = DependencyProperty.Register(nameof(Saturation), typeof(float), typeof(Row), new PropertyMetadata(OnPropertyChanged));
-        public static DependencyProperty ColumnsProperty = DependencyProperty.Register(nameof(Columns), typeof(int), typeof(Row), new PropertyMetadata(OnPropertyChanged));
 
-        static void OnPropertyChanged(object s, DependencyPropertyChangedEventArgs e)
+        public static DependencyProperty GlobalHueProperty = DependencyProperty.Register(nameof(GlobalHue), typeof(float), typeof(Row), new PropertyMetadata(OnPropertyChanged));
+        public static DependencyProperty GlobalSaturationProperty = DependencyProperty.Register(nameof(GlobalSaturation), typeof(float), typeof(Row), new PropertyMetadata(OnPropertyChanged));
+
+        public static DependencyProperty CustomHueProperty = DependencyProperty.Register(nameof(CustomHue), typeof(float), typeof(Row), new PropertyMetadata(OnPropertyChanged));
+        public static DependencyProperty CustomSaturationProperty = DependencyProperty.Register(nameof(CustomSaturation), typeof(float), typeof(Row), new PropertyMetadata(1f, OnPropertyChanged));
+
+        public static DependencyProperty UseCustomHueProperty = DependencyProperty.Register(nameof(UseCustomHue), typeof(bool), typeof(Row), new PropertyMetadata(OnPropertyChanged));
+        public static DependencyProperty UseCustomSaturationProperty = DependencyProperty.Register(nameof(UseCustomSaturation), typeof(bool), typeof(Row), new PropertyMetadata(OnPropertyChanged));
+
+        async static void OnPropertyChanged(object s, DependencyPropertyChangedEventArgs e)
+            { await Task.Delay(10); (s as Row).Refresh(); }
+
+        public int Columns
         {
-            (s as Row).Refresh();
+            get => (int)GetValue(ColumnsProperty);
+            set => SetValue(ColumnsProperty, value);
         }
 
         public Color CenterColor
@@ -52,43 +64,55 @@ namespace PaletteGenerator
             set => SetValue(RightColorProperty, value);
         }
 
-        public float Hue
+        public float GlobalHue
         {
-            get => (float)GetValue(HueProperty);
-            set => SetValue(HueProperty, value);
+            get => (float)GetValue(GlobalHueProperty);
+            set => SetValue(GlobalHueProperty, value);
         }
 
-        public float Saturation
+        public float GlobalSaturation
         {
-            get => (float)GetValue(SaturationProperty);
-            set => SetValue(SaturationProperty, value);
+            get => (float)GetValue(GlobalSaturationProperty);
+            set => SetValue(GlobalSaturationProperty, value);
         }
 
-        public int Columns
+        public float CustomHue
         {
-            get => (int)GetValue(ColumnsProperty);
-            set => SetValue(ColumnsProperty, value);
+            get => (float)GetValue(CustomHueProperty);
+            set => SetValue(CustomHueProperty, value);
         }
+
+        public float CustomSaturation
+        {
+            get => (float)GetValue(CustomSaturationProperty);
+            set => SetValue(CustomSaturationProperty, value);
+        }
+
+        public bool UseCustomHue
+        {
+            get => (bool)GetValue(UseCustomHueProperty);
+            set => SetValue(UseCustomHueProperty, value);
+        }
+
+        public bool UseCustomSaturation
+        {
+            get => (bool)GetValue(UseCustomSaturationProperty);
+            set => SetValue(UseCustomSaturationProperty, value);
+        }
+
+        public float SelectedHue        => UseCustomHue        ? CustomHue        : GlobalHue; 
+        public float SelectedSaturation => UseCustomSaturation ? CustomSaturation : GlobalSaturation;
 
         #endregion
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0028:Simplify collection initialization", Justification = "Less readable.")]
-        public Color[] AllColors
-        {
-            get
-            {
-
-                var l = new List<Color>();
-                l.Add(LeftColor);
-                l.AddRange(LeftSide);
-                l.Add(CenterColor);
-                l.AddRange(RightSide);
-                l.Add(RightColor);
-
-                return l.ToArray();
-
-            }
-        }
+        public Color[] AllColors =>
+            LeftColor.AsArray().
+            Concat(LeftSide).
+            Concat(CenterColor).
+            Concat(RightSide).
+            Concat(RightColor).
+            ToArray();
 
         public void Refresh()
         {
@@ -96,9 +120,13 @@ namespace PaletteGenerator
             if (Columns == 0)
                 return;
 
+            var left = LeftColor.ApplyOffsets(SelectedHue, SelectedSaturation);
+            var center = CenterColor.ApplyOffsets(SelectedHue, SelectedSaturation);
+            var right = RightColor.ApplyOffsets(SelectedHue, SelectedSaturation);
+
             var steps = Columns / 2 + 1;
-            LeftSide.Set(LeftColor.Blend(CenterColor, steps).Skip(1).SkipLast(1));
-            RightSide.Set(CenterColor.Blend(RightColor, steps).Skip(1).SkipLast(1));
+            LeftSide.Set(left.Blend(center, steps).Skip(1).SkipLast(1));
+            RightSide.Set(center.Blend(right, steps).Skip(1).SkipLast(1));
 
             RefreshColorPicker(leftColorPicker);
             RefreshColorPicker(centerColorPicker);
@@ -110,6 +138,18 @@ namespace PaletteGenerator
         {
             var rectangle = colorPicker.FindVisualChildren<Rectangle>().FirstOrDefault();
             rectangle?.GetBindingExpression(Shape.FillProperty)?.UpdateTarget();
+        }
+
+        private void StackPanel_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            offsetsButton.Visibility = Visibility.Visible;
+            RemoveButton.Visibility = Visibility.Visible;
+        }
+
+        private void StackPanel_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            offsetsButton.Visibility = Visibility.Collapsed;
+            RemoveButton.Visibility = Visibility.Collapsed;
         }
 
     }
