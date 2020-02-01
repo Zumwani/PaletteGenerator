@@ -18,8 +18,11 @@ namespace PaletteGenerator.Commands
         public void Execute(object parameter)
         {
 
-            var rows = App.Window.Rows;
+            
+            if (!int.TryParse(parameter.ToString(), out var cellSize) || cellSize == 0)
+                cellSize = 22;
 
+            var rows = App.Window.Rows;
             var colors = rows.Select(r => r.AllColors).ToArray();
 
             LoadingUtility.ShowLoadingScreen(async () =>
@@ -31,7 +34,7 @@ namespace PaletteGenerator.Commands
                     try
                     {
                         
-                        var bitmap = colors.AsPNGPalette(64);
+                        var bitmap = colors.AsPNGPalette(cellSize);
 
                         using var ms = bitmap.AsBytes();
                         await File.WriteAllBytesAsync(path, ms.ToArray());

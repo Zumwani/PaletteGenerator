@@ -8,7 +8,7 @@ namespace PaletteGenerator
     //TODO: Fix installer (integrate with github and download from release branch (create dev and release branches), perhaps installer should be reuseable as well)
     //TODO: Change all x:Name to PascalCase
     //TODO: Fix attached property for popups
-    //TODO: Allow for choosing cell size when exporting
+    //TODO: Fix bugs with colors not updating after loading preset
 
     public partial class Window : System.Windows.Window
     {

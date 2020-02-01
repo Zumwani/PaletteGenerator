@@ -12,8 +12,9 @@ namespace PaletteGenerator
     public class Settings : MarkupExtension
     {
 
-        public Property<ColorMode> ColorMode { get; set; }   = new Property<ColorMode>();
-        public Property<ColorSpace> ColorSpace { get; set; } = new Property<ColorSpace>();
+        public Property<ColorMode> ColorMode    { get; set; } = new Property<ColorMode>();
+        public Property<ColorSpace> ColorSpace  { get; set; } = new Property<ColorSpace>();
+        public Property<string> ExportCellSize  { get; set; } = new Property<string>("64");
 
         #region Setup
 
@@ -37,6 +38,9 @@ namespace PaletteGenerator
                 Current?.Save();
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
             }
+
+            public Property() { }
+            public Property(T defaultValue) { value = defaultValue; }
 
         }
         
