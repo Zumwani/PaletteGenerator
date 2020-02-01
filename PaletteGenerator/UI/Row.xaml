@@ -50,7 +50,7 @@
     <StackPanel Orientation="Horizontal" Margin="0,6">
 
         <Border Background="Transparent" Height="64" Width="22">
-            <ToggleButton x:Name="OffsetsButton" CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:Row}}" FontSize="12" Width="22" Padding="6" Visibility="Collapsed"
+            <ToggleButton x:Name="OffsetsButton" FontSize="12" Width="22" Padding="6" Visibility="Collapsed"
                           IsHitTestVisible="{Binding ElementName=OffsetsPopup, Path=IsOpen, Converter={converters:InvertBool}}">
                 <ToggleButton.Content>
                     <fa:ImageAwesome Icon="Solid_ChevronLeft" Foreground="DimGray"/>
@@ -58,11 +58,11 @@
             </ToggleButton>
         </Border>
 
-        <ui:ColorEditor x:Name="LeftColorPicker" Color="{Binding ElementName=UserControl, Path=LeftColor, Mode=OneWay}"  Width="64" BorderThickness="1,1,0,1"/>
+        <ui:ColorEditor x:Name="LeftColorPicker" BorderThickness="1,1,0,1" GlobalColor="{Binding Source={x:Static local:App.Window}, Path=LeftColor, Mode=TwoWay}"/>
         <ItemsControl ItemsSource="{Binding ElementName=UserControl, Path=LeftSide, Mode=OneWay}"/>
-        <ui:ColorEditor x:Name="CenterColorPicker" BorderThickness="0,1"/>
+        <ui:ColorEditor x:Name="CenterColorPicker" BorderThickness="0,1" Color="LightSkyBlue" GlobalColor="{Binding ElementName=UserControl, Path=CenterColor, Mode=TwoWay}" IsGlobalPicker="True"/>
         <ItemsControl ItemsSource="{Binding ElementName=UserControl, Path=RightSide, Mode=OneWay}"/>
-        <ui:ColorEditor x:Name="RightColorPicker" Color="{Binding ElementName=UserControl, Path=RightColor, Mode=OneWay}" BorderThickness="0,1,1,1"/>
+        <ui:ColorEditor x:Name="RightColorPicker" BorderThickness="0,1,1,1" GlobalColor="{Binding Source={x:Static local:App.Window}, Path=RightColor, Mode=TwoWay}"/>
 
         <Border Background="Transparent" Width="22">
             <Button Content="✖" x:Name="RemoveButton" Visibility="Collapsed" Height="22" VerticalAlignment="Top" Command="{commands:RemoveRow}" CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:Row}}" FontSize="12" Foreground="DimGray"
@@ -77,14 +77,14 @@
 
                     <TextBlock Text="Hue" HorizontalAlignment="Center" FontSize="16"/>
                     <DockPanel LastChildFill="False">
-                        <Slider Value="{Binding ElementName=UserControl, Path=Hue.Custom, Mode=TwoWay}" Width="200"/>
-                        <CheckBox VerticalAlignment="Center" IsChecked="{Binding ElementName=UserControl, Path=Hue.UseCustom}" Margin="12,0"/>
+                        <Slider Value="{Binding ElementName=UserControl, Path=Hue, Mode=TwoWay}" Width="200"/>
+                        <CheckBox VerticalAlignment="Center" Margin="12,0" IsChecked="{Binding ElementName=UserControl, Path=UseCustomHue}"/>
                     </DockPanel>
 
                     <TextBlock Text="Saturation" HorizontalAlignment="Center" FontSize="16"/>
                     <DockPanel LastChildFill="False">
-                        <Slider Value="{Binding ElementName=UserControl, Path=Saturation.Custom, Mode=TwoWay}" Width="200"/>
-                        <CheckBox VerticalAlignment="Center" IsChecked="{Binding ElementName=UserControl, Path=Saturation.UseCustom}" Margin="12,0"/>
+                        <Slider Value="{Binding ElementName=UserControl, Path=Saturation, Mode=TwoWay}" Width="200"/>
+                        <CheckBox VerticalAlignment="Center" Margin="12,0" IsChecked="{Binding ElementName=UserControl, Path=UseCustomSaturation}"/>
                     </DockPanel>
                     
                 </StackPanel>

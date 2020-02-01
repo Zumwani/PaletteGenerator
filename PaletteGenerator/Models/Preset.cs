@@ -40,12 +40,12 @@ namespace PaletteGenerator
         public class Row
         {
 
-            public CustomValue<Color> LeftColor         { get; set; }
+            public Color LeftColor         { get; set; }
             public Color CenterColor                    { get; set; }
-            public CustomValue<Color> RightColor        { get; set; }
+            public Color RightColor        { get; set; }
 
-            public CustomValue<float> Hue         { get; set; }
-            public CustomValue<float> Saturation  { get; set; }
+            public float Hue         { get; set; }
+            public float Saturation  { get; set; }
 
             public Row() { }
 
@@ -69,10 +69,13 @@ namespace PaletteGenerator
                     CenterColor = CenterColor
                 };
 
-                r.LeftColor.Set(LeftColor);
-                r.RightColor.Set(RightColor);
-                r.Hue.Set(Hue);
-                r.Saturation.Set(Saturation);
+                //r.Initialize();
+
+                r.LeftColor = LeftColor;
+                r.RightColor = RightColor;
+                r.Hue = Hue;
+                r.Saturation = Saturation;
+                //r.Refresh();
 
                 return r;
 

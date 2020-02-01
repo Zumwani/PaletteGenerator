@@ -60,8 +60,8 @@
             <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
                 <StackPanel HorizontalAlignment="Center">
                     <DockPanel LastChildFill="False" Margin="64,0,64,-36">
-                        <ui:ColorEditor x:Name="LeftColorPicker" DockPanel.Dock="Left" BorderThickness="1"/>
-                        <ui:ColorEditor x:Name="RightColorPicker" DockPanel.Dock="Right" BorderThickness="1"/>
+                        <ui:ColorEditor x:Name="LeftColorPicker" DockPanel.Dock="Left" BorderThickness="1" GlobalColor="{Binding LeftColor, Mode=TwoWay}" IsGlobalPicker="True"/>
+                        <ui:ColorEditor x:Name="RightColorPicker" DockPanel.Dock="Right" BorderThickness="1" GlobalColor="{Binding RightColor, Mode=TwoWay}" IsGlobalPicker="True"/>
                     </DockPanel>
                     <ItemsControl x:Name="list" ItemsSource="{Binding Rows}" Margin="42" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                 </StackPanel>

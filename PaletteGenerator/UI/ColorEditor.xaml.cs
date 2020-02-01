@@ -14,41 +14,76 @@ namespace PaletteGenerator.UI
     public partial class ColorEditor : UserControl, INotifyPropertyChanged
     {
 
-        public ColorEditor() => InitializeComponent();
-
-        public static DependencyProperty ColorProperty = DependencyProperty.Register(nameof(Color), typeof(CustomValue<Color>), typeof(ColorEditor));
-
-        public CustomValue<Color> Color
+        public ColorEditor()
         {
-            get => (CustomValue<Color>)GetValue(ColorProperty);
+            InitializeComponent();
+            Window.OnGlobalOffsetsChanged += UpdateDisplayColor;
+        }
+        
+        public static DependencyProperty ColorProperty = DependencyProperty.Register(nameof(Color), typeof(Color), typeof(ColorEditor), new PropertyMetadata(Refresh));
+        public static DependencyProperty GlobalColorProperty = DependencyProperty.Register(nameof(GlobalColor), typeof(Color), typeof(ColorEditor), new PropertyMetadata(Refresh));
+        public static DependencyProperty DisplayColorProperty = DependencyProperty.Register(nameof(DisplayColor), typeof(Color), typeof(ColorEditor));
+        public static DependencyProperty HueProperty = DependencyProperty.Register(nameof(Hue), typeof(float), typeof(ColorEditor), new PropertyMetadata(0f, Refresh));
+        public static DependencyProperty SaturationProperty = DependencyProperty.Register(nameof(Saturation), typeof(float), typeof(ColorEditor), new PropertyMetadata(1f, Refresh));
+        
+        public float Hue
+        {
+            get => (float)GetValue(HueProperty);
+            set => SetValue(HueProperty, value);
+        }
+
+        public float Saturation
+        {
+            get => (float)GetValue(SaturationProperty);
+            set => SetValue(SaturationProperty, value);
+        }
+        public bool IsGlobalPicker { get; set; }
+
+        public Color Color
+        {
+            get => (Color)GetValue(ColorProperty);
             set => SetValue(ColorProperty, value);
         }
 
-        static void OnColorChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
+        public Color GlobalColor
+        {
+            get => (Color)GetValue(GlobalColorProperty);
+            set => SetValue(GlobalColorProperty, value);
+        }
+
+        public Color DisplayColor
+        {
+            get => (Color)GetValue(DisplayColorProperty);
+            set => SetValue(DisplayColorProperty, value);
+        }
+
+        public bool IsGlobal => Color == GlobalColor;
+
+        static void Refresh(DependencyObject s, DependencyPropertyChangedEventArgs e)
         {
 
-            //if (!(sender is ColorEditor c))
-            //    return;
+            if (!(s is ColorEditor c))
+                return;
 
-            //if (e.Property == GlobalColorProperty && c.CustomColor == (Color)e.OldValue)
-            //    c.CustomColor = c.GlobalColor;
+            if (e.Property == GlobalColorProperty)
+            {
+                if (c.Color == (Color)e.OldValue)
+                    c.Color = (Color)e.NewValue;
+            }
 
-            //Task.Run(async () =>
-            //{
+            if (e.Property == ColorProperty)
+            {
+                if (c.IsGlobalPicker)
+                    c.GlobalColor = (Color)e.NewValue;
+            }
 
-            //    await Task.Delay(100);
-
-            //    App.Dispatcher.Invoke(() =>
-            //    {
-
-            //        c.OnPropertyChanged(nameof(HasCustomColor));
-            //        c.SetValue(SelectedColorProperty, c.HasCustomColor ? c.CustomColor : c.GlobalColor);
-
-            //    });
-
-            //}).ConfigureAwait(false);
+            c.OnPropertyChanged(nameof(IsGlobal));
+            c.UpdateDisplayColor();
 
         }
+
+        void UpdateDisplayColor() =>
+            DisplayColor = Color.ApplyOffsets(Hue, Saturation);
 
         public event PropertyChangedEventHandler PropertyChanged;
         void OnPropertyChanged(string name) =>
@@ -83,15 +118,15 @@ namespace PaletteGenerator.UI
 
             OverlayUtility.Open(Initalize, Deinitalize);
 
-            var savedColor = Color.Custom;
+            var savedColor = Color;
             while (!(wasMousePressed || wasEscPressed))
             {
-                Color.Custom = CursorUtility.GetColorUnderCursor();
+                Color = CursorUtility.GetColorUnderCursor();
                 await Task.Delay(100);
             }
 
             if (toggle.IsMouseOver || wasEscPressed)
-                Color.Custom = savedColor;
+                Color = savedColor;
 
             OverlayUtility.Close();
             toggle.IsChecked = false;
@@ -99,7 +134,8 @@ namespace PaletteGenerator.UI
         }
 
         private void ResetColorButton_Click(object sender, RoutedEventArgs e) =>
-            Color.Reset();
+            Color = GlobalColor;
+            //Color.Reset();
 
     }
 
