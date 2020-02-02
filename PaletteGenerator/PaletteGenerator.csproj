@@ -6,22 +6,12 @@
     <UseWPF>true</UseWPF>
     <StartupObject></StartupObject>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-    <PublishTrimmed>true</PublishTrimmed>
-    <PublishReadyToRun>true</PublishReadyToRun>
-    <PublishSingleFile>true</PublishSingleFile>
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <NoWarn>1701;1702;NU1701;67</NoWarn>
   </PropertyGroup>
-
-  <ItemGroup>
-    <Compile Remove="Xaml\Collections\**" />
-    <EmbeddedResource Remove="Xaml\Collections\**" />
-    <None Remove="Xaml\Collections\**" />
-    <Page Remove="Xaml\Collections\**" />
-  </ItemGroup>
 
   <ItemGroup>
     <Compile Remove="App.cs" />
