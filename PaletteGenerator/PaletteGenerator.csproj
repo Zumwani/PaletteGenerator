@@ -14,15 +14,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="App.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Remove="Assets\color-picker.cur" />
-    <None Remove="Assets\transparent.png" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Include="..\.editorconfig" Link=".editorconfig" />
   </ItemGroup>
 
