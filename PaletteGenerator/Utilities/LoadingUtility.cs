@@ -1,13 +1,12 @@
 ﻿using System.Threading.Tasks;
 using System;
-using PaletteGenerator.Utils;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace PaletteGenerator
+namespace PaletteGenerator.Utilities
 {
 
-    public static class LoadingUtility
+    static class LoadingUtility
     {
 
         static readonly List<Task> Tasks = new List<Task>();
@@ -24,7 +23,7 @@ namespace PaletteGenerator
             Tasks.Add(task);
 
             if (!blocks.Any())
-                await App.Dispatcher.Invoke(async () => await App.Window.loadingOverlay.Show().Fade(1));
+                await App.Dispatcher.Invoke(async () => await App.Window.LoadingOverlay.Show().Fade(1));
             await task.ContinueWith(OnTaskCompleted);
 
         }
@@ -35,7 +34,7 @@ namespace PaletteGenerator
             Tasks.RemoveAll(t => task.Id == task?.Id);
 
             if (Tasks.Count == 0)
-                App.Dispatcher.Invoke(async () => (await App.Window.loadingOverlay.Fade(0)).Hide()).ConfigureAwait(false);
+                App.Dispatcher.Invoke(async () => (await App.Window.LoadingOverlay.Fade(0)).Hide()).ConfigureAwait(false);
 
         }
 

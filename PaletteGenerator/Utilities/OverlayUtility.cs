@@ -4,11 +4,11 @@ using System.Windows;
 using System.Windows.Media;
 using window = System.Windows.Window;
 
-namespace PaletteGenerator
+namespace PaletteGenerator.Utilities
 {
 
     /// <summary>A helper class used to display an overlay on each screen.</summary>
-    public static class OverlayUtility
+    static class OverlayUtility
     {
 
         static window[] windows;

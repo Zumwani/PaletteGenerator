@@ -1,9 +1,9 @@
 ﻿using System;
 
-namespace PaletteGenerator
+namespace PaletteGenerator.Utilities
 {
 
-    public static class MathUtility
+    static class MathUtility
     {
 
         public static int Clamp(int value, int min, int max)

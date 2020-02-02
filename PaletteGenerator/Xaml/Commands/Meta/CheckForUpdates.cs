@@ -6,7 +6,7 @@ using System.Windows.Markup;
 namespace PaletteGenerator.Commands
 {
 
-    public class CheckForUpdates : MarkupExtension, ICommand
+    class CheckForUpdates : MarkupExtension, ICommand
     {
 
         public event EventHandler CanExecuteChanged;

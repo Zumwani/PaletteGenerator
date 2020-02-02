@@ -6,7 +6,7 @@ using System.Windows.Markup;
 namespace PaletteGenerator.Commands
 {
 
-    public class MinimizeWindow : MarkupExtension, ICommand
+    class MinimizeWindow : MarkupExtension, ICommand
     {
 
         public event EventHandler CanExecuteChanged;

@@ -1,56 +1,56 @@
 ﻿using ColorPickerLib.Controls;
+using PaletteGenerator.Utilities;
 using System;
-using System.ComponentModel;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
-using System.Windows.Markup;
 
-namespace PaletteGenerator
+namespace PaletteGenerator.Models
 {
 
-    public class Settings : MarkupExtension
+    static partial class Settings
     {
 
-        public Property<ColorMode> ColorMode    { get; set; } = new Property<ColorMode>();
-        public Property<ColorSpace> ColorSpace  { get; set; } = new Property<ColorSpace>();
-        public Property<string> ExportCellSize  { get; set; } = new Property<string>("64");
+        public static Setting<ColorMode> ColorMode => Current?.ColorMode;
+        public static Setting<ColorSpace> ColorSpace => Current?.ColorSpace;
+        public static Setting<int> ExportCellSize => Current?.ExportCellSize;
 
         #region Setup
+
+        static SettingsClass Current;
 
         static string SettingsFile =>
             Path.Combine(Directory.CreateDirectory(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Palette Generator")).FullName, "settings.json");
 
-        public class Property<T> : INotifyPropertyChanged
+        public static void Save() => 
+            JsonUtility<SettingsClass>.Save(Current, SettingsFile);
+
+        public static async Task Load() =>
+            Current = await JsonUtility<SettingsClass>.Load(SettingsFile, true) ?? new SettingsClass();
+
+        public class Setting<T> : Property<T>
         {
 
-            T value;
-            public T Value
+            public Setting() { }
+            public Setting(T defaultValue) : base(defaultValue) { }
+
+            protected override void OnPropertyChanged([CallerMemberName] string name = "")
             {
-                get => value;
-                set { this.value = value; OnPropertyChanged(); }
+                base.OnPropertyChanged(name);
+                if (Current != null)
+                    Save();
             }
-
-            public event PropertyChangedEventHandler PropertyChanged;
-
-            void OnPropertyChanged([CallerMemberName] string name = "")
-            {
-                Current?.Save();
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-            }
-
-            public Property() { }
-            public Property(T defaultValue) { value = defaultValue; }
 
         }
-        
-        public void Save()              => JsonUtility<Settings>.Save(this, SettingsFile);
-        public static async Task Load() => Current = await JsonUtility<Settings>.Load(SettingsFile, true);
 
-        public static Settings Current { get; private set; }
+        class SettingsClass
+        {
 
-        public override object ProvideValue(IServiceProvider serviceProvider) =>
-            Current;
+            public Setting<ColorMode> ColorMode   { get; set; } = new Setting<ColorMode>(ColorPickerLib.Controls.ColorMode.ColorPalette);
+            public Setting<ColorSpace> ColorSpace { get; set; } = new Setting<ColorSpace>(ColorPickerLib.Controls.ColorSpace.RGB);
+            public Setting<int> ExportCellSize    { get; set; } = new Setting<int>(22);
+
+        }
 
         #endregion
 

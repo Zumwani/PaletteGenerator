@@ -4,10 +4,10 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 
-namespace PaletteGenerator
+namespace PaletteGenerator.Utilities
 {
 
-    public static class SliderUtility
+    static class SliderUtility
     {
 
         public static bool GetMoveToPointOnDrag(DependencyObject obj) => (bool)obj.GetValue(MoveToPointOnDragProperty);

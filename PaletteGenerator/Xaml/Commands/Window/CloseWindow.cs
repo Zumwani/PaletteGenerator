@@ -6,7 +6,7 @@ using System.Windows.Markup;
 namespace PaletteGenerator.Commands
 {
 
-    public class CloseWindow : MarkupExtension, ICommand
+    class CloseWindow : MarkupExtension, ICommand
     {
 
         public event EventHandler CanExecuteChanged;

@@ -1,101 +1,61 @@
-﻿<UserControl x:Class="PaletteGenerator.UI.PaletteControls"
+﻿<UserControl x:Class="PaletteGenerator.UI.PaletteControls" x:ClassModifier="internal"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:PaletteGenerator"
              xmlns:converters="clr-namespace:PaletteGenerator.Converters"
              xmlns:commands="clr-namespace:PaletteGenerator.Commands"
              xmlns:fa="http://schemas.fontawesome.com/icons/"
-             xmlns:numericupdownlib="clr-namespace:NumericUpDownLib;assembly=NumericUpDownLib"
-             xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls">
+             xmlns:models="clr-namespace:PaletteGenerator.Models"
+             xmlns:utilities="clr-namespace:PaletteGenerator.Utilities">
 
     <UserControl.Resources>
         <ResourceDictionary>
+            
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="Button.xaml"/>
                 <ResourceDictionary Source="Slider.xaml"/>
+                <ResourceDictionary Source="Popups.xaml"/>
             </ResourceDictionary.MergedDictionaries>
+
+            <Style TargetType="ToggleButton" BasedOn="{StaticResource ButtonBaseStyle}">
+                <Setter Property="DockPanel.Dock" Value="Right"/>
+                <Setter Property="Height" Value="42"/>
+                <Setter Property="Width" Value="Auto"/>
+                <Setter Property="FontSize" Value="16"/>
+                <Setter Property="Margin" Value="6, 0"/>
+                <Setter Property="Padding" Value="22, 0"/>
+                <Setter Property="Template" Value="{StaticResource ButtonTemplate}"/>
+            </Style>
+            
         </ResourceDictionary>
     </UserControl.Resources>
     
     <Grid>
 
-        <DockPanel LastChildFill="False">
+        <DockPanel LastChildFill="False" Margin="6, 0">
 
             <StackPanel Grid.Row="3" Margin="12" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="226" DockPanel.Dock="Left">
 
-                <ToggleButton x:Name="OffsetsButton" IsHitTestVisible="{Binding ElementName=OffsetsPopup, Path=IsOpen, Converter={converters:InvertBool}}" fa:Awesome.Content="Solid_ChevronUp" Width="Auto" Height="22"/>
+                <ToggleButton fa:Awesome.Content="Solid_ChevronUp" Height="22" Margin="0"
+                              utilities:PopupUtility.Attach="{StaticResource Popups.GlobalOffsets}"/>
                 <DockPanel>
                     <Button ToolTip="Add row" Content="" Command="{commands:AddRow}" Style="{StaticResource ToolButton}" DockPanel.Dock="Right" Height="32" Margin="12,0,0,0"/>
-                    <Slider Value="{Binding Columns, Mode=TwoWay}" VerticalAlignment="Center" Minimum="{Binding MinColumns}" Maximum="{Binding MaxColumns}"
+                    <Slider Value="{Binding Source={x:Static models:Global.Columns}, Path=Value, Mode=TwoWay}" VerticalAlignment="Center" Minimum="{Binding Source={x:Static models:Global.MinColumns}}" Maximum="{Binding Source={x:Static models:Global.MaxColumns}}"
                             TickFrequency="2" SmallChange="2" LargeChange="2"/>
                 </DockPanel>
 
             </StackPanel>
 
-            <ToggleButton x:Name="MenuButton"    Content="⋮"                     DockPanel.Dock="Right" Height="42" IsHitTestVisible="{Binding ElementName=Menu, Path=IsOpen, Converter={converters:InvertBool}}"  FontSize="22"/>
-            <ToggleButton x:Name="PresetsButton" Content="Presets"  Width="Auto" DockPanel.Dock="Right" FontSize="16" Margin="12,0" Padding="22,0" Height="42" IsHitTestVisible="{Binding ElementName=PresetsMenu, Path=IsOpen, Converter={converters:InvertBool}}"/>
-            <ToggleButton x:Name="ExportButton"  Content="Export"   Width="Auto" DockPanel.Dock="Right" FontSize="16" Padding="22, 0" Height="42" IsHitTestVisible="{Binding ElementName=ExportPopup, Path=IsOpen, Converter={converters:InvertBool}}"/>
+            <ToggleButton Content="⋮" FontSize="22" utilities:SizeUtility.WidthToHeight="True" Padding="0"
+                          utilities:PopupUtility.Attach="{StaticResource Popups.AppMenu}"/>
+
+            <ToggleButton Content="Presets"
+                          utilities:PopupUtility.Attach="{StaticResource Popups.Presets}"/>
+
+            <ToggleButton Content="Export"
+                          utilities:PopupUtility.Attach="{StaticResource Popups.Export}"/>
 
         </DockPanel>
-
-        <Popup x:Name="PresetsMenu" IsOpen="{Binding RelativeSource={RelativeSource Mode=Self}, Path=PlacementTarget.IsChecked}" PlacementTarget="{Binding ElementName=PresetsButton}" Placement="Top" StaysOpen="False" PopupAnimation="Fade">
-            <Border Background="White" BorderBrush="Black" BorderThickness="1">
-                <ItemsControl>
-                    <MenuItem Header="Save..." Command="{commands:SavePreset}"/>
-                    <MenuItem Header="Load..." Command="{commands:LoadPreset}"/>
-                </ItemsControl>
-            </Border>
-        </Popup>
-
-        <Popup x:Name="Menu" IsOpen="{Binding RelativeSource={RelativeSource Mode=Self}, Path=PlacementTarget.IsChecked}" PlacementTarget="{Binding ElementName=MenuButton}" Placement="Top" StaysOpen="False" PopupAnimation="Fade">
-            <Border Background="White" BorderBrush="Black" BorderThickness="1">
-                <ItemsControl>
-                    <MenuItem IsEnabled="False">
-                        <MenuItem.Header>
-                            <TextBlock>
-                                <Run Text="Palette Generator"/>
-                                <LineBreak/>
-                                <Run Text="Version:"/>
-                                <Run Text="{Binding Version, Mode=OneTime}"/>
-                            </TextBlock>
-                        </MenuItem.Header>
-                    </MenuItem>
-                    <Separator/>
-                    <MenuItem Header="Check for updates..." Command="{commands:CheckForUpdates}"/>
-                </ItemsControl>
-            </Border>
-        </Popup>
-
-        <Popup x:Name="OffsetsPopup" IsOpen="{Binding ElementName=OffsetsButton, Path=IsChecked}" StaysOpen="False" PopupAnimation="Fade" Placement="Top" PlacementTarget="{Binding ElementName=OffsetsButton}">
-            <Border Background="White" BorderThickness="1" BorderBrush="Black">
-                <StackPanel Margin="12">
-
-                    <TextBlock Text="Offsets:" FontSize="16" Margin="0,0,0,12"/>
-
-                    <TextBlock Text="Hue" HorizontalAlignment="Center" FontSize="16"/>
-                    <Slider Value="{Binding Hue, Mode=TwoWay}" Width="200"/>
-
-                    <TextBlock Text="Saturation" HorizontalAlignment="Center" FontSize="16"/>
-                    <Slider Value="{Binding Saturation, Mode=TwoWay}" Width="200"/>
-
-                </StackPanel>
-            </Border>
-        </Popup>
         
-        <Popup x:Name="ExportPopup" IsOpen="{Binding ElementName=ExportButton, Path=IsChecked}" StaysOpen="False" PopupAnimation="Fade" Placement="Top" PlacementTarget="{Binding ElementName=ExportButton}" TextElement.FontFamily="Segoe UI Semilight" TextElement.FontSize="16">
-            <Border Background="White" BorderBrush="Black" BorderThickness="1" Width="150">
-
-                <StackPanel Margin="12">
-                    <DockPanel>
-                        <TextBox x:Name="CellSizeBox" Text="{Binding Source={local:Settings}, Path=ExportCellSize.Value}" DockPanel.Dock="Right" InputScope="Digits" MaxLength="3"/>
-                        <TextBlock Text="Cell size:" VerticalAlignment="Center"/>
-                    </DockPanel>
-                    <Button Content="Export..." Command="{commands:Export}" CommandParameter="{Binding ElementName=CellSizeBox, Path=Text}" DockPanel.Dock="Bottom" HorizontalAlignment="Stretch" Width="Auto" Height="32" Margin="0,6,0,-0"/>
-                </StackPanel>
-                
-            </Border>
-        </Popup>
-
     </Grid>
 
 </UserControl>

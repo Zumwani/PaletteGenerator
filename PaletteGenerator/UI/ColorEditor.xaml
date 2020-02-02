@@ -1,11 +1,12 @@
-﻿<UserControl x:Class="PaletteGenerator.UI.ColorEditor"
+﻿<UserControl x:Class="PaletteGenerator.UI.ColorEditor" x:ClassModifier="internal"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:PaletteGenerator"
              xmlns:converters="clr-namespace:PaletteGenerator.Converters"
              xmlns:colorPicker="clr-namespace:ColorPickerLib.Controls;assembly=ColorPickerLib"
              xmlns:fa="http://schemas.fontawesome.com/icons/"
-             x:Name="editor"
+             xmlns:models="clr-namespace:PaletteGenerator.Models"
+             x:Name="Editor"
              FontFamily="Segoe UI Semilight" BorderBrush="LightGray" Background="{StaticResource TransparentImage}">
 
     <UserControl.Resources>
@@ -18,9 +19,9 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <colorPicker:ColorPicker x:Name="colorPicker" SelectedColor="{Binding ElementName=editor, Path=Color, Mode=TwoWay}"
+    <colorPicker:ColorPicker x:Name="ColorPicker" SelectedColor="{Binding ElementName=Editor, Path=Color, Mode=TwoWay}"
                              StandardButtonHeader="Named Colors" AdvancedButtonHeader="Color Picker" AvailableColorsSortingMode="HueSaturationBrightness" ShowDropDownButton="False"
-                             ColorMode="{Binding Source={local:Settings}, Path=ColorMode.Value, Mode=TwoWay}" ShowRecentColors="True">
+                             ColorMode="{Binding Source={x:Static models:Settings.ColorMode}, Path=Value, Mode=TwoWay}" ShowRecentColors="True">
 
         <colorPicker:ColorPicker.ButtonStyle>
             <Style TargetType="{x:Type ToggleButton}">
@@ -87,7 +88,7 @@
                                     <Button Template="{StaticResource ButtonTemplate}" Content="{TemplateBinding Content}"/>
 
                                     <ToggleButton Width="28" Height="28" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,-32,0,0"
-                                                  ToolTip="Pick color from screen point" Visibility="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=colorPicker:ColorPicker}, Path=ColorMode, Converter={converters:ShowIf}, ConverterParameter={x:Static colorPicker:ColorMode.ColorCanvas}}"  
+                                                  ToolTip="Pick color from screen point" Visibility="{Binding Converter={converters:ShowIf}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=colorPicker:ColorPicker}, Path=ColorMode, ConverterParameter={x:Static colorPicker:ColorMode.ColorCanvas}}"  
                                                   PreviewMouseLeftButtonDown="EyeDropper_PreviewMouseLeftButtonDown">
                                         <ToggleButton.Content>
                                             <fa:ImageAwesome Icon="Solid_EyeDropper"/>
@@ -102,7 +103,10 @@
                 </Style>
 
                 <Style TargetType="{x:Type colorPicker:ColorCanvas}">
-                    <Setter Property="DisplayColorSpace" Value="{Binding Source={local:Settings}, Path=ColorSpace.Value, Mode=TwoWay}"/>
+                    <Setter Property="DisplayColorSpace" Value="{Binding Source={x:Static models:Settings.ColorSpace}, Path=Value, Mode=TwoWay}"/>
+                </Style>
+                <Style TargetType="{x:Type Popup}">
+                    <Setter Property="Placement" Value="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}, Path=PopupPlacement}"/>
                 </Style>
 
             </ResourceDictionary>

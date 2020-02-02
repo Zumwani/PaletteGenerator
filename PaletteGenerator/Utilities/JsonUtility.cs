@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 
-namespace PaletteGenerator
+namespace PaletteGenerator.Utilities
 {
 
-    public static class JsonUtility<T> where T : new() 
+    static class JsonUtility<T> where T : new() 
     {
 
         static JsonUtility()

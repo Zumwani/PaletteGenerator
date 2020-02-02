@@ -10,7 +10,7 @@ namespace PaletteGenerator
     namespace Converters
     {
 
-        public class ToBrush : MarkupExtension, IValueConverter
+        class ToBrush : MarkupExtension, IValueConverter
         {
 
             public object Convert(object value, Type targetType, object parameter, CultureInfo culture)

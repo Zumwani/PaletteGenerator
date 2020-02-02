@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 
-namespace PaletteGenerator
+namespace PaletteGenerator.Utilities
 {
 
-    public static class ListUtility
+    static class ListUtility
     {
 
         public static IEnumerable<T> Concat<T>(this IEnumerable<T> list, T item) =>

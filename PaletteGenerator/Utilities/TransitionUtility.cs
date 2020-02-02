@@ -2,14 +2,13 @@
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 
-namespace PaletteGenerator.Utils
+namespace PaletteGenerator.Utilities
 {
 
-    public static class TransitionUtility
+    static class TransitionUtility
     {
 
         public static TimeSpan DefaultDuration { get; } = TimeSpan.FromSeconds(0.25); 

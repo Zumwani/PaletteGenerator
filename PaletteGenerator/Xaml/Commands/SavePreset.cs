@@ -1,11 +1,13 @@
-﻿using System;
+﻿using PaletteGenerator.Models;
+using PaletteGenerator.Utilities;
+using System;
 using System.Windows.Input;
 using System.Windows.Markup;
 
 namespace PaletteGenerator.Commands
 {
 
-    public class SavePreset : MarkupExtension, ICommand
+    class SavePreset : MarkupExtension, ICommand
     {
 
         public event EventHandler CanExecuteChanged;

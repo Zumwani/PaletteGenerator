@@ -1,11 +1,13 @@
-﻿using System;
+﻿using PaletteGenerator.Models;
+using PaletteGenerator.Utilities;
+using System;
 using System.Windows.Input;
 using System.Windows.Markup;
 
 namespace PaletteGenerator.Commands
 {
 
-    public class LoadPreset : MarkupExtension, ICommand
+    class LoadPreset : MarkupExtension, ICommand
     {
 
         public event EventHandler CanExecuteChanged;

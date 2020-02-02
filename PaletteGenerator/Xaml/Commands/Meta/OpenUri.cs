@@ -6,7 +6,7 @@ using System.Windows.Markup;
 namespace PaletteGenerator.Commands
 {
 
-    public class OpenUri : MarkupExtension, ICommand
+    class OpenUri : MarkupExtension, ICommand
     {
 
         public event EventHandler CanExecuteChanged;

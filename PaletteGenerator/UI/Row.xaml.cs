@@ -1,44 +1,15 @@
-﻿using System.ComponentModel;
+﻿using PaletteGenerator.Utilities;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Data;
 using System.Windows.Media;
-using System.Windows.Shapes;
 
-namespace PaletteGenerator
+namespace PaletteGenerator.Models
 {
 
-    public partial class Row
+    internal partial class Row
     {
-
-        public Row() =>
-            InitializeComponent();
-
-        private void Row_Loaded(object sender, RoutedEventArgs e) =>
-            Initialize();
-
-        private void Row_Unloaded(object sender, RoutedEventArgs e)
-        {
-            //LeftColor.Dispose();
-            //RightColor.Dispose();
-        }
-
-        bool isInitialized;
-        public void Initialize()
-        {
-
-            if (isInitialized)
-                return;
-            isInitialized = false;
-
-            LeftColorPicker.PropertyChanged += (s, e) => Refresh();
-            CenterColorPicker.PropertyChanged += (s, e) => Refresh();
-            RightColorPicker.PropertyChanged += (s, e) => Refresh();
-
-            Window.OnGlobalOffsetsChanged += Refresh; 
-
-        }
 
         #region Properties
 
@@ -102,15 +73,32 @@ namespace PaletteGenerator
             set => SetValue(UseCustomHueProperty, value);
         }
 
-        #endregion
+        public float ActualHue => UseCustomHue ? Hue : Global.Hue;
+        public float ActualSaturation => UseCustomSaturation ? Saturation : Global.Saturation;
 
         public Color[] AllColors =>
-            LeftColor.ApplyOffsets(Hue, Saturation).AsArray().
+            LeftColor.ApplyOffsets(ActualHue, ActualSaturation).AsArray().
             Concat(LeftSide).
-            Concat(CenterColor.ApplyOffsets(Hue, Saturation)).
+            Concat(CenterColor.ApplyOffsets(ActualHue, ActualSaturation)).
             Concat(RightSide).
-            Concat(RightColor.ApplyOffsets(Hue, Saturation)).
+            Concat(RightColor.ApplyOffsets(ActualHue, ActualSaturation)).
             ToArray();
+
+        #endregion
+
+        public Row()
+        {
+
+            InitializeComponent();
+
+            LeftColorPicker.PropertyChanged += (s, e) => Refresh();
+            CenterColorPicker.PropertyChanged += (s, e) => Refresh();
+            RightColorPicker.PropertyChanged += (s, e) => Refresh();
+
+            Global.Hue.PropertyChanged += (s, e) => Refresh();
+            Global.Saturation.PropertyChanged += (s, e) => Refresh();
+
+        }
 
         public void Refresh()
         {
@@ -118,8 +106,8 @@ namespace PaletteGenerator
             if (Columns == 0)
                 return;
 
-            var hue = UseCustomHue ? Hue : App.Window.Hue;
-            var saturation = UseCustomSaturation ? Saturation : App.Window.Saturation;
+            var hue = ActualHue;
+            var saturation = ActualSaturation;
 
             LeftColorPicker.Hue = hue;
             LeftColorPicker.Saturation = saturation;
@@ -136,18 +124,6 @@ namespace PaletteGenerator
             LeftSide.Set(left.Blend(center, steps).Skip(1).SkipLast(1));
             RightSide.Set(center.Blend(right, steps).Skip(1).SkipLast(1));
 
-        }
-
-        private void StackPanel_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
-        {
-            OffsetsButton.Visibility = Visibility.Visible;
-            RemoveButton.Visibility = Visibility.Visible;
-        }
-
-        private void StackPanel_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
-        {
-            OffsetsButton.Visibility = Visibility.Collapsed;
-            RemoveButton.Visibility = Visibility.Collapsed;
         }
 
     }

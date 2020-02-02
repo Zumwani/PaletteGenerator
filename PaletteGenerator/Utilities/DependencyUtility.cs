@@ -2,13 +2,13 @@
 using System.Windows;
 using System.Windows.Media;
 
-namespace PaletteGenerator
+namespace PaletteGenerator.Utilities
 {
 
-    public static class DependencyUtility
+    static class DependencyUtility
     {
 
-        public static IEnumerable<T> FindVisualChildren<T>(this DependencyObject depObj) where T : DependencyObject
+        static IEnumerable<T> FindVisualChildren<T>(this DependencyObject depObj) where T : DependencyObject
         {
 
             if (depObj == null)

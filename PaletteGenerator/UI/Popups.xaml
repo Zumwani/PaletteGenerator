@@ -1,0 +1,97 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:PaletteGenerator"
+                    xmlns:commands="clr-namespace:PaletteGenerator.Commands"
+                    xmlns:models="clr-namespace:PaletteGenerator.Models">
+
+    <Style TargetType="{x:Type Popup}">
+        <Setter Property="DataContext" Value="{Binding RelativeSource={RelativeSource Mode=Self}, Path=PlacementTarget.DataContext}"/>
+    </Style>
+    
+    <Popup x:Key="Popups.Export" Placement="Top" TextBlock.FontFamily="Segoe UI Semilight" HorizontalOffset="-32">
+        <Border Background="White" BorderBrush="Black" BorderThickness="1" Width="150">
+
+            <StackPanel Margin="12">
+                <DockPanel>
+                    <TextBox Text="{Binding Source={x:Static models:Settings.ExportCellSize}, Path=Value, Mode=TwoWay}" DockPanel.Dock="Right" InputScope="Digits" MaxLength="3" MinWidth="22"/>
+                    <TextBlock Text="Cell size:" VerticalAlignment="Center"/>
+                </DockPanel>
+                <Button Content="Export..." Command="{commands:Export}" CommandParameter="{Binding Source={x:Static models:Settings.ExportCellSize}}" DockPanel.Dock="Bottom" HorizontalAlignment="Stretch" Width="Auto" Height="32" Margin="0,6,0,-0"/>
+            </StackPanel>
+
+        </Border>
+    </Popup>
+    
+    <Popup x:Key="Popups.Presets" Placement="Top" HorizontalOffset="12">
+        <Border Background="White" BorderBrush="Black" BorderThickness="1">
+            
+            <ItemsControl>
+                <MenuItem Header="Save..." Command="{commands:SavePreset}"/>
+                <MenuItem Header="Load..." Command="{commands:LoadPreset}"/>
+            </ItemsControl>
+            
+        </Border>
+    </Popup>
+    
+    <Popup x:Key="Popups.AppMenu" Placement="Top" HorizontalOffset="-120">
+        <Border Background="White" BorderBrush="Black" BorderThickness="1" x:Name="border">
+            
+            <ItemsControl>
+                <MenuItem IsEnabled="False">
+                    <MenuItem.Header>
+                        <TextBlock>
+                            <Run Text="Palette Generator"/>
+                            <LineBreak/>
+                            <Run Text="Version:"/>
+                            <Run Text="{Binding Source={x:Static models:Global.Version}, Mode=OneTime}"/>
+                        </TextBlock>
+                    </MenuItem.Header>
+                </MenuItem>
+                <Separator/>
+                <MenuItem Header="Check for updates..." Command="{commands:CheckForUpdates}"/>
+            </ItemsControl>
+            
+        </Border>
+    </Popup>
+
+    <Popup x:Key="Popups.RowOffsets">
+        <Border Background="White" BorderThickness="1" BorderBrush="Black">
+            <StackPanel Margin="12">
+
+                <TextBlock Text="Offsets:" FontSize="16" Margin="0,0,0,12"/>
+
+                <TextBlock Text="Hue" HorizontalAlignment="Center" FontSize="16"/>
+                <DockPanel LastChildFill="False">
+                    <Slider Value="{Binding Hue, Mode=TwoWay}" Width="200"/>
+                    <CheckBox VerticalAlignment="Center" Margin="12,0" IsChecked="{Binding UseCustomHue}"/>
+                </DockPanel>
+
+                <TextBlock Text="Saturation" HorizontalAlignment="Center" FontSize="16"/>
+                <DockPanel LastChildFill="False">
+                    <Slider Value="{Binding Saturation, Mode=TwoWay}" Width="200"/>
+                    <CheckBox VerticalAlignment="Center" Margin="12,0" IsChecked="{Binding UseCustomSaturation}"/>
+                </DockPanel>
+
+            </StackPanel>
+        </Border>
+    </Popup>
+    
+    <Popup x:Key="Popups.GlobalOffsets" Placement="Top">
+        <Border Background="White" BorderThickness="1" BorderBrush="Black" TextBlock.FontFamily="Segoe UI Semilight">
+            
+            <StackPanel Margin="12">
+
+                <TextBlock Text="Offsets:" FontSize="16" Margin="0,0,0,12"/>
+
+                <TextBlock Text="Hue" HorizontalAlignment="Center" FontSize="16"/>
+                <Slider Value="{Binding Source={x:Static models:Global.Hue}, Path=Value, Mode=TwoWay}" Width="200"/>
+
+                <TextBlock Text="Saturation" HorizontalAlignment="Center" FontSize="16"/>
+                <Slider Value="{Binding Source={x:Static models:Global.Saturation}, Path=Value, Mode=TwoWay}" Width="200"/>
+
+            </StackPanel>
+            
+        </Border>
+    </Popup>
+
+</ResourceDictionary>

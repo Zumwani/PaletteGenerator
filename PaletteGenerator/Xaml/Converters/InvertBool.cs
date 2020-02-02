@@ -9,7 +9,7 @@ namespace PaletteGenerator
     namespace Converters
     {
 
-        public class InvertBool : MarkupExtension, IValueConverter
+        class InvertBool : MarkupExtension, IValueConverter
         {
 
             public object Convert(object value, Type targetType, object parameter, CultureInfo culture)

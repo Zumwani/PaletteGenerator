@@ -3,10 +3,10 @@ using Ookii.Dialogs.Wpf;
 using System;
 using System.IO;
 
-namespace PaletteGenerator
+namespace PaletteGenerator.Utilities
 {
 
-    public static class PromptUtility
+    static class PromptUtility
     {
 
         static string DefaultFolder =>

@@ -1,4 +1,6 @@
-﻿using System;
+﻿using PaletteGenerator.Models;
+using PaletteGenerator.Utilities;
+using System;
 using System.IO;
 using System.Linq;
 using System.Windows;
@@ -8,7 +10,7 @@ using System.Windows.Markup;
 namespace PaletteGenerator.Commands
 {
 
-    public class Export : MarkupExtension, ICommand
+    class Export : MarkupExtension, ICommand
     {
 
         public event EventHandler CanExecuteChanged;
@@ -18,11 +20,7 @@ namespace PaletteGenerator.Commands
         public void Execute(object parameter)
         {
 
-            
-            if (!int.TryParse(parameter.ToString(), out var cellSize) || cellSize == 0)
-                cellSize = 22;
-
-            var rows = App.Window.Rows;
+            var rows = Global.Rows;
             var colors = rows.Select(r => r.AllColors).ToArray();
 
             LoadingUtility.ShowLoadingScreen(async () =>
@@ -34,7 +32,7 @@ namespace PaletteGenerator.Commands
                     try
                     {
                         
-                        var bitmap = colors.AsPNGPalette(cellSize);
+                        var bitmap = colors.AsPNGPalette(Settings.ExportCellSize);
 
                         using var ms = bitmap.AsBytes();
                         await File.WriteAllBytesAsync(path, ms.ToArray());

@@ -7,24 +7,30 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.ComponentModel;
 using window = System.Windows.Window;
+using PaletteGenerator.Utilities;
+using PaletteGenerator.Models;
 
 namespace PaletteGenerator.UI
 {
 
-    public partial class ColorEditor : UserControl, INotifyPropertyChanged
+    partial class ColorEditor : UserControl, INotifyPropertyChanged
     {
 
         public ColorEditor()
         {
             InitializeComponent();
-            Window.OnGlobalOffsetsChanged += UpdateDisplayColor;
+            Global.Hue.PropertyChanged += (s, e) => UpdateDisplayColor();
+            Global.Saturation.PropertyChanged += (s, e) => UpdateDisplayColor();
         }
-        
+
+        #region Properties
+
         public static DependencyProperty ColorProperty = DependencyProperty.Register(nameof(Color), typeof(Color), typeof(ColorEditor), new PropertyMetadata(Refresh));
         public static DependencyProperty GlobalColorProperty = DependencyProperty.Register(nameof(GlobalColor), typeof(Color), typeof(ColorEditor), new PropertyMetadata(Refresh));
         public static DependencyProperty DisplayColorProperty = DependencyProperty.Register(nameof(DisplayColor), typeof(Color), typeof(ColorEditor));
         public static DependencyProperty HueProperty = DependencyProperty.Register(nameof(Hue), typeof(float), typeof(ColorEditor), new PropertyMetadata(0f, Refresh));
         public static DependencyProperty SaturationProperty = DependencyProperty.Register(nameof(Saturation), typeof(float), typeof(ColorEditor), new PropertyMetadata(1f, Refresh));
+        public static DependencyProperty PopupPlacementProperty = DependencyProperty.Register(nameof(PopupPlacement), typeof(PlacementMode), typeof(ColorEditor), new PropertyMetadata(PlacementMode.Bottom));
         
         public float Hue
         {
@@ -57,8 +63,14 @@ namespace PaletteGenerator.UI
             set => SetValue(DisplayColorProperty, value);
         }
 
-        public bool IsGlobal => Color == GlobalColor;
+        public PlacementMode PopupPlacement
+        {
+            get => (PlacementMode)GetValue(PopupPlacementProperty);
+            set => SetValue(PopupPlacementProperty, value);
+        }
 
+        public bool IsGlobal => Color == GlobalColor;
+        
         static void Refresh(DependencyObject s, DependencyPropertyChangedEventArgs e)
         {
 
@@ -88,6 +100,8 @@ namespace PaletteGenerator.UI
         public event PropertyChangedEventHandler PropertyChanged;
         void OnPropertyChanged(string name) =>
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+
+        #endregion
 
         private async void EyeDropper_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
@@ -135,7 +149,6 @@ namespace PaletteGenerator.UI
 
         private void ResetColorButton_Click(object sender, RoutedEventArgs e) =>
             Color = GlobalColor;
-            //Color.Reset();
 
     }
 

@@ -1,11 +1,12 @@
-﻿using System.Threading.Tasks;
+﻿using PaletteGenerator.Utilities;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 
 namespace PaletteGenerator.UI
 {
 
-    public static class WindowUtility
+    static class WindowUtility
     {
 
         public static bool GetIsMaximizeButton(Button obj) => (bool)obj.GetValue(IsMaximizeButtonProperty);
