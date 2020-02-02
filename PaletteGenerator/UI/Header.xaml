@@ -1,10 +1,10 @@
-﻿<UserControl x:Class="PaletteGenerator.UI.Header"
+﻿<UserControl x:Class="PaletteGenerator.UI.Header" x:ClassModifier="internal"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:PaletteGenerator"
-             xmlns:ui="clr-namespace:PaletteGenerator.UI"
-             xmlns:commands="clr-namespace:PaletteGenerator.Commands"
              xmlns:fa="http://schemas.fontawesome.com/icons/"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:commands="clr-namespace:PaletteGenerator.Commands"
+             xmlns:models="clr-namespace:PaletteGenerator.Models"
+             xmlns:ui="clr-namespace:PaletteGenerator.UI"
              Background="{x:Null}">
 
     <UserControl.Resources>
@@ -22,7 +22,7 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
-        
+
         <DockPanel x:Name="titlebar" Background="Transparent" Panel.ZIndex="200">
 
             <Button Content="" ToolTip="Close" Style="{StaticResource ToolButton}" Command="{commands:CloseWindow}" CommandParameter="{Binding}" WindowChrome.IsHitTestVisibleInChrome="True">
@@ -37,43 +37,18 @@
 
         </DockPanel>
 
-        <!--<Canvas>-->
+        <UniformGrid Grid.Row="1" Rows="2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="12" Panel.ZIndex="10">
+
+            <Button Height="42" Padding="6" 
+                    Content="{Binding Source={StaticResource Icons.Github}, Mode=OneTime}"
+                    Command="{commands:OpenUri}" CommandParameter="{Binding Source={x:Static models:Global.Github}, Mode=OneTime}"/>
             
-            <UniformGrid Grid.Row="1" Rows="2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="12" Panel.ZIndex="10">
+            <Button Height="42" Padding="6" 
+                    Content="{Binding Source={StaticResource Icons.Discord}, Mode=OneTime}"
+                    Command="{commands:OpenUri}" CommandParameter="{Binding Source={x:Static models:Global.Discord}, Mode=OneTime}"/>
 
-                <Button Height="42" Padding="6" Command="{commands:OpenUri}" CommandParameter="{Binding Github}">
-                    <Button.ToolTip>
-                        <ToolTip DataContext="{Binding RelativeSource={RelativeSource Mode=Self}, Path=PlacementTarget.DataContext}">
-                            <TextBlock>
-                                <Run Text="Github"/>
-                                <LineBreak/>
-                                <Run Text="{Binding Github, Mode=OneWay}"/>
-                            </TextBlock>
-                        </ToolTip>
-                    </Button.ToolTip>
-                    <Button.Content>
-                        <fa:ImageAwesome Icon="Brands_Github"/>
-                    </Button.Content>
-                </Button>
-                <Button Height="42" Padding="6" Command="{commands:OpenUri}" CommandParameter="{Binding Discord}">
-                    <Button.ToolTip>
-                        <ToolTip DataContext="{Binding RelativeSource={RelativeSource Mode=Self}, Path=PlacementTarget.DataContext}">
-                            <TextBlock>
-                                <Run Text="Github"/>
-                                <LineBreak/>
-                                <Run Text="{Binding Discord, Mode=OneWay}"/>
-                            </TextBlock>
-                        </ToolTip>
-                    </Button.ToolTip>
-                    <Button.Content>
-                        <fa:ImageAwesome Icon="Brands_Discord" Foreground="#FF7288D9"/>
-                    </Button.Content>
-                </Button>
+        </UniformGrid>
 
-            </UniformGrid>
-
-        <!--</Canvas>-->
-        
     </Grid>
 
 </UserControl>

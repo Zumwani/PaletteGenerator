@@ -1,14 +1,22 @@
-﻿<UserControl x:Class="PaletteGenerator.Row"
+﻿<UserControl x:Class="PaletteGenerator.Models.Row" x:ClassModifier="internal"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:PaletteGenerator"
              xmlns:converters="clr-namespace:PaletteGenerator.Converters"
              xmlns:ui="clr-namespace:PaletteGenerator.UI"
              xmlns:commands="clr-namespace:PaletteGenerator.Commands"
-             x:Name="row">
+             xmlns:fa="http://schemas.fontawesome.com/icons/"
+             xmlns:models="clr-namespace:PaletteGenerator.Models"
+             xmlns:utilities="clr-namespace:PaletteGenerator.Utilities"
+             x:Name="UserControl">
 
     <UserControl.Resources>
         <ResourceDictionary>
+
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Button.xaml"/>
+                <ResourceDictionary Source="Popups.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
             
             <Style TargetType="{x:Type ItemsControl}">
 
@@ -35,27 +43,36 @@
     </UserControl.Resources>
 
     <UserControl.Style>
-        <Style TargetType="{x:Type local:Row}">
-            <Setter Property="LeftColor"  Value="{Binding Source={x:Static local:App.Window}, Mode=OneWay, Path=LeftColor}"/>
-            <Setter Property="RightColor" Value="{Binding Source={x:Static local:App.Window}, Mode=OneWay, Path=RightColor}"/>
-            <Setter Property="Hue"        Value="{Binding Source={x:Static local:App.Window}, Mode=OneWay, Path=Hue}"/>
-            <Setter Property="Saturation" Value="{Binding Source={x:Static local:App.Window}, Mode=OneWay, Path=Saturation}"/>
-            <Setter Property="Columns"    Value="{Binding Source={x:Static local:App.Window}, Mode=OneWay, Path=Columns}"/>
+        <Style TargetType="{x:Type models:Row}">
+            <Setter Property="Columns" Value="{Binding Source={x:Static models:Global.Columns}, Path=Value, Mode=OneWay}"/>
         </Style>
     </UserControl.Style>
-    
+
     <StackPanel Orientation="Horizontal" Margin="0,6">
 
-        <ui:ColorEditor x:Name="leftColorPicker" GlobalColor="{Binding Source={x:Static local:App.Window}, Path=LeftColor, Mode=OneWay}" SelectedColor="{Binding ElementName=row, Path=LeftColor, Mode=OneWayToSource}"  Width="64" BorderThickness="1,1,0,1"/>
-        <ItemsControl ItemsSource="{Binding ElementName=row, Path=LeftSide, Mode=OneWay}"/>
-        <ui:ColorEditor x:Name="centerColorPicker" CustomColor="{Binding ElementName=row, Path=CenterColor, Mode=OneWay}" BorderThickness="0,1" SelectedColor="{Binding ElementName=row, Path=CenterColor, Mode=OneWayToSource}"/>
-        <ItemsControl ItemsSource="{Binding ElementName=row, Path=RightSide, Mode=OneWay}"/>
-        <ui:ColorEditor x:Name="rightColorPicker" GlobalColor="{Binding Source={x:Static local:App.Window}, Path=RightColor, Mode=OneWay}" SelectedColor="{Binding ElementName=row, Path=RightColor, Mode=OneWayToSource}" BorderThickness="0,1,1,1"/>
+        <Border Background="Transparent" Height="64" Width="22">
+            <ToggleButton x:Name="OffsetsButton" FontSize="12" Width="22" Padding="6"
+                          Visibility="{Binding Converter={converters:ShowIf}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}, Path=IsMouseOver, ConverterParameter={StaticResource True}}"
+                          utilities:PopupUtility.Attach="{StaticResource Popups.RowOffsets}" DataContext="{Binding ElementName=UserControl}" utilities:PopupUtility.AttachedPopupPlacement="Left">
+                <ToggleButton.Content>
+                    <fa:ImageAwesome Icon="Solid_ChevronLeft" Foreground="DimGray"/>
+                </ToggleButton.Content>
+            </ToggleButton>
+        </Border>
 
-        <Canvas>
-            <Button Content="✖" Command="{commands:RemoveRow}" CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:Row}}" FontSize="12" Margin="4,0" Foreground="DimGray"/>
-        </Canvas>
+        <ui:ColorEditor x:Name="LeftColorPicker" BorderThickness="1,1,0,1" GlobalColor="{Binding Source={x:Static models:Global.LeftColor}, Path=Value, Mode=TwoWay}" PopupPlacement="Left"/>
+        <ItemsControl ItemsSource="{Binding ElementName=UserControl, Path=LeftSide, Mode=OneWay}"/>
+        <ui:ColorEditor x:Name="CenterColorPicker" BorderThickness="0,1" Color="LightSkyBlue" GlobalColor="{Binding ElementName=UserControl, Path=CenterColor, Mode=TwoWay}" IsGlobalPicker="True"/>
+        <ItemsControl ItemsSource="{Binding ElementName=UserControl, Path=RightSide, Mode=OneWay}"/>
+        <ui:ColorEditor x:Name="RightColorPicker" BorderThickness="0,1,1,1" GlobalColor="{Binding Source={x:Static models:Global.RightColor}, Path=Value, Mode=TwoWay}" PopupPlacement="Right"/>
 
+        <Border Background="Transparent" Width="22">
+            <Button Content="✖" x:Name="RemoveButton" Height="22" VerticalAlignment="Top" FontSize="12" Foreground="DimGray"
+                    Command="{commands:RemoveRow}" CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=models:Row}}"
+                    Visibility="{Binding Converter={converters:ShowIf}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}, Path=IsMouseOver, ConverterParameter={StaticResource True}}"
+                    Style="{StaticResource ButtonBaseStyle}" Template="{StaticResource ButtonTemplate}"/>
+        </Border>
+        
     </StackPanel>
 
 </UserControl>

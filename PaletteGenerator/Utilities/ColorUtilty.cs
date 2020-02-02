@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PaletteGenerator.Models;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -9,17 +10,40 @@ using System.Windows.Media.Imaging;
 using color = System.Drawing.Color;
 using Color = System.Windows.Media.Color;
 
-namespace PaletteGenerator
+namespace PaletteGenerator.Utilities
 {
 
-    public static class ColorUtilty
+    static class ColorUtilty
     {
 
-        public static Color[] ApplyOffsets(this Color[] colors) =>
-            colors.ApplyOffsets(App.Window.Hue, App.Window.Saturation);
+        public static color AsDrawing(this Color color) =>
+            System.Drawing.Color.FromArgb(color.A, color.R, color.G, color.B);
 
-        public static Color[] ApplyOffsets(this Color[] colors, float hue, float saturation) =>
-            colors.Select(c => c.OffsetHue(hue).OffsetSaturation(saturation)).ToArray();
+        public static IEnumerable<Color> Blend(this Color from, Color to, int steps)
+        {
+
+            var stepA = (byte)((to.A - from.A) / (steps - 1));
+            var stepR = (byte)((to.R - from.R) / (steps - 1));
+            var stepG = (byte)((to.G - from.G) / (steps - 1));
+            var stepB = (byte)((to.B - from.B) / (steps - 1));
+
+            return steps.Select(i =>
+            Color.FromArgb(
+                (byte)(from.A + (stepA * i)),
+                (byte)(from.R + (stepR * i)),
+                (byte)(from.G + (stepG * i)),
+                (byte)(from.B + (stepB * i))));
+
+        }
+
+        public static Color Complementary(this Color color)
+        {
+            var hsv = color.AsHSV();
+            hsv.hue = (hsv.hue + 0.5f) % 1f;
+            return hsv.AsColor();
+        }
+
+        #region Export
 
         public static BitmapSource AsPNGPalette(this Color[][] colors, int cellSize)
         {
@@ -59,9 +83,6 @@ namespace PaletteGenerator
 
         }
 
-        public static color AsDrawing(this Color color) =>
-            System.Drawing.Color.FromArgb(color.A, color.R, color.G, color.B);
-
         public static MemoryStream AsBytes(this BitmapSource bitmap)
         {
 
@@ -80,20 +101,23 @@ namespace PaletteGenerator
             return ms;
         }
 
-        public static IEnumerable<Color> Blend(this Color from, Color to, int steps)
+        #endregion
+        #region Offset hue / saturation
+
+        public static Color ApplyOffsets(this Color color) => color.ApplyOffsets(Global.Hue, Global.Saturation);
+        public static Color[] ApplyOffsets(this IEnumerable<Color> colors) => colors.ApplyOffsets(Global.Hue, Global.Saturation);
+
+        public static Color[] ApplyOffsets(this IEnumerable<Color> colors, float hue, float saturation) => colors.Select(c => c.ApplyOffsets(hue, saturation)).ToArray();
+
+        public static Color ApplyOffsets(this Color color, float hue, float saturation)
         {
 
-            var stepA = (byte)((to.A - from.A) / (steps - 1));
-            var stepR = (byte)((to.R - from.R) / (steps - 1));
-            var stepG = (byte)((to.G - from.G) / (steps - 1));
-            var stepB = (byte)((to.B - from.B) / (steps - 1));
+            var hsv = color.AsHSV();
+            hsv.hue = MathUtility.Wrap(hsv.hue + (hue * 360), 0, 360);
+            hsv.saturation = (hsv.saturation * saturation).Clamp01();
+            color = hsv.AsColor();
 
-            return steps.Select(i =>
-            Color.FromArgb(
-                (byte)(from.A + (stepA * i)),
-                (byte)(from.R + (stepR * i)),
-                (byte)(from.G + (stepG * i)),
-                (byte)(from.B + (stepB * i))));
+            return color;
 
         }
 
@@ -119,12 +143,8 @@ namespace PaletteGenerator
 
         }
 
-        public static Color Complementary(this Color color)
-        {
-            var hsv = color.AsHSV();
-            hsv.hue = (hsv.hue + 0.5f) % 1f;
-            return hsv.AsColor();
-        }
+        #endregion
+        #region HSV
 
         public static (float hue, float saturation, float value) AsHSV(this Color color)
         {
@@ -138,12 +158,6 @@ namespace PaletteGenerator
             return (hue, saturation, value);
 
         }
-
-        public static float Hue(this Color color) =>
-            System.Drawing.Color.FromArgb(color.A, color.R, color.G, color.B).GetHue();
-
-        public static Color AsColor(this (float hue, float saturation, float value) hsv) =>
-            AsColor(hsv.hue, hsv.saturation, hsv.value);
 
         public static Color AsColor(float hue, float saturation, float value)
         {
@@ -170,6 +184,14 @@ namespace PaletteGenerator
             else
                 return Color.FromArgb(255, v, p, q);
         }
+
+        public static float Hue(this Color color) =>
+            System.Drawing.Color.FromArgb(color.A, color.R, color.G, color.B).GetHue();
+
+        public static Color AsColor(this (float hue, float saturation, float value) hsv) =>
+            AsColor(hsv.hue, hsv.saturation, hsv.value);
+
+        #endregion
 
     }
 

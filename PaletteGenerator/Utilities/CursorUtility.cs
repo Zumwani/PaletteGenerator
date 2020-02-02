@@ -6,10 +6,10 @@ using Point = System.Windows.Point;
 using point = System.Drawing.Point;
 using Size = System.Windows.Size;
 
-namespace PaletteGenerator
+namespace PaletteGenerator.Utilities
 {
 
-    internal static class CursorUtility
+    static class CursorUtility
     {
 
         [DllImport("user32.dll")]

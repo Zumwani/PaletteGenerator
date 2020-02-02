@@ -6,7 +6,7 @@ using System.Windows.Markup;
 namespace PaletteGenerator.Commands
 {
 
-    public class ToggleMaximizeWindow : MarkupExtension, ICommand
+    class ToggleMaximizeWindow : MarkupExtension, ICommand
     {
 
         public event EventHandler CanExecuteChanged;

@@ -2,11 +2,17 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 
-namespace PaletteGenerator
+namespace PaletteGenerator.Utilities
 {
 
-    public static class ListUtility
+    static class ListUtility
     {
+
+        public static IEnumerable<T> Concat<T>(this IEnumerable<T> list, T item) =>
+            System.Linq.Enumerable.Concat(list, new[] { item });
+
+        public static T[] AsArray<T>(this T item) =>
+            new[] { item };
 
         public static IEnumerable<T> ForEach<T>(this IEnumerable<T> list, Action<T> action)
         {

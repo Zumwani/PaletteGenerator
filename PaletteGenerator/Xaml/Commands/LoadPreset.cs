@@ -1,11 +1,13 @@
-﻿using System;
+﻿using PaletteGenerator.Models;
+using PaletteGenerator.Utilities;
+using System;
 using System.Windows.Input;
 using System.Windows.Markup;
 
 namespace PaletteGenerator.Commands
 {
 
-    public class LoadPreset : MarkupExtension, ICommand
+    class LoadPreset : MarkupExtension, ICommand
     {
 
         public event EventHandler CanExecuteChanged;
@@ -18,7 +20,7 @@ namespace PaletteGenerator.Commands
             Preset preset = null;
             LoadingUtility.ShowLoadingScreen(async () => 
             {
-                preset = await JsonObject<Preset>.PromptAndLoad();
+                preset = await JsonUtility<Preset>.PromptAndLoad();
                 App.Dispatcher.Invoke(() => preset?.SetCurrent());
             });
 

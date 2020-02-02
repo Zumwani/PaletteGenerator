@@ -1,4 +1,5 @@
-﻿using Ookii.Dialogs.Wpf;
+﻿using PaletteGenerator.Models;
+using PaletteGenerator.Utilities;
 using System;
 using System.IO;
 using System.Linq;
@@ -9,7 +10,7 @@ using System.Windows.Markup;
 namespace PaletteGenerator.Commands
 {
 
-    public class Export : MarkupExtension, ICommand
+    class Export : MarkupExtension, ICommand
     {
 
         public event EventHandler CanExecuteChanged;
@@ -19,22 +20,19 @@ namespace PaletteGenerator.Commands
         public void Execute(object parameter)
         {
 
-            var rows = App.Window.Rows;
-            var hue = App.Window.Hue;
-            var saturation = App.Window.Saturation;
-
-            var colors = rows.Select(r => r.AllColors.ApplyOffsets(hue, saturation)).ToArray();
+            var rows = Global.Rows;
+            var colors = rows.Select(r => r.AllColors).ToArray();
 
             LoadingUtility.ShowLoadingScreen(async () =>
             {
 
-                if (Prompt.Save(Directory.CreateDirectory(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Palette Generator")).FullName, "png") is string path)
+                if (PromptUtility.Save(Directory.CreateDirectory(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Palette Generator")).FullName, "png") is string path)
                 {
 
                     try
                     {
                         
-                        var bitmap = colors.AsPNGPalette(64);
+                        var bitmap = colors.AsPNGPalette(Settings.ExportCellSize);
 
                         using var ms = bitmap.AsBytes();
                         await File.WriteAllBytesAsync(path, ms.ToArray());

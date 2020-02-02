@@ -1,10 +1,12 @@
-﻿using System;
+﻿using PaletteGenerator.Models;
+using System;
 using System.Windows.Input;
 using System.Windows.Markup;
 
 namespace PaletteGenerator.Commands
 {
-    public class RemoveRow : MarkupExtension, ICommand
+
+    class RemoveRow : MarkupExtension, ICommand
     {
 
         public event EventHandler CanExecuteChanged;
@@ -12,7 +14,7 @@ namespace PaletteGenerator.Commands
         public override object ProvideValue(IServiceProvider serviceProvider) => this;
 
         public void Execute(object parameter) =>
-            App.Window?.Rows.Remove(parameter as Row);
+            Global.Rows.Remove(parameter as Row);
 
     }
 

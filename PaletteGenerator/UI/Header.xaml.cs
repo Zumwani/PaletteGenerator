@@ -3,7 +3,7 @@
 namespace PaletteGenerator.UI
 {
 
-    public partial class Header : UserControl
+    partial class Header : UserControl
     {
 
         public Header() =>

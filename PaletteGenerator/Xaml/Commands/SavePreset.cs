@@ -1,11 +1,13 @@
-﻿using System;
+﻿using PaletteGenerator.Models;
+using PaletteGenerator.Utilities;
+using System;
 using System.Windows.Input;
 using System.Windows.Markup;
 
 namespace PaletteGenerator.Commands
 {
 
-    public class SavePreset : MarkupExtension, ICommand
+    class SavePreset : MarkupExtension, ICommand
     {
 
         public event EventHandler CanExecuteChanged;
@@ -15,7 +17,7 @@ namespace PaletteGenerator.Commands
         public void Execute(object parameter)
         {
             var preset = Preset.FromCurrent();
-            LoadingUtility.ShowLoadingScreen(() => JsonObject<Preset>.PromptAndSave(preset));
+            LoadingUtility.ShowLoadingScreen(() => JsonUtility<Preset>.PromptAndSave(preset));
         }
 
     }
