@@ -41,6 +41,12 @@ namespace PaletteGenerator.UI
             slider.ToolTip = sliderTooltip;
         }
 
+        private void Grid_MouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            if (sender is FrameworkElement element && element.TemplatedParent is Slider s)
+                s.Value += s.LargeChange * (e.Delta > 10 ? 1 : -1);
+        }
+
     }
 
 }

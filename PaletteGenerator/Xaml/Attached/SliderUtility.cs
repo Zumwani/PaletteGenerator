@@ -18,35 +18,41 @@ namespace PaletteGenerator.Utilities
             PropertyChangedCallback = (obj, changeEvent) =>
             {
                 var slider = (Slider)obj;
+                slider.MouseMove -= MouseMove;
                 if ((bool)changeEvent.NewValue)
-                    slider.MouseMove += async (obj2, mouseEvent) =>
-                    {
+                    slider.MouseMove += MouseMove;
 
-                        if (mouseEvent.LeftButton == MouseButtonState.Pressed)
-                        {
-
-                            slider.RaiseEvent(new MouseButtonEventArgs(mouseEvent.MouseDevice, mouseEvent.Timestamp, MouseButton.Left)
-                            {
-                                RoutedEvent = UIElement.PreviewMouseLeftButtonDownEvent,
-                                Source = mouseEvent.Source,
-                            });
-
-                            while (Mouse.LeftButton == MouseButtonState.Pressed)
-                                await Task.Delay(100);
-
-                            if (!slider.IsMouseOver)
-                                return;
-
-                            if (slider.ToolTip is ToolTip t)
-                                t.IsOpen = false;
-
-                            slider.RaiseEvent(new DragCompletedEventArgs(float.NaN, float.NaN, false) { Source = slider });
-
-                        }
-
-                    };
             }
         });
+
+        static async void MouseMove(object sender, MouseEventArgs e)
+        {
+
+            if (sender is Slider slider)
+
+            if (e.LeftButton == MouseButtonState.Pressed)
+            {
+
+                slider.RaiseEvent(new MouseButtonEventArgs(e.MouseDevice, e.Timestamp, MouseButton.Left)
+                {
+                    RoutedEvent = UIElement.PreviewMouseLeftButtonDownEvent,
+                    Source = e.Source,
+                });
+
+                while (Mouse.LeftButton == MouseButtonState.Pressed)
+                    await Task.Delay(100);
+
+                if (!slider.IsMouseOver)
+                    return;
+
+                if (slider.ToolTip is ToolTip t)
+                    t.IsOpen = false;
+
+                slider.RaiseEvent(new DragCompletedEventArgs(float.NaN, float.NaN, false) { Source = slider });
+
+            }
+
+        }
 
         public static bool GetAllowDragCompletedEventWhileOutOfBounds(DependencyObject obj) => (bool)obj.GetValue(AllowDragCompletedEventWhileOutOfBoundsProperty);
         public static void SetAllowDragCompletedEventWhileOutOfBounds(DependencyObject obj, bool value) => obj.SetValue(AllowDragCompletedEventWhileOutOfBoundsProperty, value);

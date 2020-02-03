@@ -37,7 +37,7 @@
 
     <ControlTemplate x:Key="Slider" TargetType="{x:Type Slider}">
 
-        <Grid Background="Transparent" MouseMove="Grid_MouseMove" MouseLeave="Grid_MouseLeave">
+        <Grid Background="Transparent" MouseMove="Grid_MouseMove" MouseLeave="Grid_MouseLeave" MouseWheel="Grid_MouseWheel">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" MinHeight="{TemplateBinding MinHeight}"/>
                 <RowDefinition Height="Auto"/>
