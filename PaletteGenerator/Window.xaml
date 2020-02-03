@@ -4,9 +4,11 @@
         xmlns:ui="clr-namespace:PaletteGenerator.UI"
         xmlns:mahApps="http://metro.mahapps.com/winfx/xaml/controls"
         xmlns:models="clr-namespace:PaletteGenerator.Models"
+        xmlns:fa="http://schemas.fontawesome.com/icons/"
         Title="Palette Generator" Height="528" Width="1250"
         WindowStartupLocation="CenterScreen" WindowStyle="None"
         DataContext="{Binding RelativeSource={RelativeSource Mode=Self}}" FontFamily="Segoe UI Semilight" AllowsTransparency="True"
+        Icon="Assets/image.png"
         Loaded="Window_Loaded">
 
     <WindowChrome.WindowChrome>
