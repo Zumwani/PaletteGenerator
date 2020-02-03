@@ -48,10 +48,10 @@
         </Style>
     </UserControl.Style>
 
-    <StackPanel Orientation="Horizontal" Margin="0,6">
+    <StackPanel Orientation="Horizontal" Margin="0,3">
 
         <Border Background="Transparent" Height="64" Width="22">
-            <ToggleButton x:Name="OffsetsButton" FontSize="12" Width="22" Padding="6"
+            <ToggleButton x:Name="OffsetsButton" Width="22" Padding="6"
                           Visibility="{Binding Converter={converters:ShowIf}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}, Path=IsMouseOver, ConverterParameter={StaticResource True}}"
                           utilities:PopupUtility.Attach="{StaticResource Popups.RowOffsets}" DataContext="{Binding ElementName=UserControl}" utilities:PopupUtility.AttachedPopupPlacement="Left">
                 <ToggleButton.Content>

@@ -7,7 +7,7 @@
              xmlns:fa="http://schemas.fontawesome.com/icons/"
              xmlns:models="clr-namespace:PaletteGenerator.Models"
              x:Name="Editor"
-             FontFamily="Segoe UI Semilight" BorderBrush="LightGray" Background="{StaticResource TransparentImage}">
+             FontFamily="Segoe UI Semilight" BorderBrush="LightGray">
 
     <UserControl.Resources>
         <ResourceDictionary>
@@ -19,98 +19,105 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <colorPicker:ColorPicker x:Name="ColorPicker" SelectedColor="{Binding ElementName=Editor, Path=Color, Mode=TwoWay}"
-                             StandardButtonHeader="Named Colors" AdvancedButtonHeader="Color Picker" AvailableColorsSortingMode="HueSaturationBrightness" ShowDropDownButton="False"
-                             ColorMode="{Binding Source={x:Static models:Settings.ColorMode}, Path=Value, Mode=TwoWay}" ShowRecentColors="True">
+    <Grid>
 
-        <colorPicker:ColorPicker.ButtonStyle>
-            <Style TargetType="{x:Type ToggleButton}">
-                <Setter Property="Width" Value="64"/>
-                <Setter Property="Height" Value="64"/>
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate>
+        <Image Source="../Assets/transparent.png" Stretch="None" Width="64" Height="64">
+            
+        </Image>
 
-                            <Grid>
-                                
-                                <Rectangle x:Name="rectangle"  StrokeThickness="0" Stroke="LightGray"
-                                           Fill="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}, Path=DisplayColor, Converter={converters:ToBrush}, Mode=OneWay}"/>
-                                
-                                <Button x:Name="button" Content="✖" Foreground="LightGray" Padding="0" Height="16" Width="16" HorizontalAlignment="Left" VerticalAlignment="Top"
-                                        Visibility="{Binding Converter={converters:ShowIf}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}, Path=IsGlobal, ConverterParameter={StaticResource False}}"
-                                        ToolTip="Remove custom color" Style="{StaticResource ButtonBaseStyle}" Template="{StaticResource ButtonTemplate}"
-                                        Click="ResetColorButton_Click">
-                                    <Button.Effect>
-                                        <DropShadowEffect BlurRadius="5" ShadowDepth="2" Opacity="0.5"/>
-                                    </Button.Effect>
-                                </Button>
-                                
-                            </Grid>
+        <colorPicker:ColorPicker x:Name="ColorPicker" SelectedColor="{Binding ElementName=Editor, Path=Color, Mode=TwoWay}"
+                                 StandardButtonHeader="Named Colors" AdvancedButtonHeader="Color Picker" AvailableColorsSortingMode="HueSaturationBrightness" ShowDropDownButton="False"
+                                 ColorMode="{Binding Source={x:Static models:Settings.ColorMode}, Path=Value, Mode=TwoWay}" ShowRecentColors="True">
 
-                            <ControlTemplate.Triggers>
-                                <Trigger Property="IsMouseOver" Value="True">
-                                    <Setter TargetName="rectangle" Property="StrokeThickness" Value="2"/>
-                                    <Setter TargetName="button" Property="Opacity" Value="1"/>
-                                </Trigger>
-                                <Trigger Property="IsMouseOver" Value="False">
-                                    <Setter TargetName="rectangle" Property="StrokeThickness" Value="0"/>
-                                    <Setter TargetName="button" Property="Opacity" Value="0"/>
-                                </Trigger>
-                                <Trigger Property="ToggleButton.IsChecked" Value="True">
-                                    <Setter TargetName="rectangle" Property="StrokeThickness" Value="2"/>
-                                    <Setter TargetName="button" Property="Opacity" Value="1"/>
-                                </Trigger>
-                            </ControlTemplate.Triggers>
-
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>
-        </colorPicker:ColorPicker.ButtonStyle>
-
-        <colorPicker:ColorPicker.Resources>
-            <ResourceDictionary>
-
-                <ResourceDictionary.MergedDictionaries>
-                    <ResourceDictionary Source="Button.xaml"/>
-                </ResourceDictionary.MergedDictionaries>
-
-                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource ButtonBaseStyle}">
-
-                    <Setter Property="Width" Value="Auto"/>
-                    <Setter Property="Padding" Value="12"/>
-
+            <colorPicker:ColorPicker.ButtonStyle>
+                <Style TargetType="{x:Type ToggleButton}">
+                    <Setter Property="Width" Value="64"/>
+                    <Setter Property="Height" Value="64"/>
                     <Setter Property="Template">
                         <Setter.Value>
-                            <ControlTemplate TargetType="{x:Type Button}">
+                            <ControlTemplate>
+
                                 <Grid>
-
-                                    <Button Template="{StaticResource ButtonTemplate}" Content="{TemplateBinding Content}"/>
-
-                                    <ToggleButton Width="28" Height="28" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,-32,0,0"
-                                                  ToolTip="Pick color from screen point" Visibility="{Binding Converter={converters:ShowIf}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=colorPicker:ColorPicker}, Path=ColorMode, ConverterParameter={x:Static colorPicker:ColorMode.ColorCanvas}}"  
-                                                  PreviewMouseLeftButtonDown="EyeDropper_PreviewMouseLeftButtonDown">
-                                        <ToggleButton.Content>
-                                            <fa:ImageAwesome Icon="Solid_EyeDropper"/>
-                                        </ToggleButton.Content>
-                                    </ToggleButton>
-
+                                
+                                    <Rectangle x:Name="rectangle" StrokeThickness="0" Stroke="LightGray"
+                                               Fill="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}, Path=DisplayColor, Converter={converters:ToBrush}, Mode=OneWay}"/>
+                                
+                                    <Button x:Name="button" Content="✖" Foreground="LightGray" Padding="0" Height="16" Width="16" HorizontalAlignment="Left" VerticalAlignment="Top"
+                                            Visibility="{Binding Converter={converters:ShowIf}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}, Path=IsGlobal, ConverterParameter={StaticResource False}}"
+                                            ToolTip="Remove custom color" Style="{StaticResource ButtonBaseStyle}" Template="{StaticResource ButtonTemplate}"
+                                            Click="ResetColorButton_Click">
+                                        <Button.Effect>
+                                            <DropShadowEffect BlurRadius="5" ShadowDepth="2" Opacity="0.5"/>
+                                        </Button.Effect>
+                                    </Button>
+                                
                                 </Grid>
+
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter TargetName="rectangle" Property="StrokeThickness" Value="2"/>
+                                        <Setter TargetName="button" Property="Opacity" Value="1"/>
+                                    </Trigger>
+                                    <Trigger Property="IsMouseOver" Value="False">
+                                        <Setter TargetName="rectangle" Property="StrokeThickness" Value="0"/>
+                                        <Setter TargetName="button" Property="Opacity" Value="0"/>
+                                    </Trigger>
+                                    <Trigger Property="ToggleButton.IsChecked" Value="True">
+                                        <Setter TargetName="rectangle" Property="StrokeThickness" Value="2"/>
+                                        <Setter TargetName="button" Property="Opacity" Value="1"/>
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+
                             </ControlTemplate>
                         </Setter.Value>
                     </Setter>
-
                 </Style>
+            </colorPicker:ColorPicker.ButtonStyle>
 
-                <Style TargetType="{x:Type colorPicker:ColorCanvas}">
-                    <Setter Property="DisplayColorSpace" Value="{Binding Source={x:Static models:Settings.ColorSpace}, Path=Value, Mode=TwoWay}"/>
-                </Style>
-                <Style TargetType="{x:Type Popup}">
-                    <Setter Property="Placement" Value="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}, Path=PopupPlacement}"/>
-                </Style>
+            <colorPicker:ColorPicker.Resources>
+                <ResourceDictionary>
 
-            </ResourceDictionary>
-        </colorPicker:ColorPicker.Resources>
-    </colorPicker:ColorPicker>
+                    <ResourceDictionary.MergedDictionaries>
+                        <ResourceDictionary Source="Button.xaml"/>
+                    </ResourceDictionary.MergedDictionaries>
+
+                    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource ButtonBaseStyle}">
+
+                        <Setter Property="Width" Value="Auto"/>
+                        <Setter Property="Padding" Value="12"/>
+
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="{x:Type Button}">
+                                    <Grid>
+
+                                        <Button Template="{StaticResource ButtonTemplate}" Content="{TemplateBinding Content}"/>
+
+                                        <ToggleButton Width="28" Height="28" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,-32,0,0"
+                                                      ToolTip="Pick color from screen point" Visibility="{Binding Converter={converters:ShowIf}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=colorPicker:ColorPicker}, Path=ColorMode, ConverterParameter={x:Static colorPicker:ColorMode.ColorCanvas}}"  
+                                                      PreviewMouseLeftButtonDown="EyeDropper_PreviewMouseLeftButtonDown">
+                                            <ToggleButton.Content>
+                                                <fa:ImageAwesome Icon="Solid_EyeDropper"/>
+                                            </ToggleButton.Content>
+                                        </ToggleButton>
+
+                                    </Grid>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+
+                    </Style>
+
+                    <Style TargetType="{x:Type colorPicker:ColorCanvas}">
+                        <Setter Property="DisplayColorSpace" Value="{Binding Source={x:Static models:Settings.ColorSpace}, Path=Value, Mode=TwoWay}"/>
+                    </Style>
+                    <Style TargetType="{x:Type Popup}">
+                        <Setter Property="Placement" Value="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}, Path=PopupPlacement}"/>
+                    </Style>
+
+                </ResourceDictionary>
+            </colorPicker:ColorPicker.Resources>
+        </colorPicker:ColorPicker>
+    </Grid>
 
 </UserControl>

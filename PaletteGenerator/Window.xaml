@@ -48,7 +48,7 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
-            <ui:Header x:Name="Header"/>
+            <ui:Header x:Name="Header" Panel.ZIndex="100"/>
 
             <Border x:Name="LoadingOverlay" Grid.Row="0" Grid.RowSpan="3" Opacity="0" Panel.ZIndex="100" Visibility="Collapsed" WindowChrome.IsHitTestVisibleInChrome="True">
                 <Border.Background>
@@ -57,11 +57,11 @@
                 <mahApps:ProgressRing Foreground="White"/>
             </Border>
 
-            <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+            <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="0,-42,0,0">
                 <StackPanel HorizontalAlignment="Center">
-                    <DockPanel LastChildFill="False" Margin="64,0,64,-36">
-                        <ui:ColorEditor x:Name="LeftColorPicker" DockPanel.Dock="Left" BorderThickness="1" GlobalColor="{Binding Source={x:Static models:Global.LeftColor}, Path=Value, Mode=TwoWay}" IsGlobalPicker="True" PopupPlacement="Left"/>
-                        <ui:ColorEditor x:Name="RightColorPicker" DockPanel.Dock="Right" BorderThickness="1" GlobalColor="{Binding Source={x:Static models:Global.RightColor}, Path=Value, Mode=TwoWay}" IsGlobalPicker="True" PopupPlacement="Right"/>
+                    <DockPanel LastChildFill="False" Margin="64,0,64,-73">
+                        <ui:ColorEditor Height="10" x:Name="LeftColorPicker" DockPanel.Dock="Left" BorderThickness="1" GlobalColor="{Binding Source={x:Static models:Global.LeftColor}, Path=Value, Mode=TwoWay}" IsGlobalPicker="True" PopupPlacement="Left"/>
+                        <ui:ColorEditor Height="10" x:Name="RightColorPicker" DockPanel.Dock="Right" BorderThickness="1" GlobalColor="{Binding Source={x:Static models:Global.RightColor}, Path=Value, Mode=TwoWay}" IsGlobalPicker="True" PopupPlacement="Right"/>
                     </DockPanel>
                     <ItemsControl x:Name="list" ItemsSource="{Binding Source={x:Static models:Global.Rows}}" Margin="42" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                 </StackPanel>

@@ -27,7 +27,7 @@
                     </VisualState>
                     <VisualState x:Name="Checked">
                         <Storyboard>
-                            <DoubleAnimation Storyboard.TargetName="Toggle" Storyboard.TargetProperty="Background.Opacity" To="0.5" Duration="0:0:0.1"/>
+                            <DoubleAnimation Storyboard.TargetName="Toggle" Storyboard.TargetProperty="Background.Opacity" From="0.5" To="0.5" Duration="0:0:0.1"/>
                         </Storyboard>
                     </VisualState>
                 </VisualStateGroup>

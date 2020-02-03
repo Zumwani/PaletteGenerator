@@ -25,14 +25,14 @@
 
         <DockPanel x:Name="titlebar" Background="Transparent" Panel.ZIndex="200">
 
-            <Button Content="" ToolTip="Close" Style="{StaticResource ToolButton}" Command="{commands:CloseWindow}" CommandParameter="{Binding}" WindowChrome.IsHitTestVisibleInChrome="True">
+            <Button Content="" ToolTip="Close" Style="{StaticResource ToolButton}" Command="{commands:CloseWindow}" CommandParameter="{Binding}" WindowChrome.IsHitTestVisibleInChrome="True" FontSize="16">
                 <Button.Background>
                     <SolidColorBrush Color="Red"/>
                 </Button.Background>
             </Button>
 
-            <Button ToolTip="Maximize" ui:WindowUtility.IsMaximizeButton="True" Content="" Style="{StaticResource ToolButton}" Command="{commands:ToggleMaximizeWindow}" CommandParameter="{Binding}" WindowChrome.IsHitTestVisibleInChrome="True"/>
-            <Button ToolTip="Minimize" Content="" Style="{StaticResource ToolButton}" Command="{commands:MinimizeWindow}" CommandParameter="{Binding}" WindowChrome.IsHitTestVisibleInChrome="True"/>
+            <Button ToolTip="Maximize" ui:WindowUtility.IsMaximizeButton="True" Content="" Style="{StaticResource ToolButton}" Command="{commands:ToggleMaximizeWindow}" CommandParameter="{Binding}" WindowChrome.IsHitTestVisibleInChrome="True" FontSize="16"/>
+            <Button ToolTip="Minimize" Content="" Style="{StaticResource ToolButton}" Command="{commands:MinimizeWindow}" CommandParameter="{Binding}" WindowChrome.IsHitTestVisibleInChrome="True" FontSize="16"/>
             <TextBlock Text="{Binding Title}" FontSize="16" DockPanel.Dock="Left" Padding="12"/>
 
         </DockPanel>

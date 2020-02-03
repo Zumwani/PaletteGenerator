@@ -62,14 +62,14 @@
 
                 <TextBlock Text="Hue" HorizontalAlignment="Center" FontSize="16"/>
                 <DockPanel LastChildFill="False">
-                    <Slider Value="{Binding Hue, Mode=TwoWay}" Width="200"/>
-                    <CheckBox VerticalAlignment="Center" Margin="12,0" IsChecked="{Binding UseCustomHue}"/>
+                    <CheckBox VerticalAlignment="Center" IsChecked="{Binding UseCustomHue}"/>
+                    <Slider Value="{Binding Hue, Mode=TwoWay}" Width="200" Margin="12,0"/>
                 </DockPanel>
 
                 <TextBlock Text="Saturation" HorizontalAlignment="Center" FontSize="16"/>
                 <DockPanel LastChildFill="False">
-                    <Slider Value="{Binding Saturation, Mode=TwoWay}" Width="200"/>
-                    <CheckBox VerticalAlignment="Center" Margin="12,0" IsChecked="{Binding UseCustomSaturation}"/>
+                    <CheckBox VerticalAlignment="Center" IsChecked="{Binding UseCustomSaturation}"/>
+                    <Slider Value="{Binding Saturation, Mode=TwoWay}" Width="200" Margin="12,0"/>
                 </DockPanel>
 
             </StackPanel>
