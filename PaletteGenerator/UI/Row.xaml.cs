@@ -13,15 +13,8 @@ namespace PaletteGenerator.Models
 
         #region Properties
 
-        public BindingList<Color> LeftSide { get; } = new BindingList<Color>();
-        public BindingList<Color> RightSide { get; } = new BindingList<Color>();
-
         public static DependencyProperty ColumnsProperty = DependencyProperty.Register(nameof(Columns), typeof(int), typeof(Row), new PropertyMetadata(OnPropertyChanged));
-        public static DependencyProperty HueProperty = DependencyProperty.Register(nameof(Hue), typeof(float), typeof(Row), new PropertyMetadata(0f, OnPropertyChanged));
-        public static DependencyProperty SaturationProperty = DependencyProperty.Register(nameof(Saturation), typeof(float), typeof(Row), new PropertyMetadata(1f, OnPropertyChanged));
-        public static DependencyProperty UseCustomHueProperty = DependencyProperty.Register(nameof(UseCustomHue), typeof(bool), typeof(Row), new PropertyMetadata(false, OnPropertyChanged));
-        public static DependencyProperty UseCustomSaturationProperty = DependencyProperty.Register(nameof(UseCustomSaturation), typeof(bool), typeof(Row), new PropertyMetadata(false, OnPropertyChanged));
-        
+
         async static void OnPropertyChanged(object s, DependencyPropertyChangedEventArgs e)
             { await Task.Delay(10); (s as Row).Refresh(); }
 
@@ -30,6 +23,8 @@ namespace PaletteGenerator.Models
             get => (int)GetValue(ColumnsProperty);
             set => SetValue(ColumnsProperty, value);
         }
+
+        #region Colors
 
         public Color CenterColor
         {
@@ -49,11 +44,64 @@ namespace PaletteGenerator.Models
             set => RightColorPicker.Color = value;
         }
 
-        public float Hue
+        public BindingList<Color> LeftSide { get; } = new BindingList<Color>();
+        public BindingList<Color> RightSide { get; } = new BindingList<Color>();
+
+        public Color[] AllColors =>
+            LeftColor.ApplyOffsets(ActualHueShift, ActualHueOffset, ActualSaturation).AsArray().
+            Concat(LeftSide).
+            Concat(CenterColor.ApplyOffsets(ActualHueShift, ActualHueOffset, ActualSaturation)).
+            Concat(RightSide).
+            Concat(RightColor.ApplyOffsets(ActualHueShift, ActualHueOffset, ActualSaturation)).
+            ToArray();
+
+        #endregion
+        #region Hue Shift
+        
+        public float ActualHueShift => UseCustomHueShift ? HueShift : Global.HueShift;
+
+        public static DependencyProperty HueShiftProperty          = DependencyProperty.Register(nameof(HueShift),          typeof(float), typeof(Row), new PropertyMetadata(0f,    OnPropertyChanged));
+        public static DependencyProperty UseCustomHueShiftProperty = DependencyProperty.Register(nameof(UseCustomHueShift), typeof(bool),  typeof(Row), new PropertyMetadata(false, OnPropertyChanged));
+        
+        public float HueShift
         {
-            get => (float)GetValue(HueProperty);
-            set => SetValue(HueProperty, value);
+            get => (float)GetValue(HueShiftProperty);
+            set => SetValue(HueShiftProperty, value);
         }
+
+        public bool UseCustomHueShift
+        {
+            get => (bool)GetValue(UseCustomHueShiftProperty);
+            set => SetValue(UseCustomHueShiftProperty, value);
+        }
+
+        #endregion
+        #region Hue Offset
+
+        public float ActualHueOffset => UseCustomHueOffset ? HueOffset : Global.HueOffset;
+
+        public static DependencyProperty HueOffsetProperty          = DependencyProperty.Register(nameof(HueOffset),          typeof(float), typeof(Row), new PropertyMetadata(0f,    OnPropertyChanged));
+        public static DependencyProperty UseCustomHueOffsetProperty = DependencyProperty.Register(nameof(UseCustomHueOffset), typeof(bool),  typeof(Row), new PropertyMetadata(false, OnPropertyChanged));
+
+        public float HueOffset
+        {
+            get => (float)GetValue(HueOffsetProperty);
+            set => SetValue(HueOffsetProperty, value);
+        }
+        
+        public bool UseCustomHueOffset
+        {
+            get => (bool)GetValue(UseCustomHueOffsetProperty);
+            set => SetValue(UseCustomHueOffsetProperty, value);
+        }
+
+        #endregion
+        #region Saturation
+
+        public float ActualSaturation => UseCustomSaturation ? Saturation : Global.Saturation;
+
+        public static DependencyProperty SaturationProperty          = DependencyProperty.Register(nameof(Saturation),          typeof(float), typeof(Row), new PropertyMetadata(1f,    OnPropertyChanged));
+        public static DependencyProperty UseCustomSaturationProperty = DependencyProperty.Register(nameof(UseCustomSaturation), typeof(bool),  typeof(Row), new PropertyMetadata(false, OnPropertyChanged));
 
         public float Saturation
         {
@@ -67,22 +115,7 @@ namespace PaletteGenerator.Models
             set => SetValue(UseCustomSaturationProperty, value);
         }
 
-        public bool UseCustomHue
-        {
-            get => (bool)GetValue(UseCustomHueProperty);
-            set => SetValue(UseCustomHueProperty, value);
-        }
-
-        public float ActualHue => UseCustomHue ? Hue : Global.Hue;
-        public float ActualSaturation => UseCustomSaturation ? Saturation : Global.Saturation;
-
-        public Color[] AllColors =>
-            LeftColor.ApplyOffsets(ActualHue, ActualSaturation).AsArray().
-            Concat(LeftSide).
-            Concat(CenterColor.ApplyOffsets(ActualHue, ActualSaturation)).
-            Concat(RightSide).
-            Concat(RightColor.ApplyOffsets(ActualHue, ActualSaturation)).
-            ToArray();
+        #endregion
 
         #endregion
 
@@ -91,34 +124,30 @@ namespace PaletteGenerator.Models
 
             InitializeComponent();
 
-            LeftColorPicker.PropertyChanged += (s, e) => Refresh();
-            CenterColorPicker.PropertyChanged += (s, e) => Refresh();
-            RightColorPicker.PropertyChanged += (s, e) => Refresh();
+            LeftColorPicker.PropertyChanged     += (s, e) => Refresh();
+            CenterColorPicker.PropertyChanged   += (s, e) => Refresh();
+            RightColorPicker.PropertyChanged    += (s, e) => Refresh();
 
-            Global.Hue.PropertyChanged += (s, e) => Refresh();
-            Global.Saturation.PropertyChanged += (s, e) => Refresh();
+            Global.HueShift.PropertyChanged     += (s, e) => Refresh();
+            Global.HueOffset.PropertyChanged    += (s, e) => Refresh();
+            Global.Saturation.PropertyChanged   += (s, e) => Refresh();
 
         }
 
         public void Refresh()
         {
 
-            if (Columns == 0)
-                return;
-
-            var hue = ActualHue;
+            var hueShift = ActualHueShift;
+            var hueOffset = ActualHueOffset;
             var saturation = ActualSaturation;
 
-            LeftColorPicker.Hue = hue;
-            LeftColorPicker.Saturation = saturation;
-            CenterColorPicker.Hue = hue;
-            CenterColorPicker.Saturation = saturation; 
-            RightColorPicker.Hue = hue;
-            RightColorPicker.Saturation = saturation;
+            LeftColorPicker.   SetOffsets(hueShift, hueOffset, saturation);
+            CenterColorPicker. SetOffsets(hueShift, hueOffset, saturation);
+            LeftColorPicker.   SetOffsets(hueShift, hueOffset, saturation);
 
-            var left = LeftColor.ApplyOffsets(hue, saturation);
-            var center = CenterColor.ApplyOffsets(hue, saturation);
-            var right = RightColor.ApplyOffsets(hue, saturation);
+            var left =   LeftColor.   ApplyOffsets(hueShift, hueOffset, saturation);
+            var center = CenterColor. ApplyOffsets(hueShift, hueOffset, saturation);
+            var right =  RightColor.  ApplyOffsets(hueShift, hueOffset, saturation);
 
             var steps = Columns / 2 + 1;
             LeftSide.Set(left.Blend(center, steps).Skip(1).SkipLast(1));

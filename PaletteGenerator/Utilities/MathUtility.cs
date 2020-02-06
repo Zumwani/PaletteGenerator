@@ -30,10 +30,11 @@ namespace PaletteGenerator.Utilities
         public static float Clamp01(this float value) =>
             Clamp(value, 0, 1);
 
-        public static float Wrap(this float value, float min, float max)
-        {
-            return value - (max - min) * MathF.Floor(value / (max - min));
-        }
+        public static void Clamp01(ref float value) =>
+            Clamp01(value);
+
+        public static float Wrap(this float value, float min, float max) =>
+            value - (max - min) * MathF.Floor(value / (max - min));
 
     }
 

@@ -102,60 +102,48 @@ namespace PaletteGenerator.Utilities
         }
 
         #endregion
-        #region Offset hue / saturation
+        #region Apply Hue shift / Hue offset / Saturation
 
-        public static Color ApplyOffsets(this Color color) => color.ApplyOffsets(Global.Hue, Global.Saturation);
-        public static Color[] ApplyOffsets(this IEnumerable<Color> colors) => colors.ApplyOffsets(Global.Hue, Global.Saturation);
+        public static Color ApplyOffsets(this Color color)                  => color. ApplyOffsets(Global.HueShift, Global.HueOffset, Global.Saturation);
+        public static Color[] ApplyOffsets(this IEnumerable<Color> colors)  => colors.ApplyOffsets(Global.HueShift, Global.HueOffset, Global.Saturation);
 
-        public static Color[] ApplyOffsets(this IEnumerable<Color> colors, float hue, float saturation) => colors.Select(c => c.ApplyOffsets(hue, saturation)).ToArray();
+        public static Color[] ApplyOffsets(this IEnumerable<Color> colors, float hueShift, float hueOffset, float saturation) => colors.Select(c => c.ApplyOffsets(hueShift, hueOffset, saturation)).ToArray();
 
-        public static Color ApplyOffsets(this Color color, float hue, float saturation)
+        public static Color ApplyOffsets(this Color color, float hueShift, float hueOffset, float saturation)
         {
 
             var hsv = color.AsHSV();
-            hsv.hue = MathUtility.Wrap(hsv.hue + (hue * 360), 0, 360);
-            hsv.saturation = (hsv.saturation * saturation).Clamp01();
-            color = hsv.AsColor();
 
-            return color;
+            ApplyHueShift(ref hsv, hueShift);
+            ApplyHueOffset(ref hsv, hueOffset);
+            ApplySaturationOffset(ref hsv, saturation);
 
-        }
-
-        public static Color OffsetHue(this Color color, float offset)
-        {
-
-            var hsv = color.AsHSV();
-            hsv.hue = MathUtility.Wrap(hsv.hue + (offset * 360), 0, 360);
-            color = hsv.AsColor();
-
-            return color;
+            return hsv.AsColor();
 
         }
 
-        public static Color OffsetSaturation(this Color color, float offset)
-        {
+        public static void ApplyHueOffset(ref (float hue, float saturation, float value) hsv, float offset) =>
+            hsv.hue = MathUtility.Wrap(hsv.hue + (offset.Clamp01() * 20), 0, 360);
 
-            var hsv = color.AsHSV();
-            hsv.saturation = (hsv.saturation * offset).Clamp01();
-            color = hsv.AsColor();
+        public static void ApplyHueShift(ref (float hue, float saturation, float value) hsv, float offset) =>
+            hsv.hue = MathUtility.Wrap(hsv.hue + (offset.Clamp01() * 360), 0, 360);
 
-            return color;
-
-        }
+        public static void ApplySaturationOffset(ref (float hue, float saturation, float value) hsv, float offset) =>
+            hsv.saturation = (hsv.saturation.Clamp01() * offset).Clamp01();
 
         #endregion
-        #region HSV
+        #region Convert from / to HSV
 
         public static (float hue, float saturation, float value) AsHSV(this Color color)
         {
             int max = Math.Max(color.R, Math.Max(color.G, color.B));
             int min = Math.Min(color.R, Math.Min(color.G, color.B));
 
-            var hue = color.Hue();
-            var saturation = (max == 0) ? 0 : 1f - (1f * min / max);
+            var HueShift = color.Hue();
+            var Saturation = (max == 0) ? 0 : 1f - (1f * min / max);
             var value = max / 255f;
 
-            return (hue, saturation, value);
+            return (HueShift, Saturation, value);
 
         }
 

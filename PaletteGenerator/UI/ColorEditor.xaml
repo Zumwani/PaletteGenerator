@@ -21,9 +21,7 @@
 
     <Grid>
 
-        <Image Source="../Assets/transparent.png" Stretch="None" Width="64" Height="64">
-            
-        </Image>
+        <Image Source="../Assets/transparent.png" Stretch="None" Width="64" Height="64"/>
 
         <colorPicker:ColorPicker x:Name="ColorPicker" SelectedColor="{Binding ElementName=Editor, Path=Color, Mode=TwoWay}"
                                  StandardButtonHeader="Named Colors" AdvancedButtonHeader="Color Picker" AvailableColorsSortingMode="HueSaturationBrightness" ShowDropDownButton="False"
@@ -35,7 +33,7 @@
                     <Setter Property="Height" Value="64"/>
                     <Setter Property="Template">
                         <Setter.Value>
-                            <ControlTemplate>
+                            <ControlTemplate TargetType="{x:Type ToggleButton}">
 
                                 <Grid>
                                 

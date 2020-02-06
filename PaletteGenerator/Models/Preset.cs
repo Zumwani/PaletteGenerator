@@ -14,7 +14,7 @@ namespace PaletteGenerator.Models
                 ColumnCount = Global.Columns,
                 LeftColor = Global.LeftColor,
                 RightColor = Global.RightColor,
-                GlobalHue = Global.Hue,
+                GlobalHueShift = Global.HueShift,
                 GlobalSaturation = Global.Saturation,
                 Rows = Global.Rows.Select(r => new SerializableRow(r)).ToArray(),
             };
@@ -24,12 +24,12 @@ namespace PaletteGenerator.Models
             Global.Columns.Value = ColumnCount;
             Global.LeftColor.Value = LeftColor;
             Global.RightColor.Value = RightColor;
-            Global.Hue.Value = GlobalHue;
+            Global.HueShift.Value = GlobalHueShift;
             Global.Saturation.Value = GlobalSaturation;
             Global.Rows.Set(Rows.Select(r => r.ToRow()));
         }
 
-        public float GlobalHue          { get; set; }
+        public float GlobalHueShift          { get; set; }
         public float GlobalSaturation   { get; set; }
 
         public Color LeftColor          { get; set; }
@@ -45,10 +45,10 @@ namespace PaletteGenerator.Models
             public Color CenterColor            { get; set; }
             public Color RightColor             { get; set; }
 
-            public float Hue                    { get; set; }
+            public float HueShift                    { get; set; }
             public float Saturation             { get; set; }
 
-            public bool UseCustomHue            { get; set; }
+            public bool UseCustomHueShift            { get; set; }
             public bool UseCustomSaturation     { get; set; }
 
             public SerializableRow() { }
@@ -60,10 +60,10 @@ namespace PaletteGenerator.Models
                 CenterColor = row.CenterColor;
                 RightColor = row.RightColor;
 
-                UseCustomHue = row.UseCustomHue;
+                UseCustomHueShift = row.UseCustomHueShift;
                 UseCustomSaturation = row.UseCustomSaturation;
 
-                Hue = row.Hue;
+                HueShift = row.HueShift;
                 Saturation = row.Saturation;
 
             }
@@ -79,10 +79,10 @@ namespace PaletteGenerator.Models
                 r.LeftColor = LeftColor;
                 r.RightColor = RightColor;
 
-                r.UseCustomHue = UseCustomHue;
+                r.UseCustomHueShift = UseCustomHueShift;
                 r.UseCustomSaturation = UseCustomSaturation;
 
-                r.Hue = Hue;
+                r.HueShift = HueShift;
                 r.Saturation = Saturation;
 
                 return r;

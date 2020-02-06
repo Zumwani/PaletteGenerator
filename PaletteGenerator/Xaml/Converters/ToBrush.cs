@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Globalization;
+using System.Windows;
 using System.Windows.Data;
 using System.Windows.Markup;
 using System.Windows.Media;
@@ -15,6 +16,8 @@ namespace PaletteGenerator
 
             public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
             {
+                if (value == DependencyProperty.UnsetValue)
+                    return default;
                 if (value is Color c)
                     return new SolidColorBrush(c);
                 return default;
@@ -22,6 +25,8 @@ namespace PaletteGenerator
 
             public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
             {
+                if (value == DependencyProperty.UnsetValue)
+                    return default;
                 if (value is SolidColorBrush b)
                     return b.Color;
                 return default;

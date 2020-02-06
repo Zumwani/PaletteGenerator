@@ -9,6 +9,7 @@ using System.ComponentModel;
 using window = System.Windows.Window;
 using PaletteGenerator.Utilities;
 using PaletteGenerator.Models;
+using System.Collections.Generic;
 
 namespace PaletteGenerator.UI
 {
@@ -19,7 +20,8 @@ namespace PaletteGenerator.UI
         public ColorEditor()
         {
             InitializeComponent();
-            Global.Hue.PropertyChanged += (s, e) => UpdateDisplayColor();
+            Global.HueShift.PropertyChanged   += (s, e) => UpdateDisplayColor();
+            Global.HueOffset.PropertyChanged  += (s, e) => UpdateDisplayColor();
             Global.Saturation.PropertyChanged += (s, e) => UpdateDisplayColor();
         }
 
@@ -28,14 +30,21 @@ namespace PaletteGenerator.UI
         public static DependencyProperty ColorProperty = DependencyProperty.Register(nameof(Color), typeof(Color), typeof(ColorEditor), new PropertyMetadata(Refresh));
         public static DependencyProperty GlobalColorProperty = DependencyProperty.Register(nameof(GlobalColor), typeof(Color), typeof(ColorEditor), new PropertyMetadata(Refresh));
         public static DependencyProperty DisplayColorProperty = DependencyProperty.Register(nameof(DisplayColor), typeof(Color), typeof(ColorEditor));
-        public static DependencyProperty HueProperty = DependencyProperty.Register(nameof(Hue), typeof(float), typeof(ColorEditor), new PropertyMetadata(0f, Refresh));
+        public static DependencyProperty HueShiftProperty = DependencyProperty.Register(nameof(HueShift), typeof(float), typeof(ColorEditor), new PropertyMetadata(0f, Refresh));
+        public static DependencyProperty HueOffsetProperty = DependencyProperty.Register(nameof(HueOffset), typeof(float), typeof(ColorEditor), new PropertyMetadata(1f, Refresh));
         public static DependencyProperty SaturationProperty = DependencyProperty.Register(nameof(Saturation), typeof(float), typeof(ColorEditor), new PropertyMetadata(1f, Refresh));
         public static DependencyProperty PopupPlacementProperty = DependencyProperty.Register(nameof(PopupPlacement), typeof(PlacementMode), typeof(ColorEditor), new PropertyMetadata(PlacementMode.Bottom));
-        
-        public float Hue
+
+        public float HueShift
         {
-            get => (float)GetValue(HueProperty);
-            set => SetValue(HueProperty, value);
+            get => (float)GetValue(HueShiftProperty);
+            set => SetValue(HueShiftProperty, value);
+        }
+
+        public float HueOffset
+        {
+            get => (float)GetValue(HueOffsetProperty);
+            set => SetValue(HueOffsetProperty, value);
         }
 
         public float Saturation
@@ -70,11 +79,12 @@ namespace PaletteGenerator.UI
         }
 
         public bool IsGlobal => Color == GlobalColor;
-        
+
+        static List<ColorEditor> SupressRefresh = new List<ColorEditor>();
         static void Refresh(DependencyObject s, DependencyPropertyChangedEventArgs e)
         {
 
-            if (!(s is ColorEditor c))
+            if (!(s is ColorEditor c) || SupressRefresh.Contains(c))
                 return;
 
             if (e.Property == GlobalColorProperty)
@@ -94,8 +104,17 @@ namespace PaletteGenerator.UI
 
         }
 
+        public void SetOffsets(float hueShift, float hueOffset, float saturation)
+        {
+            SupressRefresh.Add(this);
+            HueShift = hueShift;
+            HueOffset = hueOffset;
+            Saturation = saturation;
+            SupressRefresh.Remove(this);
+        }
+
         void UpdateDisplayColor() =>
-            DisplayColor = Color.ApplyOffsets(Hue, Saturation);
+            DisplayColor = Color.ApplyOffsets(HueShift, HueOffset, Saturation);
 
         public event PropertyChangedEventHandler PropertyChanged;
         void OnPropertyChanged(string name) =>

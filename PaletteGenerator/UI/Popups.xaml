@@ -60,10 +60,16 @@
 
                 <TextBlock Text="Offsets:" FontSize="16" Margin="0,0,0,12"/>
 
-                <TextBlock Text="Hue" HorizontalAlignment="Center" FontSize="16"/>
+                <TextBlock Text="Hue Shift" HorizontalAlignment="Center" FontSize="16"/>
                 <DockPanel LastChildFill="False">
-                    <CheckBox VerticalAlignment="Center" IsChecked="{Binding UseCustomHue}"/>
-                    <Slider Value="{Binding Hue, Mode=TwoWay}" Width="200" Margin="12,0"/>
+                    <CheckBox VerticalAlignment="Center" IsChecked="{Binding UseCustomHueShift}"/>
+                    <Slider Value="{Binding HueShift, Mode=TwoWay}" Width="200" Margin="12,0"/>
+                </DockPanel>
+                
+                <TextBlock Text="Hue Offset" HorizontalAlignment="Center" FontSize="16"/>
+                <DockPanel LastChildFill="False">
+                    <CheckBox VerticalAlignment="Center" IsChecked="{Binding UseCustomHueOffset}"/>
+                    <Slider Value="{Binding HueOffset, Mode=TwoWay}" Width="200" Margin="12,0"/>
                 </DockPanel>
 
                 <TextBlock Text="Saturation" HorizontalAlignment="Center" FontSize="16"/>
@@ -83,11 +89,14 @@
 
                 <TextBlock Text="Offsets:" FontSize="16" Margin="0,0,0,12"/>
 
-                <TextBlock Text="Hue" HorizontalAlignment="Center" FontSize="16"/>
-                <Slider Value="{Binding Source={x:Static models:Global.Hue}, Path=Value, Mode=TwoWay}" Width="200"/>
+                <TextBlock Text="Hue Shift" HorizontalAlignment="Center" FontSize="16"/>
+                <Slider Width="200" Value="{Binding Source={x:Static models:Global.HueShift},   Path=Value, Mode=TwoWay}"/>
+
+                <TextBlock Text="Hue Offset" HorizontalAlignment="Center" FontSize="16"/>
+                <Slider Width="200" Value="{Binding Source={x:Static models:Global.HueOffset},  Path=Value, Mode=TwoWay}"/>
 
                 <TextBlock Text="Saturation" HorizontalAlignment="Center" FontSize="16"/>
-                <Slider Value="{Binding Source={x:Static models:Global.Saturation}, Path=Value, Mode=TwoWay}" Width="200"/>
+                <Slider Width="200" Value="{Binding Source={x:Static models:Global.Saturation}, Path=Value, Mode=TwoWay}"/>
 
             </StackPanel>
             
