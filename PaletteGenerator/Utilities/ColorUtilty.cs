@@ -25,6 +25,8 @@ namespace PaletteGenerator.Utilities
         public static IEnumerable<Color> Blend(this Color from, Color to, int steps)
         {
 
+            steps = steps.Clamp(2, int.MaxValue);
+
             var stepA = (byte)((to.A - from.A) / (steps - 1));
             var stepR = (byte)((to.R - from.R) / (steps - 1));
             var stepG = (byte)((to.G - from.G) / (steps - 1));

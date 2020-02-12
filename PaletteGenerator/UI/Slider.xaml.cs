@@ -26,6 +26,7 @@ namespace PaletteGenerator.UI
         {
             sliderTooltip.Placement = PlacementMode.AbsolutePoint;
             sliderTooltip.IsOpen = true;
+            ToolTipService.SetShowDuration(slider, int.MaxValue);
             UpdateTooltip(slider);
         }
 
@@ -44,7 +45,10 @@ namespace PaletteGenerator.UI
         private void Grid_MouseWheel(object sender, MouseWheelEventArgs e)
         {
             if (sender is FrameworkElement element && element.TemplatedParent is Slider s)
-                s.Value += s.LargeChange * (e.Delta > 10 ? 1 : -1);
+            {
+                s.Value += s.SmallChange * (e.Delta > 10 ? 1 : -1);
+                UpdateTooltip(s);
+            }
         }
 
     }
