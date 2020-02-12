@@ -6,14 +6,17 @@ using System.Linq;
 namespace PaletteGenerator.Utilities
 {
 
+    /// <summary>Contains utility functions showing a loading screen.</summary>
     static class LoadingUtility
     {
 
         static readonly List<Task> Tasks = new List<Task>();
 
+        /// <summary>Show the loading screen during action.</summary>
         public static void ShowLoadingScreen(this Action action) =>
             ShowLoadingScreen(Task.Run(action));
 
+        /// <summary>Show the loading screen during task.</summary>
         public static async void ShowLoadingScreen(this Task task)
         {
 
@@ -45,6 +48,8 @@ namespace PaletteGenerator.Utilities
         }
 
         static readonly List<BlockLoadingScreen> blocks = new List<BlockLoadingScreen>();
+
+        /// <summary>Block loading screen until disposed.</summary>
         public static BlockLoadingScreen KeepLoadingScreenHidden => new BlockLoadingScreen();
 
     }

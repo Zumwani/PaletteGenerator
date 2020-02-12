@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Drawing;
 using System.Runtime.InteropServices;
-using Image = System.Windows.Controls.Image;
 using Point = System.Windows.Point;
 using point = System.Drawing.Point;
-using Size = System.Windows.Size;
 
 namespace PaletteGenerator.Utilities
 {
 
+    /// <summary>Contains utility functions for working with the cursor.</summary>
     static class CursorUtility
     {
 

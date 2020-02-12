@@ -7,6 +7,7 @@ using System.Windows.Input;
 namespace PaletteGenerator.Utilities
 {
 
+    /// <summary>Contains attached properties that make <see cref="Slider"/> easier to use.</summary>
     static class SliderUtility
     {
 

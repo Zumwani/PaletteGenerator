@@ -8,6 +8,7 @@ using System.Windows.Media.Animation;
 namespace PaletteGenerator.Utilities
 {
 
+    /// <summary>Contains animation functions.</summary>
     static class TransitionUtility
     {
 

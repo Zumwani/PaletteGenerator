@@ -5,10 +5,12 @@ using System.Windows.Media;
 namespace PaletteGenerator.Utilities
 {
 
+    /// <summary>Contains utility functions for working with <see cref="DependencyObject"/>.</summary>
     static class DependencyUtility
     {
 
-        static IEnumerable<T> FindVisualChildren<T>(this DependencyObject depObj) where T : DependencyObject
+        /// <summary>Searches the visual tree for children of <typeparamref name="T"/>.</summary>
+        public static IEnumerable<T> FindVisualChildren<T>(this DependencyObject depObj) where T : DependencyObject
         {
 
             if (depObj == null)

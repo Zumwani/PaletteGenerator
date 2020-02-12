@@ -13,12 +13,15 @@ using Color = System.Windows.Media.Color;
 namespace PaletteGenerator.Utilities
 {
 
+    /// <summary>Contains utility functions for working with <see cref="Color"/>.</summary>
     static class ColorUtilty
     {
 
+        /// <summary>Returns this <see cref="Color"/> as <see cref="System.Drawing.Color"/>.</summary>
         public static color AsDrawing(this Color color) =>
             System.Drawing.Color.FromArgb(color.A, color.R, color.G, color.B);
 
+        /// <summary>Returns an array of <see cref="Color"/> that is a blend between start and end colors.</summary>
         public static IEnumerable<Color> Blend(this Color from, Color to, int steps)
         {
 
@@ -36,6 +39,7 @@ namespace PaletteGenerator.Utilities
 
         }
 
+        /// <summary>Returns a complementary color. i.e. if <see cref="Colors.White"/> is specified then <see cref="Colors.Black"/> would be returned.</summary>
         public static Color Complementary(this Color color)
         {
             var hsv = color.AsHSV();
@@ -43,8 +47,13 @@ namespace PaletteGenerator.Utilities
             return hsv.AsColor();
         }
 
+        /// <summary>Gets the hue of this <see cref="Color"/>.</summary>
+        public static float Hue(this Color color) =>
+            System.Drawing.Color.FromArgb(color.A, color.R, color.G, color.B).GetHue();
+
         #region Export
 
+        /// <summary>Returns this multidimensional <see cref="Color"/> array as a color palette png file.</summary>
         public static BitmapSource AsPNGPalette(this Color[][] colors, int cellSize)
         {
 
@@ -83,6 +92,7 @@ namespace PaletteGenerator.Utilities
 
         }
 
+        /// <summary>Converts this <see cref="BitmapSource"/> to an <see cref="Byte"/> array, wrapped in an <see cref="MemoryStream"/>.</summary>
         public static MemoryStream AsBytes(this BitmapSource bitmap)
         {
 
@@ -94,6 +104,7 @@ namespace PaletteGenerator.Utilities
 
         }
 
+        /// <summary>Converts this <see cref="Bitmap"/> to an <see cref="Byte"/> array, wrapped in an <see cref="MemoryStream"/>.</summary>
         public static MemoryStream AsBytes(this Bitmap bitmap)
         {
             var ms = new MemoryStream();
@@ -104,11 +115,19 @@ namespace PaletteGenerator.Utilities
         #endregion
         #region Apply Hue shift / Hue offset / Saturation
 
-        public static Color ApplyOffsets(this Color color)                  => color. ApplyOffsets(Global.HueShift, Global.HueOffset, Global.Saturation);
-        public static Color[] ApplyOffsets(this IEnumerable<Color> colors)  => colors.ApplyOffsets(Global.HueShift, Global.HueOffset, Global.Saturation);
+        /// <summary>Applies <see cref="Global"/> hue shift, hue offset and saturation level to this <see cref="Color"/>.</summary>
+        public static Color ApplyOffsets(this Color color) => 
+            color.ApplyOffsets(Global.HueShift, Global.HueOffset, Global.Saturation);
 
-        public static Color[] ApplyOffsets(this IEnumerable<Color> colors, float hueShift, float hueOffset, float saturation) => colors.Select(c => c.ApplyOffsets(hueShift, hueOffset, saturation)).ToArray();
+        /// <summary>Applies <see cref="Global"/> hue shift, hue offset and saturation level to each <see cref="Color"/> in this <see cref="System.Collections.IEnumerable"/>.</summary>
+        public static Color[] ApplyOffsets(this IEnumerable<Color> colors) => 
+            colors.ApplyOffsets(Global.HueShift, Global.HueOffset, Global.Saturation);
 
+        /// <summary>Applies the specified hue shift, hue offset and saturation level to each <see cref="Color"/> in this <see cref="System.Collections.IEnumerable"/>.</summary>
+        public static Color[] ApplyOffsets(this IEnumerable<Color> colors, float hueShift, float hueOffset, float saturation) => 
+            colors.Select((c, i) => c.ApplyOffsets(hueShift, hueOffset, saturation, i, colors.Count())).ToArray();
+
+        /// <summary>Applies the specified hue shift, hue offset and saturation levels to this <see cref="Color"/>.</summary>
         public static Color ApplyOffsets(this Color color, float hueShift, float hueOffset, float saturation)
         {
 
@@ -116,24 +135,53 @@ namespace PaletteGenerator.Utilities
 
             ApplyHueShift(ref hsv, hueShift);
             ApplyHueOffset(ref hsv, hueOffset);
-            ApplySaturationOffset(ref hsv, saturation);
+            ApplySaturationLevel(ref hsv, saturation);
 
             return hsv.AsColor();
 
         }
 
-        public static void ApplyHueOffset(ref (float hue, float saturation, float value) hsv, float offset) =>
-            hsv.hue = MathUtility.Wrap(hsv.hue + (offset.Clamp01() * 20), 0, 360);
+        /// <summary>Applies the specified hue shift, hue offset and saturation level to this <see cref="Color"/> that is contained within an <see cref="System.Collections.IEnumerable"/>.</summary>
+        public static Color ApplyOffsets(this Color color, float hueShift, float hueOffset, float saturation, int index, int length)
+        {
 
+            var hsv = color.AsHSV();
+
+            ApplyHueOffset(ref hsv, hueOffset, index, length);
+            ApplyHueShift(ref hsv, hueShift);
+            ApplySaturationLevel(ref hsv, saturation);
+
+            return hsv.AsColor();
+
+        }
+
+        /// <summary>Applies an hue shift, specified by normalized value (0-1) across entire color spectrum) to this <see cref="Color"/>.</summary>
         public static void ApplyHueShift(ref (float hue, float saturation, float value) hsv, float offset) =>
             hsv.hue = MathUtility.Wrap(hsv.hue + (offset.Clamp01() * 360), 0, 360);
 
-        public static void ApplySaturationOffset(ref (float hue, float saturation, float value) hsv, float offset) =>
+        /// <summary>Applies an hue offset, specified by 360° value across entire color spectrum) to this <see cref="Color"/>.</summary>
+        public static void ApplyHueOffset(ref (float hue, float saturation, float value) hsv, float offset) =>
+            hsv.hue = MathUtility.Wrap(hsv.hue + offset, 0, 360);
+
+        /// <summary>Applies an hue offset, specified by 360° value across entire color spectrum) on this <see cref="Color"/> that is contained within an <see cref="System.Collections.IEnumerable"/>.</summary>
+        public static void ApplyHueOffset(ref (float hue, float saturation, float value) hsv, float offset, int index, int length)
+        {
+
+            var l = (length - 1f).Clamp(2, int.MaxValue);
+            offset /= (l);
+
+            hsv.hue = MathUtility.Wrap(hsv.hue + (offset * (index + 1)), 0, 360);
+
+        }
+
+        /// <summary>Applies an saturation level, specified by value 0-1 to this <see cref="Color"/>.</summary>
+        public static void ApplySaturationLevel(ref (float hue, float saturation, float value) hsv, float offset) =>
             hsv.saturation = (hsv.saturation.Clamp01() * offset).Clamp01();
 
         #endregion
         #region Convert from / to HSV
 
+        /// <summary>Converts this RGBA <see cref="Color"/> to HSV.</summary>
         public static (float hue, float saturation, float value) AsHSV(this Color color)
         {
             int max = Math.Max(color.R, Math.Max(color.G, color.B));
@@ -147,6 +195,7 @@ namespace PaletteGenerator.Utilities
 
         }
 
+        /// <summary>Converts HSV color to RGBA <see cref="Color"/>.</summary>
         public static Color AsColor(float hue, float saturation, float value)
         {
 
@@ -171,11 +220,10 @@ namespace PaletteGenerator.Utilities
                 return Color.FromArgb(255, t, p, v);
             else
                 return Color.FromArgb(255, v, p, q);
+
         }
 
-        public static float Hue(this Color color) =>
-            System.Drawing.Color.FromArgb(color.A, color.R, color.G, color.B).GetHue();
-
+        /// <summary>Converts this HSV color to RGBA <see cref="Color"/>.</summary>
         public static Color AsColor(this (float hue, float saturation, float value) hsv) =>
             AsColor(hsv.hue, hsv.saturation, hsv.value);
 

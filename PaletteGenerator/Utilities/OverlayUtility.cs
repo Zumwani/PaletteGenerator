@@ -55,8 +55,10 @@ namespace PaletteGenerator.Utilities
                 Width = screen.Bounds.Width,
                 Height = screen.Bounds.Height,
                 ShowInTaskbar = false,
-                ShowActivated = false,
+                ShowActivated = true,
             };
+
+            window.Activate();
 
             return window;
 

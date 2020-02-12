@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 namespace PaletteGenerator.Models
 {
 
+    /// <summary>Contains global values that are automatically serialized.</summary>
     static partial class Settings
     {
 
@@ -22,12 +23,15 @@ namespace PaletteGenerator.Models
         static string SettingsFile =>
             Path.Combine(Directory.CreateDirectory(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Palette Generator")).FullName, "settings.json");
 
+        /// <summary>Saves the current values to disk.</summary>
         public static void Save() => 
             JsonUtility<SettingsClass>.Save(Current, SettingsFile);
 
+        /// <summary>Load values from disk.</summary>
         public static async Task Load() =>
             Current = await JsonUtility<SettingsClass>.Load(SettingsFile, true) ?? new SettingsClass();
 
+        /// <summary>A <see cref="Property{T}"/> that automatically calls <see cref="Save"/> when value changes.</summary>
         public class Setting<T> : Property<T>
         {
 

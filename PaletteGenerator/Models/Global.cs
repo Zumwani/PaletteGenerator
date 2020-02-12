@@ -4,6 +4,7 @@ using System.Windows.Media;
 namespace PaletteGenerator.Models
 {
 
+    /// <summary>Contains global values that does not need to be persisted.</summary>
     static class Global
     {
 

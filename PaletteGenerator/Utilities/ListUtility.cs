@@ -5,6 +5,7 @@ using System.ComponentModel;
 namespace PaletteGenerator.Utilities
 {
 
+    /// <summary>Contains utility functions for working with lists.</summary>
     static class ListUtility
     {
 
@@ -53,6 +54,7 @@ namespace PaletteGenerator.Utilities
             list.ResetBindings();
         }
 
+        /// <summary>Clear and add items to the <see cref="BindingList{T}"/>.</summary>
         public static void Set<T>(this BindingList<T> list, IEnumerable<T> items)
         {
             list.RaiseListChangedEvents = false;
@@ -63,10 +65,11 @@ namespace PaletteGenerator.Utilities
             list.ResetBindings();
         }
 
-        public static T Create<T>(this IList<T> list, int? maxCount = null)
+        /// <summary>Creates and adds a new <typeparamref name="T"/>.</summary>
+        public static T Create<T>(this IList<T> list, int? maxCount = null) where T : new()
         {
             if (list.Count > (maxCount ?? int.MaxValue)) return default;
-            var item = Activator.CreateInstance<T>();
+            var item = new T();
             list.Add(item);
             return item;
         }

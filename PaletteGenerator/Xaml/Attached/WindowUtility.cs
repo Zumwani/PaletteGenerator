@@ -6,6 +6,7 @@ using System.Windows.Controls;
 namespace PaletteGenerator.UI
 {
 
+    /// <summary>Contains attached properties for maximize button.</summary>
     static class WindowUtility
     {
 

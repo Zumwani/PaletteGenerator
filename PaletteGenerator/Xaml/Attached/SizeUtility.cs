@@ -4,6 +4,7 @@ using System.Windows.Data;
 namespace PaletteGenerator.Utilities
 {
 
+    /// <summary>Contains attached properties for binding width to height / height to width.</summary>
     static class SizeUtility
     {
 

@@ -6,6 +6,7 @@ using System.Windows.Data;
 namespace PaletteGenerator.Utilities
 {
 
+    /// <summary>Contains attached properties for attaching <see cref="Popup"/> to <see cref="ToggleButton"/>.</summary>
     static class PopupUtility
     {
 

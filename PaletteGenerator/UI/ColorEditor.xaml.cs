@@ -31,7 +31,6 @@ namespace PaletteGenerator.UI
         public static DependencyProperty GlobalColorProperty = DependencyProperty.Register(nameof(GlobalColor), typeof(Color), typeof(ColorEditor), new PropertyMetadata(Refresh));
         public static DependencyProperty DisplayColorProperty = DependencyProperty.Register(nameof(DisplayColor), typeof(Color), typeof(ColorEditor));
         public static DependencyProperty HueShiftProperty = DependencyProperty.Register(nameof(HueShift), typeof(float), typeof(ColorEditor), new PropertyMetadata(0f, Refresh));
-        public static DependencyProperty HueOffsetProperty = DependencyProperty.Register(nameof(HueOffset), typeof(float), typeof(ColorEditor), new PropertyMetadata(1f, Refresh));
         public static DependencyProperty SaturationProperty = DependencyProperty.Register(nameof(Saturation), typeof(float), typeof(ColorEditor), new PropertyMetadata(1f, Refresh));
         public static DependencyProperty PopupPlacementProperty = DependencyProperty.Register(nameof(PopupPlacement), typeof(PlacementMode), typeof(ColorEditor), new PropertyMetadata(PlacementMode.Bottom));
 
@@ -39,12 +38,6 @@ namespace PaletteGenerator.UI
         {
             get => (float)GetValue(HueShiftProperty);
             set => SetValue(HueShiftProperty, value);
-        }
-
-        public float HueOffset
-        {
-            get => (float)GetValue(HueOffsetProperty);
-            set => SetValue(HueOffsetProperty, value);
         }
 
         public float Saturation
@@ -104,17 +97,17 @@ namespace PaletteGenerator.UI
 
         }
 
-        public void SetOffsets(float hueShift, float hueOffset, float saturation)
+        public void SetOffsets(float hueShift, float saturation)
         {
             SupressRefresh.Add(this);
             HueShift = hueShift;
-            HueOffset = hueOffset;
             Saturation = saturation;
             SupressRefresh.Remove(this);
+            UpdateDisplayColor();
         }
 
         void UpdateDisplayColor() =>
-            DisplayColor = Color.ApplyOffsets(HueShift, HueOffset, Saturation);
+            DisplayColor = Color.ApplyOffsets(HueShift, 0, Saturation);
 
         public event PropertyChangedEventHandler PropertyChanged;
         void OnPropertyChanged(string name) =>

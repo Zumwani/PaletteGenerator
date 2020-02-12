@@ -9,6 +9,7 @@ using System.Windows.Media;
 namespace PaletteGenerator.Utilities
 {
 
+    /// <summary>Contains utility functions for json serialization.</summary>
     static class JsonUtility<T> where T : new() 
     {
 
@@ -21,9 +22,13 @@ namespace PaletteGenerator.Utilities
 
         static readonly JsonSerializerOptions options;
 
+        /// <summary>Prompts user to pick file to attempt to deserialize into <typeparamref name="T"/>. Returns null if unsuccessful.</summary>
         public static async Task<T> PromptAndLoad() =>  await Load(PromptUtility.Load() ?? string.Empty);
+
+        /// <summary>Prompts user to pick file that we'll attempt to deserialize <typeparamref name="T"/> into.</summary>
         public static void PromptAndSave(T obj)     => Save(obj, PromptUtility.Save() ?? string.Empty);
 
+        /// <summary>Attempts to deserialize <typeparamref name="T"/> from the specified file. Returns null or a new instance if unsuccessful.</summary>
         public static async Task<T> Load(string path, bool createNewIfNotFound = false)
         {
 
@@ -49,6 +54,7 @@ namespace PaletteGenerator.Utilities
 
         }
 
+        /// <summary>Attempts to serialize <typeparamref name="T"/> to the specified file.</summary>
         public static Task Save(T obj, string path) =>
             Task.Run(() =>
             {
@@ -70,6 +76,7 @@ namespace PaletteGenerator.Utilities
         static void ErrorMessage(Exception e, string action) =>
             MessageBox.Show(e.GetType().Name + ":" + Environment.NewLine + Environment.NewLine + e.Message + Environment.NewLine + Environment.NewLine, $"An error occured while {action} json file.");
 
+        /// <summary>Json converter to make json serializer serialize color as hex.</summary>
         public class ConvertColorToHex : System.Text.Json.Serialization.JsonConverter<Color>
         {
 

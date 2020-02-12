@@ -6,6 +6,7 @@ using System.IO;
 namespace PaletteGenerator.Utilities
 {
 
+    /// <summary>Contains utility functions for promting the user with save and load dialogs.</summary>
     static class PromptUtility
     {
 

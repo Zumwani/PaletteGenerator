@@ -60,11 +60,15 @@
             </ToggleButton>
         </Border>
 
-        <ui:ColorEditor x:Name="LeftColorPicker" BorderThickness="1,1,0,1" GlobalColor="{Binding Source={x:Static models:Global.LeftColor}, Path=Value, Mode=TwoWay}" PopupPlacement="Left"/>
-        <ItemsControl ItemsSource="{Binding ElementName=UserControl, Path=LeftSide, Mode=OneWay}"/>
-        <ui:ColorEditor x:Name="CenterColorPicker" BorderThickness="0,1" Color="LightSkyBlue" GlobalColor="{Binding ElementName=UserControl, Path=CenterColor, Mode=TwoWay}" IsGlobalPicker="True"/>
-        <ItemsControl ItemsSource="{Binding ElementName=UserControl, Path=RightSide, Mode=OneWay}"/>
-        <ui:ColorEditor x:Name="RightColorPicker" BorderThickness="0,1,1,1" GlobalColor="{Binding Source={x:Static models:Global.RightColor}, Path=Value, Mode=TwoWay}" PopupPlacement="Right"/>
+        <Border BorderBrush="LightGray" BorderThickness="1">
+            <StackPanel Orientation="Horizontal" Margin="-1">
+                <ui:ColorEditor x:Name="LeftColorPicker" GlobalColor="{Binding Source={x:Static models:Global.LeftColor}, Path=Value, Mode=TwoWay}" PopupPlacement="Left" BorderThickness="1,1,0,1"/>
+                <ItemsControl ItemsSource="{Binding ElementName=UserControl, Path=LeftSide, Mode=OneWay}"/>
+                <ui:ColorEditor x:Name="CenterColorPicker" Color="LightSkyBlue" GlobalColor="{Binding ElementName=UserControl, Path=CenterColor, Mode=TwoWay}" IsGlobalPicker="True" BorderThickness="0,1,0,1"/>
+                <ItemsControl ItemsSource="{Binding ElementName=UserControl, Path=RightSide, Mode=OneWay}"/>
+                <ui:ColorEditor x:Name="RightColorPicker" GlobalColor="{Binding Source={x:Static models:Global.RightColor}, Path=Value, Mode=TwoWay}" PopupPlacement="Right" BorderThickness="0,1,1,1"/>
+            </StackPanel>
+        </Border>
 
         <Border Background="Transparent" Width="22">
             <Button Content="✖" x:Name="RemoveButton" Height="22" VerticalAlignment="Top" FontSize="12" Foreground="DimGray"

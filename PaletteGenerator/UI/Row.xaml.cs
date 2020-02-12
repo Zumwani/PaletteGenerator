@@ -48,11 +48,11 @@ namespace PaletteGenerator.Models
         public BindingList<Color> RightSide { get; } = new BindingList<Color>();
 
         public Color[] AllColors =>
-            LeftColor.ApplyOffsets(ActualHueShift, ActualHueOffset, ActualSaturation).AsArray().
+            LeftColor.AsArray().
             Concat(LeftSide).
-            Concat(CenterColor.ApplyOffsets(ActualHueShift, ActualHueOffset, ActualSaturation)).
+            Concat(CenterColor.ApplyOffsets(ActualHueShift, 0, ActualSaturation)).
             Concat(RightSide).
-            Concat(RightColor.ApplyOffsets(ActualHueShift, ActualHueOffset, ActualSaturation)).
+            Concat(RightColor).
             ToArray();
 
         #endregion
@@ -140,18 +140,20 @@ namespace PaletteGenerator.Models
             var hueShift = ActualHueShift;
             var hueOffset = ActualHueOffset;
             var saturation = ActualSaturation;
-
-            LeftColorPicker.   SetOffsets(hueShift, hueOffset, saturation);
-            CenterColorPicker. SetOffsets(hueShift, hueOffset, saturation);
-            LeftColorPicker.   SetOffsets(hueShift, hueOffset, saturation);
-
-            var left =   LeftColor.   ApplyOffsets(hueShift, hueOffset, saturation);
-            var center = CenterColor. ApplyOffsets(hueShift, hueOffset, saturation);
-            var right =  RightColor.  ApplyOffsets(hueShift, hueOffset, saturation);
+        
+            LeftColorPicker.SetOffsets(hueShift, saturation);
+            CenterColorPicker.SetOffsets(hueShift, saturation);
+            RightColorPicker.SetOffsets(hueShift, saturation);
 
             var steps = Columns / 2 + 1;
-            LeftSide.Set(left.Blend(center, steps).Skip(1).SkipLast(1));
-            RightSide.Set(center.Blend(right, steps).Skip(1).SkipLast(1));
+            var left =  CenterColor.Blend(LeftColor, steps).Skip(1).SkipLast(1).ToArray();
+            var right = CenterColor.Blend(RightColor, steps).Skip(1).SkipLast(1).ToArray();
+
+            left = left.ApplyOffsets(hueShift, hueOffset * 60, saturation);
+            right = right.ApplyOffsets(hueShift, hueOffset * 60, saturation);
+
+            LeftSide.Set(left.Reverse().ToArray());
+            RightSide.Set(right);
 
         }
 

@@ -4,6 +4,7 @@ using System.Runtime.CompilerServices;
 namespace PaletteGenerator.Models
 {
 
+    /// <summary>Helper class to allow data bindings to static properties.</summary>
     class Property<T> : INotifyPropertyChanged
     {
 
