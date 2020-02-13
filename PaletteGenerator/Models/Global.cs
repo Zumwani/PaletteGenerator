@@ -23,6 +23,7 @@ namespace PaletteGenerator.Models
         public static int MinColumns    => 2;
         public static string Github     => "https://github.com/Zumwani/PaletteGenerator";
         public static string Discord    => "https://discord.gg/P8VX7Wb";
+        public static string VersionUri => "https://raw.githubusercontent.com/Zumwani/PaletteGenerator/release/version.json";
         public static string Version    => typeof(Window).Assembly.GetName().Version.ToString(2);
 
     }

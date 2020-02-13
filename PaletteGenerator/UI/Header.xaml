@@ -41,11 +41,27 @@
 
             <Button Height="42" Padding="6" 
                     Content="{Binding Source={StaticResource Icons.Github}, Mode=OneTime}"
-                    Command="{commands:OpenUri}" CommandParameter="{Binding Source={x:Static models:Global.Github}, Mode=OneTime}"/>
-            
+                    Command="{commands:OpenUri}" CommandParameter="{Binding Source={x:Static models:Global.Github}, Mode=OneTime}">
+                <Button.ToolTip>
+                    <TextBlock>
+                        <Run Text="Github"/>
+                        <LineBreak/>
+                        <Run Text="{Binding Source={x:Static models:Global.Github}, Mode=OneTime}"/>
+                    </TextBlock>
+                </Button.ToolTip>
+            </Button>
+
             <Button Height="42" Padding="6" 
                     Content="{Binding Source={StaticResource Icons.Discord}, Mode=OneTime}"
-                    Command="{commands:OpenUri}" CommandParameter="{Binding Source={x:Static models:Global.Discord}, Mode=OneTime}"/>
+                    Command="{commands:OpenUri}" CommandParameter="{Binding Source={x:Static models:Global.Discord}, Mode=OneTime}">
+                <Button.ToolTip>
+                    <TextBlock>
+                        <Run Text="Discord"/>
+                        <LineBreak/>
+                        <Run Text="{Binding Source={x:Static models:Global.Discord}, Mode=OneTime}"/>
+                    </TextBlock>
+                </Button.ToolTip>
+            </Button>
 
         </UniformGrid>
 

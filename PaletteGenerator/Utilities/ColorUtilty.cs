@@ -122,12 +122,12 @@ namespace PaletteGenerator.Utilities
             color.ApplyOffsets(Global.HueShift, Global.HueOffset, Global.Saturation);
 
         /// <summary>Applies <see cref="Global"/> hue shift, hue offset and saturation level to each <see cref="Color"/> in this <see cref="System.Collections.IEnumerable"/>.</summary>
-        public static Color[] ApplyOffsets(this IEnumerable<Color> colors) => 
-            colors.ApplyOffsets(Global.HueShift, Global.HueOffset, Global.Saturation);
+        public static Color[] ApplyOffsets(this IEnumerable<Color> colors, bool invert) => 
+            colors.ApplyOffsets(Global.HueShift, Global.HueOffset, Global.Saturation, invert);
 
         /// <summary>Applies the specified hue shift, hue offset and saturation level to each <see cref="Color"/> in this <see cref="System.Collections.IEnumerable"/>.</summary>
-        public static Color[] ApplyOffsets(this IEnumerable<Color> colors, float hueShift, float hueOffset, float saturation) => 
-            colors.Select((c, i) => c.ApplyOffsets(hueShift, hueOffset, saturation, i, colors.Count())).ToArray();
+        public static Color[] ApplyOffsets(this IEnumerable<Color> colors, float hueShift, float hueOffset, float saturation, bool invert) => 
+            colors.Select((c, i) => c.ApplyOffsets(hueShift, hueOffset, saturation, i, colors.Count(), invert)).ToArray();
 
         /// <summary>Applies the specified hue shift, hue offset and saturation levels to this <see cref="Color"/>.</summary>
         public static Color ApplyOffsets(this Color color, float hueShift, float hueOffset, float saturation)
@@ -144,12 +144,12 @@ namespace PaletteGenerator.Utilities
         }
 
         /// <summary>Applies the specified hue shift, hue offset and saturation level to this <see cref="Color"/> that is contained within an <see cref="System.Collections.IEnumerable"/>.</summary>
-        public static Color ApplyOffsets(this Color color, float hueShift, float hueOffset, float saturation, int index, int length)
+        public static Color ApplyOffsets(this Color color, float hueShift, float hueOffset, float saturation, int index, int length, bool invert)
         {
 
             var hsv = color.AsHSV();
 
-            ApplyHueOffset(ref hsv, hueOffset, index, length);
+            ApplyHueOffset(ref hsv, hueOffset, index, length, invert);
             ApplyHueShift(ref hsv, hueShift);
             ApplySaturationLevel(ref hsv, saturation);
 
@@ -166,11 +166,14 @@ namespace PaletteGenerator.Utilities
             hsv.hue = MathUtility.Wrap(hsv.hue + offset, 0, 360);
 
         /// <summary>Applies an hue offset, specified by 360° value across entire color spectrum) on this <see cref="Color"/> that is contained within an <see cref="System.Collections.IEnumerable"/>.</summary>
-        public static void ApplyHueOffset(ref (float hue, float saturation, float value) hsv, float offset, int index, int length)
+        public static void ApplyHueOffset(ref (float hue, float saturation, float value) hsv, float offset, int index, int length, bool invert)
         {
 
             var l = (length - 1f).Clamp(2, int.MaxValue);
             offset /= (l);
+
+            if (invert)
+                offset *= -1;
 
             hsv.hue = MathUtility.Wrap(hsv.hue + (offset * (index + 1)), 0, 360);
 

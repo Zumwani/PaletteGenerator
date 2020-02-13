@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "PublishHelper": {
+      "commandName": "Project",
+      "commandLineArgs": "C:\\Users\\Zumwani\\Documents\\GitHub\\PaletteGenerator"
+    }
+  }
+}

@@ -2,7 +2,7 @@
 
 namespace PaletteGenerator
 {
-
+     
     partial class Window : System.Windows.Window
     {
 

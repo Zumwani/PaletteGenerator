@@ -149,8 +149,8 @@ namespace PaletteGenerator.Models
             var left =  CenterColor.Blend(LeftColor, steps).Skip(1).SkipLast(1).ToArray();
             var right = CenterColor.Blend(RightColor, steps).Skip(1).SkipLast(1).ToArray();
 
-            left = left.ApplyOffsets(hueShift, hueOffset * 60, saturation);
-            right = right.ApplyOffsets(hueShift, hueOffset * 60, saturation);
+            left = left.ApplyOffsets(hueShift, hueOffset * 60, saturation, false);
+            right = right.ApplyOffsets(hueShift, hueOffset * 60, saturation, true);
 
             LeftSide.Set(left.Reverse().ToArray());
             RightSide.Set(right);
