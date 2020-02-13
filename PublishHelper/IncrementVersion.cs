@@ -2,6 +2,7 @@
 using System;
 using System.IO;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace PublishHelper
 {
@@ -41,8 +42,7 @@ namespace PublishHelper
         public static void SetJsonVersion(string version)
         {
 
-
-            var file = Path.Combine(Environment.CurrentDirectory, "version.json");
+            var file = Path.Combine(Strings.Root, @"version.json");
 
             var json =
                 File.Exists(file) ?
@@ -62,9 +62,16 @@ namespace PublishHelper
 
         public static Version Default => new Version() { Label = "Current version:", Color = "lightgray", Style = "flat-square" };
 
+        [JsonPropertyName("label")]
         public string Label { get; set; }
+
+        [JsonPropertyName("message")]
         public string Message { get; set; }
+
+        [JsonPropertyName("color")]
         public string Color { get; set; }
+
+        [JsonPropertyName("style")]
         public string Style { get; set; }
 
     }

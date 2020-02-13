@@ -7,6 +7,7 @@ using System.Text.Json;
 using PaletteGenerator.Utilities;
 using System.Windows;
 using System.Diagnostics;
+using System.Text.Json.Serialization;
 
 namespace PaletteGenerator.Commands
 {
@@ -46,6 +47,7 @@ namespace PaletteGenerator.Commands
 
         public class Version
         {
+            [JsonPropertyName("message")]
             public string Message { get; set; }
         }
 
