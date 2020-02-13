@@ -141,9 +141,9 @@ namespace PaletteGenerator.Models
             var hueOffset = ActualHueOffset;
             var saturation = ActualSaturation;
         
-            LeftColorPicker.SetOffsets(hueShift, saturation);
+            LeftColorPicker.SetOffsets(0, saturation);
             CenterColorPicker.SetOffsets(hueShift, saturation);
-            RightColorPicker.SetOffsets(hueShift, saturation);
+            RightColorPicker.SetOffsets(0, saturation);
 
             var steps = Columns / 2 + 1;
             var left =  CenterColor.Blend(LeftColor, steps).Skip(1).SkipLast(1).ToArray();
