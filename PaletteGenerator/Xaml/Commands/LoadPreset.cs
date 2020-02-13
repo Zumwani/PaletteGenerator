@@ -18,7 +18,7 @@ namespace PaletteGenerator.Commands
         {
 
             Preset preset = null;
-            LoadingUtility.ShowLoadingScreen(async () => 
+            LoadingUtility.ShowLoadingScreen(async () =>
             {
                 preset = await JsonUtility<Preset>.PromptAndLoad();
                 App.Dispatcher.Invoke(() => preset?.SetCurrent());
